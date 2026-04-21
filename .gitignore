@@ -1,0 +1,30 @@
+node_modules/
+.next/
+dist/
+build/
+out/
+.turbo/
+.DS_Store
+*.log
+
+# env files — NEVER commit
+.env
+.env.local
+.env.*.local
+!.env.example
+!.env.local.example
+
+# foundry / solidity
+cache/
+broadcast/*/*/cache/
+
+# demo working dirs
+ops/demo/raw/*.mov
+ops/demo/raw/*.mp3
+
+# bun/npm cruft
+bun.lockb
+package-lock.json
+
+# ops private
+ops/submission/PRIVATE/

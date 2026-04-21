@@ -1,0 +1,83 @@
+@import "tailwindcss";
+
+@theme {
+  --color-background: #07080b;
+  --color-foreground: #f3f4f6;
+  --color-card: #0f1115;
+  --color-card-foreground: #f3f4f6;
+  --color-muted: #13161c;
+  --color-muted-foreground: #9ca3af;
+  --color-border: #1f232c;
+  --color-ring: #4b5563;
+
+  --color-accent: #6366f1;
+  --color-accent-foreground: #f3f4f6;
+
+  --color-low: #22c55e;
+  --color-low-bg: rgba(34, 197, 94, 0.12);
+  --color-medium: #f59e0b;
+  --color-medium-bg: rgba(245, 158, 11, 0.12);
+  --color-high: #ef4444;
+  --color-high-bg: rgba(239, 68, 68, 0.12);
+
+  --color-agent-auditor: #60a5fa;
+  --color-agent-liquidity: #22d3ee;
+  --color-agent-dev: #a78bfa;
+  --color-agent-sentiment: #f472b6;
+  --color-agent-meta: #fbbf24;
+
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+html,
+body {
+  background: var(--color-background);
+  color: var(--color-foreground);
+  color-scheme: dark;
+}
+
+body {
+  font-family: var(--font-sans), ui-sans-serif, system-ui, sans-serif;
+  background-image:
+    radial-gradient(
+      circle at 20% 0%,
+      rgba(99, 102, 241, 0.08),
+      transparent 40%
+    ),
+    radial-gradient(
+      circle at 80% 100%,
+      rgba(34, 211, 238, 0.06),
+      transparent 45%
+    );
+}
+
+.font-mono {
+  font-family: var(--font-mono), ui-monospace, SFMono-Regular, monospace;
+}
+
+@keyframes caret {
+  0%, 60% { opacity: 1; }
+  61%, 100% { opacity: 0; }
+}
+
+.caret::after {
+  content: "";
+  display: inline-block;
+  width: 0.45em;
+  height: 1em;
+  vertical-align: -0.1em;
+  margin-left: 2px;
+  background: currentColor;
+  animation: caret 1s steps(2) infinite;
+}
+
+@keyframes pulse-ring {
+  0% { box-shadow: 0 0 0 0 rgba(99, 102, 241, 0.5); }
+  70% { box-shadow: 0 0 0 10px rgba(99, 102, 241, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(99, 102, 241, 0); }
+}
+
+.pulse-ring {
+  animation: pulse-ring 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
