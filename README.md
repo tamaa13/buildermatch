@@ -1,7 +1,7 @@
 # memegard — Guardian for Four.meme
 
 > **Every day, ~1000 tokens launch on Four.meme. 95% are rugs.**
-> memegard is a multi-agent AI swarm that interrogates every launch, debates the risk, and writes an immutable verdict to BNB chain — before degens ape in.
+> memegard is a multi-agent AI swarm that interrogates every launch, debates the risk, and writes an immutable verdict on-chain — before degens ape in.
 
 [中文版 README](./README_zh.md) · [Demo video](./ops/demo.mp4) · [Pitch](./ops/pitch/pitch.pdf) · [Twitter bot](#social-publisher) · [Telegram bot](#social-publisher)
 
@@ -9,7 +9,9 @@
 
 ## What it does
 
-Paste a Four.meme token contract address. Five specialised Claude-powered agents pull fresh on-chain + social data, argue the risk, and converge on a verdict. The orchestrator pins the full debate transcript to IPFS and mints an ERC-721 verdict certificate on BNB testnet. Twitter + Telegram bots broadcast the result the moment it's finalised.
+Paste a Four.meme token contract address. Five specialised Claude-powered agents pull fresh on-chain + social data, argue the risk, and converge on a verdict. The orchestrator pins the full debate transcript to IPFS and mints an ERC-721 verdict certificate on Base Sepolia (chainId `84532`). Twitter + Telegram bots broadcast the result the moment it's finalised.
+
+> **Chain choice:** Base Sepolia is the public PoC — a funded deployer wallet let us ship on hackathon day. BNB Chain (Chapel testnet → mainnet, where Four.meme lives) is **one env swap away**: `CHAIN_ID`, `RPC_URL`, `EXPLORER_URL` are read from env end-to-end, zero code change to retarget. Production target: BNB.
 
 Every verdict is:
 
@@ -21,9 +23,9 @@ Every verdict is:
 
 | Agent | Role | Data sources |
 | --- | --- | --- |
-| 🔎 **Contract Auditor** | Static analysis of Solidity source — honeypots, hidden mints, blacklist traps, proxy shenanigans | BscScan source + bytecode, verified contracts |
+| 🔎 **Contract Auditor** | Static analysis of Solidity source — honeypots, hidden mints, blacklist traps, proxy shenanigans | Block-explorer source + bytecode, verified contracts |
 | 💧 **Liquidity Analyst** | LP size, lock status, holder concentration, exit-liquidity math | On-chain LP pair, LP token holders |
-| 👤 **Dev Stalker** | Deployer wallet history, funding trail, prior rugs, Tornado links | BscScan address history, related-address graph |
+| 👤 **Dev Stalker** | Deployer wallet history, funding trail, prior rugs, Tornado links | Block-explorer address history, related-address graph |
 | 📣 **Sentiment Watcher** | Twitter/Telegram volume vs. bot-likeness of mentions | X API v2, Telegram public channels |
 | 🎯 **Meta Matcher** | How a launch slots into the current Four.meme meta — novel or copycat | Four.meme trending, recent launch index |
 
@@ -50,8 +52,9 @@ Verdicts land on a 0–100 risk scale and collapse into three tiers: `LOW_RISK`,
                                           │                │
                               ┌───────────▼───────────┐    │
                               │ contracts/ — ERC-721  │    │
-                              │ VerdictRegistry, BNB  │    │
-                              │ chainId 97 (testnet)  │    │
+                              │ VerdictRegistry       │    │
+                              │ Base Sepolia (84532)  │    │
+                              │ BNB Chapel roadmap    │    │
                               └───────────┬───────────┘    │
                                           │                │
                               ┌───────────▼────────────┐   │
@@ -72,7 +75,7 @@ Verdicts land on a 0–100 risk scale and collapse into three tiers: `LOW_RISK`,
 
 | Package | Stack | Status |
 | --- | --- | --- |
-| [`contracts/`](./contracts) | Foundry + Solidity 0.8.24 + OpenZeppelin | `VerdictRegistry.sol` done, Chapel deploy pending |
+| [`contracts/`](./contracts) | Foundry + Solidity 0.8.24 + OpenZeppelin | `VerdictRegistry.sol` deployed on Base Sepolia; BNB Chapel is one env swap |
 | [`backend/`](./backend) | Bun + Hono + Anthropic SDK + viem | Orchestrator + 5 agents in progress |
 | [`frontend/`](./frontend) | Next.js + wagmi + Tailwind | Live-debate UI in progress |
 | [`ops/`](./ops) | Bun + twitter-api-v2 + grammy | Publisher, IPFS helper, demo, docs ✅ |
@@ -80,11 +83,16 @@ Verdicts land on a 0–100 risk scale and collapse into three tiers: `LOW_RISK`,
 ## Quickstart
 
 ```bash
-# 1. contracts — deploy locally (anvil) or to Chapel
+# 1. contracts — deploy locally (anvil) or to Base Sepolia (PoC) / BNB Chapel (roadmap)
 cd contracts
 forge install
 forge build
-forge script script/Deploy.s.sol --rpc-url $BNB_TESTNET_RPC --broadcast
+
+# Switch RPC_URL to target any EVM chain — the chain itself is inferred from CHAIN_ID downstream.
+# Examples: anvil (http://127.0.0.1:8545), Base Sepolia (https://sepolia.base.org),
+#           BNB Chapel (https://data-seed-prebsc-1-s1.binance.org:8545).
+export RPC_URL=https://sepolia.base.org
+forge script script/Deploy.s.sol --rpc-url $RPC_URL --broadcast
 
 # 2. backend — agent orchestrator + SSE API
 cd ../backend
