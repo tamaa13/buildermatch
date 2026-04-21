@@ -1,0 +1,30 @@
+{
+  "scenario": "B",
+  "tokenAddress": "0xdeaddeaddeaddeaddeaddeaddeaddeaddeaddead",
+  "sessionId": "sess_envtest_001",
+  "durationMs": 11842,
+  "events": [
+    { "t": 0, "event": "session_start", "data": { "sessionId": "sess_envtest_001", "tokenAddress": "0xdead..." } },
+    { "t": 120, "event": "context_ready", "data": { "tokenName": "EnvelopeTest", "tokenSymbol": "ENV", "tokenAddress": "0xdead..." } },
+    { "t": 11500, "event": "final_verdict", "data": {} }
+  ],
+  "verdict": {
+    "tokenAddress": "0xdeaddeaddeaddeaddeaddeaddeaddeaddeaddead",
+    "tokenName": "EnvelopeTest",
+    "tokenSymbol": "ENV",
+    "analysisTimestamp": 1745252400,
+    "overallScore": 34,
+    "tier": "LOW_RISK",
+    "agents": {
+      "contract_auditor": { "score": 20, "reasoning": "Verified source, no honeypot patterns, ownership renounced." },
+      "liquidity_analyst": { "score": 38, "reasoning": "LP locked for 12 months via Unicrypt, healthy distribution." },
+      "dev_stalker": { "score": 42, "reasoning": "Deployer has 3 successful launches on BNB, no Tornado funding." },
+      "sentiment_watcher": { "score": 30, "reasoning": "Organic Twitter engagement, 4% bot ratio — normal." },
+      "meta_matcher": { "score": 40, "reasoning": "Novel narrative with actual utility pitch in whitepaper." }
+    },
+    "reasoningIpfsUri": "ipfs://bafkreienveLopetest0000000000000000000000000000000000000000",
+    "verdictNftTokenId": 9,
+    "txHash": "0xabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcd",
+    "chainId": 97
+  }
+}

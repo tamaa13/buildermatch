@@ -12,10 +12,30 @@ const port = Number(process.env.PORT ?? 3001);
 const paths = process.argv.slice(2);
 const fixturePaths = paths.length > 0 ? paths : ["fixtures/verdict-sample.json"];
 
+// Lens: each fixture file can be one of three shapes.
+//   1. `{ verdicts: Verdict[], cursor?: number|null }` — served as-is (pre-paged).
+//   2. `{ scenario?, tokenAddress?, sessionId?, durationMs?, events?, verdict: Verdict }`
+//      — agent-backend's SSE-replay envelope; we pluck `.verdict`.
+//   3. Raw Verdict — any JSON with `tokenAddress` + `overallScore` at top level;
+//      our existing fixtures/verdict-sample.json is this shape.
+function extractVerdicts(raw: unknown): Verdict[] {
+  if (raw && typeof raw === "object") {
+    const obj = raw as Record<string, unknown>;
+    if (Array.isArray(obj.verdicts)) return obj.verdicts as Verdict[];
+    if (obj.verdict && typeof obj.verdict === "object") return [obj.verdict as Verdict];
+    if (typeof obj.tokenAddress === "string" && typeof obj.overallScore === "number") {
+      return [obj as unknown as Verdict];
+    }
+  }
+  throw new Error("fixture did not match any known shape");
+}
+
 const verdicts: Verdict[] = [];
 for (const p of fixturePaths) {
-  const raw = await Bun.file(p).text();
-  verdicts.push(JSON.parse(raw) as Verdict);
+  const raw = JSON.parse(await Bun.file(p).text());
+  const fromFile = extractVerdicts(raw);
+  verdicts.push(...fromFile);
+  console.log(`[mock-backend] loaded ${fromFile.length} verdict(s) from ${p}`);
 }
 
 function newestCursor(list: Verdict[]): number | null {
