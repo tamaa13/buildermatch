@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>memegard — Guardian for Four.meme</title>
+  <style>
+    :root {
+      --bg: #0B0F1A;
+      --bg2: #141A2C;
+      --text: #E6EDF3;
+      --muted: #8B949E;
+      --pink: #F72585;
+      --yellow: #FFD60A;
+      --green: #27E8A7;
+      --blue: #4CC9F0;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { background: #000; color: var(--text); font-family: Inter, -apple-system, "Helvetica Neue", Arial, sans-serif; }
+    body { padding: 32px 0; }
+    .slide {
+      width: 1280px;
+      height: 720px;
+      margin: 24px auto;
+      background: var(--bg);
+      border-radius: 16px;
+      padding: 72px 88px;
+      position: relative;
+      overflow: hidden;
+      background-image: radial-gradient(ellipse at top right, rgba(247, 37, 133, 0.12), transparent 60%),
+                         radial-gradient(ellipse at bottom left, rgba(76, 201, 240, 0.08), transparent 60%);
+      box-shadow: 0 20px 60px rgba(0,0,0,0.6);
+      page-break-after: always;
+    }
+    .brand { font-family: "JetBrains Mono", Menlo, monospace; font-size: 16px; color: var(--muted); letter-spacing: 0.2em; text-transform: uppercase; }
+    .brand b { color: var(--pink); }
+    h1 { font-size: 84px; line-height: 1.03; letter-spacing: -0.03em; margin: 20px 0 20px; font-weight: 800; }
+    h2 { font-size: 58px; line-height: 1.05; letter-spacing: -0.025em; margin: 16px 0 28px; font-weight: 800; }
+    h3 { font-size: 28px; font-weight: 700; margin: 0 0 8px; }
+    .sub { font-size: 22px; color: var(--muted); margin-bottom: 20px; font-weight: 500; line-height: 1.4; }
+    .accent { color: var(--pink); }
+    .pos { color: var(--green); }
+    .bad { color: var(--yellow); }
+    .pagenum { position: absolute; right: 88px; bottom: 40px; color: var(--muted); font-family: "JetBrains Mono", Menlo, monospace; font-size: 14px; letter-spacing: 0.15em; }
+    .speaker { position: absolute; left: 88px; bottom: 40px; color: var(--muted); font-size: 14px; letter-spacing: 0.1em; font-style: italic; max-width: 900px; }
+    ul { list-style: none; padding: 0; }
+    ul.ticks li { font-size: 24px; padding: 10px 0 10px 36px; position: relative; line-height: 1.35; color: #C5D0DA; }
+    ul.ticks li::before { content: "→"; color: var(--pink); position: absolute; left: 0; font-weight: 700; }
+    .big-stat { font-size: 180px; font-weight: 900; line-height: 1; letter-spacing: -0.04em; color: var(--pink); }
+    .grid5 { display: grid; grid-template-columns: repeat(5, 1fr); gap: 16px; margin-top: 24px; }
+    .agent-card {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 10px;
+      padding: 18px 16px;
+      min-height: 170px;
+    }
+    .agent-card .emoji { font-size: 30px; display: block; margin-bottom: 6px; }
+    .agent-card .name { font-size: 16px; font-weight: 700; margin-bottom: 6px; }
+    .agent-card .role { font-size: 13px; color: var(--muted); line-height: 1.35; }
+    .agent-card.border-pink { border-color: var(--pink); border-top: 3px solid var(--pink); }
+    .agent-card.border-blue { border-color: var(--blue); border-top: 3px solid var(--blue); }
+    .agent-card.border-yellow { border-color: var(--yellow); border-top: 3px solid var(--yellow); }
+    .agent-card.border-green { border-color: var(--green); border-top: 3px solid var(--green); }
+    .agent-card.border-purple { border-color: #B085F5; border-top: 3px solid #B085F5; }
+    .arch {
+      margin-top: 12px;
+      font-family: "JetBrains Mono", Menlo, monospace;
+      font-size: 14px;
+      line-height: 1.35;
+      color: #B8C1CC;
+      white-space: pre;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 10px;
+      padding: 20px 22px;
+    }
+    .split { display: grid; grid-template-columns: 1.1fr 1fr; gap: 48px; align-items: center; margin-top: 18px; }
+    .shot { width: 100%; border-radius: 10px; box-shadow: 0 18px 50px rgba(0,0,0,0.6); border: 1px solid rgba(255,255,255,0.08); }
+    .cta-row { display: flex; gap: 40px; margin-top: 32px; font-size: 22px; color: var(--text); }
+    .cta-row .cta b { color: var(--pink); }
+    .footer-tag { font-size: 16px; color: var(--muted); letter-spacing: 0.15em; text-transform: uppercase; margin-top: 8px; }
+    @media print {
+      body { background: #fff; padding: 0; }
+      .slide { margin: 0; border-radius: 0; box-shadow: none; page-break-after: always; }
+      @page { size: 1280px 720px; margin: 0; }
+    }
+  </style>
+</head>
+<body>
+
+<section class="slide">
+  <div class="brand">memegard · slide <b>1</b> / 5 · problem</div>
+  <div style="margin-top:60px;">
+    <div class="big-stat">95%</div>
+    <h1 style="margin-top:16px;">of Four.meme launches<br/>are <span class="accent">rugs</span>.</h1>
+    <p class="sub" style="max-width:820px;">~1,000 new tokens launch every day. No pre-trade DD tool exists — by the time rug analytics catch up, the LP is gone and the degens are poorer.</p>
+  </div>
+  <div class="speaker">"You've seen this movie. Fresh launch drops in the TG group, everyone apes, 20 minutes later the dev dumps. Every day. Today's tools tell you who rugged *yesterday*. We want to tell you who's about to rug, *right now*."</div>
+  <div class="pagenum">01 / 05</div>
+</section>
+
+<section class="slide">
+  <div class="brand">memegard · slide <b>2</b> / 5 · solution</div>
+  <h2>Five AI agents.<br/>Live debate. <span class="accent">Verdict on-chain.</span></h2>
+  <p class="sub">Five specialised Claudes pull disjoint data slices, argue, and converge on a 0-100 risk score. The full debate pins to IPFS; an ERC-721 certificate mints on BNB — the NFT is the receipt.</p>
+  <div class="grid5">
+    <div class="agent-card border-pink"><span class="emoji">🔎</span><div class="name">Contract Auditor</div><div class="role">Bytecode + honeypot + proxy analysis</div></div>
+    <div class="agent-card border-blue"><span class="emoji">💧</span><div class="name">Liquidity Analyst</div><div class="role">LP depth, lock status, rug math</div></div>
+    <div class="agent-card border-yellow"><span class="emoji">👤</span><div class="name">Dev Stalker</div><div class="role">Deployer history, funding trail, Tornado links</div></div>
+    <div class="agent-card border-green"><span class="emoji">📣</span><div class="name">Sentiment Watcher</div><div class="role">Social signal + bot-likeness</div></div>
+    <div class="agent-card border-purple"><span class="emoji">🎯</span><div class="name">Meta Matcher</div><div class="role">Narrative fit + originality</div></div>
+  </div>
+  <div class="speaker">"Five disjoint data sources, disjoint failure modes. The disagreement itself becomes part of the signal — the whole debate is auditable forever."</div>
+  <div class="pagenum">02 / 05</div>
+</section>
+
+<section class="slide">
+  <div class="brand">memegard · slide <b>3</b> / 5 · demo</div>
+  <h2 style="font-size:46px;">Paste → stream → verdict → mint → tweet.</h2>
+  <div class="split">
+    <div>
+      <ul class="ticks" style="margin-top:4px;">
+        <li>Paste any Four.meme contract address</li>
+        <li>Watch five agents stream reasoning live via SSE</li>
+        <li>Risk score + tier badge converge in ~10 s</li>
+        <li>Debate transcript pins to IPFS instantly</li>
+        <li>Verdict NFT mints on BNB; BscScan permalink</li>
+        <li>Twitter + Telegram fan-out within one poll tick</li>
+      </ul>
+      <p class="sub" style="margin-top:20px; font-size:18px;">Live demo → <span class="accent">localhost:3000</span> · Video → <span class="accent">ops/demo.mp4</span></p>
+    </div>
+    <img class="shot" src="../screenshots/02-analyze-streaming.png" alt="Agent debate in progress" />
+  </div>
+  <div class="speaker">"Paste CA — watch the five agents stream in parallel — verdict HIGH_RISK, score 78 — NFT minted, tweet posted. All in under a minute."</div>
+  <div class="pagenum">03 / 05</div>
+</section>
+
+<section class="slide">
+  <div class="brand">memegard · slide <b>4</b> / 5 · architecture</div>
+  <h2 style="font-size:46px;">Clean, composable, <span class="accent">open</span>.</h2>
+  <div class="split" style="grid-template-columns: 1.2fr 1fr;">
+    <pre class="arch">Four.meme launch
+     │
+     ▼
+┌────────────────────────┐
+│ backend/  Bun + Hono   │
+│ 5× Claude Sonnet 4.6   │
+└──┬──────┬─────┬────────┘
+   │      │     │
+ IPFS   viem  SSE → frontend/
+ (Pinata) ↓         Next.js + wagmi
+          ┌──────────────┐
+          │ contracts/   │
+          │ VerdictRegistry
+          │ ERC-721, BNB │
+          └──────┬───────┘
+                 │
+          ┌──────▼────────┐
+          │ ops/ publisher │
+          │ Twitter + TG   │
+          └────────────────┘</pre>
+    <ul class="ticks" style="font-size:20px;">
+      <li>Foundry + Solidity 0.8.24 + OpenZeppelin</li>
+      <li>Bun workspace, 3 services + ops tooling</li>
+      <li>Claude Sonnet 4.6 via Anthropic SDK, streaming</li>
+      <li>viem for on-chain writes, BNB testnet chainId 97</li>
+      <li>Pinata for IPFS, cursor-based publisher polling</li>
+      <li>MIT-licensed, four-worker monorepo</li>
+    </ul>
+  </div>
+  <div class="speaker">"Four workers, one monorepo, 24 hours. Clean schema between services, every piece auditable on GitHub."</div>
+  <div class="pagenum">04 / 05</div>
+</section>
+
+<section class="slide">
+  <div class="brand">memegard · slide <b>5</b> / 5 · why guardian wins</div>
+  <h2>First multi-agent on-chain DD.<br/><span class="accent">Viral by default.</span></h2>
+  <ul class="ticks" style="margin-top: 10px;">
+    <li><b>Novel</b> — nobody has shipped multi-agent DD with on-chain permanence</li>
+    <li><b>Composable</b> — the verdict NFT is a primitive; wallets, DEX screeners, TG bots can all consume it</li>
+    <li><b>Viral</b> — every verdict auto-posts to Twitter + Telegram with one-tap share</li>
+    <li><b>Built for Four.meme's audience</b> — 中文 README shipped Day 1, Chinese Telegram channel live</li>
+  </ul>
+  <div class="cta-row">
+    <div class="cta"><b>Upvote:</b> DoraHacks</div>
+    <div class="cta"><b>Try:</b> localhost:3000</div>
+    <div class="cta"><b>Follow:</b> @memegard_io</div>
+    <div class="cta"><b>Join:</b> t.me/memegard</div>
+  </div>
+  <div class="footer-tag">every token · pre-verified · forever on-chain</div>
+  <div class="speaker">"This is the tool we all wished existed the last time we got rugged. Upvote us on DoraHacks, share with one degen friend — that's how Four.meme gets safer."</div>
+  <div class="pagenum">05 / 05</div>
+</section>
+
+</body>
+</html>

@@ -10,4 +10,4 @@ cursor.json
 demo/raw/
 demo/*.mp4
 !demo/final.mp4
-pitch/*.pdf
+pitch/*.draft.pdf
