@@ -39,8 +39,14 @@ interface Page {
 async function fetchNew(since: number): Promise<Page> {
   const url = `${config.backendUrl.replace(/\/$/, "")}/api/verdicts?since=${since}`;
   const res = await fetch(url);
-  if (!res.ok) throw new Error(`backend ${url} returned ${res.status}`);
+  const reqId = res.headers.get("x-request-id");
+  if (!res.ok) {
+    throw new Error(
+      `backend ${url} returned ${res.status}` + (reqId ? ` (x-request-id=${reqId})` : "")
+    );
+  }
   const json = await res.json();
+  if (reqId) console.log(`[poll] x-request-id=${reqId}`);
   const parsed = VerdictListSchema.safeParse(json);
   if (parsed.success) {
     return { verdicts: parsed.data.verdicts, cursor: parsed.data.cursor ?? null };

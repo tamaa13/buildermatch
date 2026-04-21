@@ -39,6 +39,9 @@ function nftPermalink(v: Verdict): string {
   if (config.frontendUrl) {
     return `${config.frontendUrl.replace(/\/$/, "")}/verdict/${v.verdictNftTokenId}`;
   }
+  if (config.backendUrl) {
+    return `${config.backendUrl.replace(/\/$/, "")}/api/verdicts/${v.verdictNftTokenId}`;
+  }
   return txScanUrl(v.txHash);
 }
 
