@@ -10,7 +10,7 @@ Copy/paste these into the DoraHacks submission form for the Four.meme AI Sprint 
 
 ## Tagline (≤ 140 chars)
 
-> Multi-agent AI DD for Four.meme. 5 Claude agents debate every launch. Verdict minted as an NFT on BNB. Before you ape — Guardian knows.
+> Multi-agent AI DD for Four.meme. 5 Claude agents debate every launch. Verdict minted as an NFT on-chain. Before you ape — Guardian knows.
 
 ## One-liner (≤ 80 chars)
 
@@ -18,7 +18,7 @@ Copy/paste these into the DoraHacks submission form for the Four.meme AI Sprint 
 
 ## Short description (≤ 500 chars)
 
-> Four.meme spawns ~1000 tokens a day — 95% are rugs. memegard runs every launch through five specialised Claude agents (Contract Auditor, Liquidity Analyst, Dev Stalker, Sentiment Watcher, Meta Matcher) that debate the risk from disjoint data sources, then commits an immutable verdict to BNB chain as an ERC-721 certificate with the full debate transcript pinned to IPFS. Twitter and Telegram bots broadcast each verdict the moment it lands. First multi-agent on-chain DD tool.
+> Four.meme spawns ~1000 tokens a day — 95% are rugs. memegard runs every launch through five specialised Claude agents (Contract Auditor, Liquidity Analyst, Dev Stalker, Sentiment Watcher, Meta Matcher) that debate the risk from disjoint data sources, then commits an immutable verdict as an ERC-721 certificate with the full debate transcript pinned to IPFS. Twitter and Telegram bots broadcast each verdict the moment it lands. Public PoC deployed on Base Sepolia; chain-abstracted architecture — BNB Chain (Chapel → mainnet) is one env swap away. First multi-agent on-chain DD tool.
 
 ## Long description
 
@@ -34,7 +34,8 @@ See `README.md` top-level. Paste the first four sections ("What it does", "The f
 - viem
 - Anthropic SDK (Claude Sonnet 4.6)
 - IPFS (Pinata)
-- BNB Chain (testnet, chainId 97 Chapel)
+- Base Sepolia (chainId 84532) — PoC deploy
+- BNB Chain (Chapel → mainnet) — roadmap, one env swap
 - wagmi
 - TypeScript
 
@@ -46,15 +47,19 @@ Four.meme AI Sprint — **AI Agent** + **DeFi Security** (pick both if the form 
 
 - Tama (full-stack + ops) — [GitHub placeholder]
 
+## Prize payout address (BEP20)
+
+**Do not paste into this file.** Copy from `ops/submission/PRIVATE/payout.md` (gitignored) into the DoraHacks form's BEP20 field at submission time. Separate from the throwaway deployer key — never reuse.
+
 ## Links (fill at submission time)
 
 | Field | Value |
 | --- | --- |
-| Demo video | `ops/demo.mp4` upload OR YouTube/Loom unlisted link (swap at submission) |
+| Demo video | **YouTube Unlisted** — upload `ops/demo/out/demo-local-voice.mp4` (or final `ops/demo.mp4`) last, paste the `https://youtu.be/<id>` link into the form. See the T-1:00 video-upload block in `dorahacks-SUBMIT-checklist.md` for the full sequence. |
 | Live URL | `https://memegard.vercel.app` (placeholder — frontend-dev deploys) |
 | GitHub | `https://github.com/<owner>/memegard` (repo must be public before submission) |
 | Pitch deck | `ops/pitch/pitch.pdf` upload OR Google Slides link |
-| Chapel contract | `https://testnet.bscscan.com/address/<CONTRACT_ADDRESS>` (swap after redeploy) |
+| Base Sepolia contract | `https://sepolia.basescan.org/address/<CONTRACT_ADDRESS>` (swap after contract-dev deploys) |
 | Twitter | `https://x.com/<handle>` (swap after handle claim) |
 | Telegram | `https://t.me/<channel>` (swap after channel creation) |
 
@@ -77,7 +82,7 @@ Use these from `ops/screenshots/`:
 - [ ] Upload `ops/pitch/pitch.pdf`
 - [ ] Make GitHub repo public (if currently private) and paste the link
 - [ ] **Save as draft** — do not hit Submit until:
-  - [ ] Chapel contract address is populated
+  - [ ] Base Sepolia contract address is populated (BNB Chapel mention in description)
   - [ ] Final demo video (with VO) has been uploaded
   - [ ] Frontend-dev's Vercel URL is live and linked
   - [ ] README.md on main branch is final
@@ -89,4 +94,4 @@ Use these from `ops/screenshots/`:
 - [ ] Pin the tweet with DoraHacks link to @memegard_ai
 - [ ] Post the Chinese-language copy to Four.meme Chinese Telegram groups (use `README_zh.md` CTA block)
 - [ ] Ask contacts with accounts to upvote (no inauthentic voting — DoraHacks detects)
-- [ ] Share in r/CryptoMoonShots, BNB-focused Discords
+- [ ] Share in r/CryptoMoonShots, BNB-focused Discords (where Four.meme's audience lives) + Base/degen channels

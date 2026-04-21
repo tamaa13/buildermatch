@@ -13,14 +13,15 @@ Four deliverables, one checklist. Each file below is draft content — the human
 
 1. **Public GitHub repo** — must be public before DoraHacks accepts
 2. **Vercel URL** — frontend-dev ships
-3. **Chapel contract address** — contract-dev redeploys
+3. **Base Sepolia contract address** — contract-dev deploys (BNB Chapel is the env-swap roadmap, not a blocker)
 4. **Final demo.mp4** — VO laid over demo-local.mp4
-5. **DoraHacks draft** populated
-6. **Twitter handle** claimed + launch thread drafted (not sent)
-7. **TG channel** created + pinned posts sent + bot wired
-8. **DoraHacks submit** (21:00 WIB)
-9. **Twitter launch thread** sent (immediately after submit)
-10. **TG pin** + community broadcast (immediately after Twitter)
+5. **YouTube Unlisted upload** of the final demo → copy `https://youtu.be/<id>` URL
+6. **DoraHacks draft** populated (pasting YouTube URL into the Demo field)
+7. **Twitter handle** claimed + launch thread drafted (not sent)
+8. **TG channel** created + pinned posts sent + bot wired
+9. **DoraHacks submit** (21:00 WIB)
+10. **Twitter launch thread** sent (immediately after submit)
+11. **TG pin** + community broadcast (immediately after Twitter)
 
 ## What I (ops worker) cannot do alone
 

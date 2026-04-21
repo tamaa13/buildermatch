@@ -18,7 +18,7 @@
 
 ## Bio (≤ 160 chars)
 
-> AI agent swarm + onchain verdict NFTs for every Four.meme launch. 5 Claudes debate, BNB mints, we broadcast. Before you ape — we know. 🛡️
+> AI agent swarm + onchain verdict NFTs for every Four.meme launch. 5 Claudes debate, chain mints the receipt, we broadcast. Before you ape — we know. 🛡️
 
 ## Location
 
@@ -82,7 +82,7 @@ They debate. They score. They converge.
 The clutch part: the debate is IMMUTABLE.
 
 Full transcript → pinned to IPFS
-Verdict certificate → minted as ERC-721 on BNB
+Verdict certificate → minted as ERC-721 on Base Sepolia (BNB Chapel is one env swap)
 Risk score → 0-100, three tiers
 
 Any wallet, any DEX screener, any TG bot can read the verdict. Forever.
@@ -103,7 +103,7 @@ Built for @fourmeme_io's ~90% Chinese audience — 中文 docs shipped day 1.
 
 ```
 🎯 Try it: [VERCEL_URL]
-📜 Contract: testnet.bscscan.com/address/[ADDR]
+📜 Contract: sepolia.basescan.org/address/[ADDR]
 🗳️ Upvote us: [DORAHACKS_URL]
 👾 Code: github.com/[OWNER]/memegard
 💬 Telegram: t.me/[CHANNEL]
@@ -115,7 +115,7 @@ Built in 24 h for Four.meme AI Sprint. If this saves you one rug — share it.
 
 - Twitter Free tier: 50 posts/24 h — plenty for hackathon demo.
 - Keep `DRY_RUN=true` in `ops/.env.local` until:
-  1. Chapel contract is live
+  1. Base Sepolia contract is live (or BNB Chapel if the env has been retargeted)
   2. Real verdict-mint flow has been smoke-tested at least twice
   3. Tweet content has been spot-checked on the last 3 fixture verdicts
 - When ready to go live: flip `DRY_RUN=false`, run `bun src/index.ts` with real keys. Publisher dedupes by `(chainId, verdictNftTokenId)` so no duplicate posts across restarts.

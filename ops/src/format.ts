@@ -28,11 +28,11 @@ function excerpt(reasoning: string, max = 90): string {
 }
 
 function tokenScanUrl(tokenAddress: string): string {
-  return `${config.bscscanExplorer.replace(/\/$/, "")}/token/${tokenAddress}`;
+  return `${config.explorerUrl.replace(/\/$/, "")}/token/${tokenAddress}`;
 }
 
 function txScanUrl(txHash: string): string {
-  return `${config.bscscanExplorer.replace(/\/$/, "")}/tx/${txHash}`;
+  return `${config.explorerUrl.replace(/\/$/, "")}/tx/${txHash}`;
 }
 
 function nftPermalink(v: Verdict): string {
@@ -122,7 +122,7 @@ export function formatTelegram(v: Verdict): string {
   lines.push("");
   lines.push(`📜 [Full reasoning on IPFS](${ipfs})`);
   lines.push(`🪪 [NFT certificate](${permalink})`);
-  lines.push(`🔗 [Token on BscScan](${tokenScanUrl(v.tokenAddress)})`);
+  lines.push(`🔗 [Token on ${config.explorerLabel}](${tokenScanUrl(v.tokenAddress)})`);
   lines.push(`📎 [Mint tx](${txScanUrl(v.txHash)})`);
 
   return lines.join("\n");

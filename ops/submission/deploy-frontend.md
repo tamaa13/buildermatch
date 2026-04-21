@@ -23,10 +23,11 @@ Paste these in Vercel Project → Settings → Environment Variables. Split acro
 | Key | Scope | Value (prod) | Notes |
 | --- | --- | --- | --- |
 | `NEXT_PUBLIC_BACKEND_URL` | P+Pre+Dev | `https://api.<your-backend-host>` | Points SSE/ /api/verdicts poll target. If backend is not yet hosted, use a tunneled URL (ngrok / cloudflared) for demo; document it in the DoraHacks form. |
-| `NEXT_PUBLIC_CONTRACT_ADDRESS` | P+Pre+Dev | `0x...` Chapel deployment | Swap when contract-dev redeploys. |
-| `NEXT_PUBLIC_CHAIN_ID` | P+Pre+Dev | `97` | Chapel testnet. For anvil local preview use `31337`. |
-| `NEXT_PUBLIC_CHAIN_RPC` | P+Pre+Dev | `https://data-seed-prebsc-1-s1.binance.org:8545` | Public Chapel RPC. |
-| `NEXT_PUBLIC_BSCSCAN_EXPLORER` | P+Pre+Dev | `https://testnet.bscscan.com` | For in-app permalinks. |
+| `NEXT_PUBLIC_CONTRACT_ADDRESS` | P+Pre+Dev | `0x...` Base Sepolia deployment | Swap when contract-dev deploys. BNB Chapel retarget = same env var. |
+| `NEXT_PUBLIC_CHAIN_ID` | P+Pre+Dev | `84532` | Base Sepolia. For BNB Chapel retarget use `97`; for anvil local use `31337`. |
+| `NEXT_PUBLIC_CHAIN_RPC` | P+Pre+Dev | `https://sepolia.base.org` | Public Base Sepolia RPC. For BNB Chapel: `https://data-seed-prebsc-1-s1.binance.org:8545`. |
+| `NEXT_PUBLIC_EXPLORER_URL` | P+Pre+Dev | `https://sepolia.basescan.org` | In-app permalinks. For BNB Chapel: `https://testnet.bscscan.com`. |
+| `NEXT_PUBLIC_EXPLORER_LABEL` | P+Pre+Dev | `BaseScan` | Human label shown in UI / social posts. Swap to `BscScan` when retargeting. |
 | `NEXT_PUBLIC_WALLETCONNECT_ID` | P only | `<real walletconnect id>` | Free tier ID from cloud.walletconnect.com — needed for wagmi. Not required if only using injected connectors for the demo. |
 
 **Never** put `ANTHROPIC_API_KEY`, `ORCHESTRATOR_PRIVATE_KEY`, `PINATA_JWT`, or any Twitter/Telegram secret into the Vercel project. The frontend never needs them — they belong on the backend host.
@@ -46,6 +47,8 @@ Set whichever URL you pick as `NEXT_PUBLIC_BACKEND_URL` in Vercel. If you go wit
 - **Monorepo workspaces**: if `frontend/package.json` uses `workspace:*` to reference shared types from `backend/` or `contracts/`, Vercel's build will fail — it only sees `frontend/`. Either inline the shared types (copy the Verdict schema file into `frontend/lib/types.ts`) or configure Vercel's `rootDirectory` + `includeFiles` to pull in the workspace root (more fragile).
 - **Env var prefix**: anything the browser touches must be `NEXT_PUBLIC_*` — Vercel will silently strip `process.env.FOO` at build time otherwise.
 - **SSE behind Vercel**: Vercel's Edge runtime supports SSE but **only** with a proper `Content-Type: text/event-stream` response and `runtime: "edge"` on the route. If the frontend proxies SSE through a Next.js API route, make sure it's edge, not serverless (default is serverless → 30s timeout, cuts mid-debate).
+
+- **MetaMask chain-switch prompt**: the frontend expects the wallet to be on `NEXT_PUBLIC_CHAIN_ID` (84532 by default). If the user has no Base Sepolia network added, the `switchChain` call rejects with error `4902`. Handle it by calling `wallet_addEthereumChain` with the Base Sepolia RPC + explorer before retrying — wagmi's `addChain` does this. Same pattern applies when switching to BNB Chapel.
 - **WalletConnect**: if you include `@walletconnect/web3-provider`, add `experimental.esmExternals: false` in `next.config.mjs` or the build dies on ESM mismatch.
 
 ## 5. Domain
@@ -73,7 +76,7 @@ In incognito window, on the live Vercel URL:
 - [ ] All 5 agent cards render with correct colours
 - [ ] "Recent verdicts" section populates (backend reachable)
 - [ ] Paste a known contract address → SSE stream fires, agents light up
-- [ ] Verdict card appears, tier badge colour is correct, BscScan + IPFS links open
+- [ ] Verdict card appears, tier badge colour is correct, block-explorer + IPFS links open
 - [ ] Wallet connect opens (MetaMask switches to chain 97)
 - [ ] Mobile viewport (DevTools → iPhone 14) — agent grid reflows, no horizontal scroll
 

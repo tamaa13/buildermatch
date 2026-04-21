@@ -17,7 +17,7 @@
 
 ## Channel description
 
-> Every Four.meme launch, audited by 5 AI agents. Risk score + verdict NFT on BNB. Live feed.
+> Every Four.meme launch, audited by 5 AI agents. Risk score + verdict NFT on-chain (Base Sepolia PoC, BNB Chain roadmap). Live feed.
 >
 > 🇬🇧 EN · 🇨🇳 中文支持 · 24/7 bot
 >
@@ -37,7 +37,7 @@ We send 5 AI agents at every one of them:
 📣 Sentiment Watcher
 🎯 Meta Matcher
 
-The agents debate. A verdict is minted on BNB chain as an NFT. The full reasoning pins to IPFS.
+The agents debate. A verdict is minted on-chain as an NFT (Base Sepolia PoC; BNB Chain is one env swap away). The full reasoning pins to IPFS.
 
 Every new verdict drops right here in this channel — before you ape.
 
@@ -63,7 +63,7 @@ Pin after sending. Disable "Forward allowed to other channels" if you want attri
 📣 舆情观察员
 🎯 叙事匹配师
 
-AI 辩论、打分、mint 成 BNB 上的 ERC-721 判决证书,完整推理永久上 IPFS。
+AI 辩论、打分、mint 成链上 ERC-721 判决证书(黑客松阶段部署在 Base Sepolia,BNB Chain 是一个 env 变量的距离),完整推理永久上 IPFS。
 
 每一份新判决都会在本频道第一时间推送 —— 在你 ape 之前。
 
@@ -80,7 +80,7 @@ AI 辩论、打分、mint 成 BNB 上的 ERC-721 判决证书,完整推理永久
 4. Username: `memegard_ai_bot` (must end in `_bot`)
 5. Copy the bot token → paste into `ops/.env.local` as `TELEGRAM_BOT_TOKEN=...`
 6. `/setdescription` → paste the channel description above
-7. `/setabouttext` → "Multi-agent AI DD for Four.meme. Verdicts on BNB. Bot by @Tama."
+7. `/setabouttext` → "Multi-agent AI DD for Four.meme. Verdicts on-chain (Base Sepolia PoC, BNB Chain roadmap). Bot by @Tama."
 8. `/setuserpic` → upload `ops/screenshots/06-logo.png` (or a 512×512 crop)
 9. Go to the channel → **Administrators** → **Add Admin** → add the bot → tick **Post Messages**
 10. Get the channel's chat ID:

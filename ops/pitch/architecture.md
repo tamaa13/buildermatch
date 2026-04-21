@@ -24,7 +24,7 @@ Both the top-level READMEs embed the ASCII version of this diagram. When designi
               │ ipfs:// CID
               ▼
      ┌────────────────────┐
-     │ VerdictRegistry    │     BNB testnet, chainId 97
+     │ VerdictRegistry    │     Base Sepolia, chainId 84532 (BNB Chapel is one env swap)
      │   ERC-721 mint     │     ↳ score, reasoningHash, ipfsUri
      └────────┬───────────┘
               │ tokenId + tx hash
@@ -50,7 +50,7 @@ Both the top-level READMEs embed the ASCII version of this diagram. When designi
 
 ## Latency targets
 
-- Paste → context_ready: < 3 s (BscScan + Four.meme concurrent fetch)
+- Paste → context_ready: < 3 s (block explorer + Four.meme concurrent fetch)
 - context_ready → agents_complete: < 12 s (parallel Claude Sonnet calls)
 - agents_complete → IPFS pinned: < 3 s
 - IPFS pinned → NFT minted: < 5 s

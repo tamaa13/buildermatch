@@ -100,14 +100,14 @@ Restart the mock backend pointing at your file and the publisher picks it up on 
 - Publisher dedup across restarts (kill/relaunch, watch `ops/cursor.json`)
 - Tweet length budget (t.co URL weight + agent reasoning excerpt fallback)
 - Telegram MarkdownV2 escaping (underscores, dots, dashes all get `\`-escaped)
-- Permalink cascade: `FRONTEND_URL` → `BACKEND_URL/api/verdicts/:id` → BscScan tx
+- Permalink cascade: `FRONTEND_URL` → `BACKEND_URL/api/verdicts/:id` → block explorer tx
 - Graceful backend outages (kill terminal 1 mid-poll — terminal 2 retries without crashing)
 
 ## What's NOT exercised offline
 
 - Real Claude streaming (stubbed by fixtures)
 - Real IPFS pin (needs `PINATA_JWT`)
-- Real `recordVerdict` mint on BNB (needs `ORCHESTRATOR_PRIVATE_KEY` + Chapel funding)
+- Real `recordVerdict` mint on-chain (needs `ORCHESTRATOR_PRIVATE_KEY` + funded deployer on the target chain)
 - Real tweet/telegram POST (needs creds in `.env.local`)
 
 For each of those, swap the relevant env var and flip `DRY_RUN=false`. The wire protocol is the same; only the side effects change.

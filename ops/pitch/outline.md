@@ -31,7 +31,7 @@ Bullets:
 - Full debate transcript pinned to IPFS, hash committed on-chain
 - ERC-721 certificate minted — the NFT is the receipt
 
-Speaker note: "Instead of one LLM giving a vague 'looks sus' — five specialised Claudes with five different data sources argue it out. The disagreement itself is the signal. We pin the whole debate to IPFS and mint an NFT on BNB so anyone can audit forever."
+Speaker note: "Instead of one LLM giving a vague 'looks sus' — five specialised Claudes with five different data sources argue it out. The disagreement itself is the signal. We pin the whole debate to IPFS and mint an NFT on-chain (Base Sepolia for the hackathon PoC, BNB Chapel is one env swap) so anyone can audit forever."
 
 ---
 
@@ -42,13 +42,13 @@ Speaker note: "Instead of one LLM giving a vague 'looks sus' — five specialise
 Visual: embed the demo GIF (loop of the video, 3–4 s per scene) + 3 screenshots below:
 1. Paste CA → five agents start thinking in parallel (streaming text)
 2. Verdict tier + risk score appears, agents' scores visible
-3. BscScan page showing the minted VerdictRegistry NFT + IPFS link
+3. Block explorer page showing the minted VerdictRegistry NFT + IPFS link
 
 Bullets:
 - Paste → stream → verdict → mint → tweet — all in ~15 seconds
 - Live at [app URL] · VerdictRegistry at [contract URL] · [`@memegard_bot`](https://t.me/memegard_bot)
 
-Speaker note: "Let me show you — *paste CA* — watch the five agents stream their reasoning live. Ten seconds, they converge. Verdict HIGH_RISK, score 78. Watch this — the NFT just minted on BscScan. IPFS reasoning is right there. And — on the Twitter timeline — it's already posted."
+Speaker note: "Let me show you — *paste CA* — watch the five agents stream their reasoning live. Ten seconds, they converge. Verdict HIGH_RISK, score 78. Watch this — the NFT just minted on Base Sepolia, explorer link right there. IPFS reasoning too. And — on the Twitter timeline — it's already posted."
 
 ---
 
@@ -60,7 +60,7 @@ Visual: architecture diagram (see `ops/pitch/architecture.svg` / ASCII in README
 
 Bullets:
 - `backend/` — Bun + Hono SSE API orchestrates 5 × Claude Sonnet 4.6 agents in parallel via Anthropic SDK
-- `contracts/` — Foundry, Solidity 0.8.24, `VerdictRegistry` ERC-721 on BNB testnet (chainId 97)
+- `contracts/` — Foundry, Solidity 0.8.24, `VerdictRegistry` ERC-721 on Base Sepolia (chainId 84532); BNB Chapel is one env swap
 - `frontend/` — Next.js + wagmi, live agent debate UI
 - `ops/` — Publisher bots (Twitter + Telegram), Pinata IPFS helper, poll webhook every 15 s
 - All Claude reasoning cached + streamed; IPFS pinned via Pinata; on-chain mint via viem

@@ -9,8 +9,9 @@ export const config = {
   backendUrl: env.BACKEND_URL ?? "http://localhost:3001",
   pollIntervalMs: Number(env.POLL_INTERVAL_MS ?? 15000),
 
-  bscscanExplorer: env.BSCSCAN_EXPLORER ?? "https://testnet.bscscan.com",
-  chainId: Number(env.CHAIN_ID ?? 97),
+  explorerUrl: env.EXPLORER_URL ?? env.BSCSCAN_EXPLORER ?? "https://sepolia.basescan.org",
+  explorerLabel: env.EXPLORER_LABEL ?? "BaseScan",
+  chainId: Number(env.CHAIN_ID ?? 84532),
 
   frontendUrl: env.FRONTEND_URL ?? "",
 

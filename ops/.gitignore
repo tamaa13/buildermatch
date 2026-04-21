@@ -11,3 +11,7 @@ demo/raw/
 demo/*.mp4
 !demo/final.mp4
 pitch/*.draft.pdf
+pitch/.slides.swapped.*.html
+
+# Personally-identifying or prize-payout data — never commit.
+submission/PRIVATE/

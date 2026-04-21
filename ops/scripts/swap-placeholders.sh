@@ -16,8 +16,12 @@ set -euo pipefail
 cd "$(dirname "$0")/../.."
 
 SRC=ops/pitch/slides.html
-TMP=$(mktemp -t memegard-slides.XXXXXX.html)
+# Keep the temp HTML next to the source so `../screenshots/` relative paths
+# inside slides.html still resolve when Chrome prints it.
+TMP="ops/pitch/.slides.swapped.$$.html"
 OUT=ops/pitch/pitch.pdf
+cleanup() { rm -f "$TMP"; }
+trap cleanup EXIT
 
 [ -f "$SRC" ] || { echo "missing $SRC"; exit 1; }
 command -v '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome' >/dev/null 2>&1 || true
@@ -31,7 +35,7 @@ sed \
   -e "s|localhost:3000|${LIVE_URL}|g" \
   -e "s|@memegard_io|@${TWITTER_HANDLE}|g" \
   -e "s|t.me/memegard|t.me/${TELEGRAM_HANDLE}|g" \
-  -e "s|><b>Upvote:</b> DoraHacks<|><b>Upvote:</b> <a style=\"color:inherit\" href=\"${DORAHACKS_URL}\">${DORAHACKS_URL}</a><|g" \
+  -e "s|><b>Upvote:</b> DoraHacks<|><b>Upvote:</b> <a style=\"color:inherit;text-decoration:underline\" href=\"${DORAHACKS_URL}\">DoraHacks</a><|g" \
   "$SRC" > "$TMP"
 
 echo "[swap] LIVE_URL       → $LIVE_URL"
@@ -41,10 +45,6 @@ echo "[swap] TELEGRAM_HANDLE → @$TELEGRAM_HANDLE"
 
 '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome' \
   --headless --disable-gpu --no-pdf-header-footer --print-to-pdf-no-header \
-  --print-to-pdf="$OUT" "file://${TMP}" 2>&1 | tail -3
+  --print-to-pdf="$OUT" "file://$(pwd)/${TMP}" 2>&1 | tail -3
 
 echo "wrote $OUT"
-
-# Leave the temp HTML around so you can open it in a browser to verify before
-# uploading. Delete at your convenience.
-echo "temp HTML: $TMP"

@@ -102,7 +102,7 @@
 <section class="slide">
   <div class="brand">memegard · slide <b>2</b> / 5 · solution</div>
   <h2>Five AI agents.<br/>Live debate. <span class="accent">Verdict on-chain.</span></h2>
-  <p class="sub">Five specialised Claudes pull disjoint data slices, argue, and converge on a 0-100 risk score. The full debate pins to IPFS; an ERC-721 certificate mints on BNB — the NFT is the receipt.</p>
+  <p class="sub">Five specialised Claudes pull disjoint data slices, argue, and converge on a 0-100 risk score. The full debate pins to IPFS; an ERC-721 certificate mints on-chain — the NFT is the receipt.</p>
   <div class="grid5">
     <div class="agent-card border-pink"><span class="emoji">🔎</span><div class="name">Contract Auditor</div><div class="role">Bytecode + honeypot + proxy analysis</div></div>
     <div class="agent-card border-blue"><span class="emoji">💧</span><div class="name">Liquidity Analyst</div><div class="role">LP depth, lock status, rug math</div></div>
@@ -124,7 +124,7 @@
         <li>Watch five agents stream reasoning live via SSE</li>
         <li>Risk score + tier badge converge in ~10 s</li>
         <li>Debate transcript pins to IPFS instantly</li>
-        <li>Verdict NFT mints on BNB; BscScan permalink</li>
+        <li>Verdict NFT mints on Base Sepolia (BNB Chapel = one env swap)</li>
         <li>Twitter + Telegram fan-out within one poll tick</li>
       </ul>
       <p class="sub" style="margin-top:20px; font-size:18px;">Live demo → <span class="accent">localhost:3000</span> · Video → <span class="accent">ops/demo.mp4</span></p>
@@ -152,7 +152,7 @@
           ┌──────────────┐
           │ contracts/   │
           │ VerdictRegistry
-          │ ERC-721, BNB │
+          │ ERC-721, Base│
           └──────┬───────┘
                  │
           ┌──────▼────────┐
@@ -163,7 +163,7 @@
       <li>Foundry + Solidity 0.8.24 + OpenZeppelin</li>
       <li>Bun workspace, 3 services + ops tooling</li>
       <li>Claude Sonnet 4.6 via Anthropic SDK, streaming</li>
-      <li>viem for on-chain writes, BNB testnet chainId 97</li>
+      <li>viem for on-chain writes, Base Sepolia (84532); chain env-driven</li>
       <li>Pinata for IPFS, cursor-based publisher polling</li>
       <li>MIT-licensed, four-worker monorepo</li>
     </ul>
