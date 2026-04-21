@@ -106,8 +106,17 @@ render_scene() {
     ffmpeg -y -i "$aiff" -ac 2 -ar 48000 "$wav" </dev/null >/dev/null 2>&1
   fi
 
-  # Pad with trailing silence up to scene duration; cut if VO overshoots.
-  ffmpeg -y -i "$wav" -af "apad=whole_dur=${dur}" -t "$dur" -ac 2 -ar 48000 "$padded" </dev/null >/dev/null 2>&1
+  # Bake a 20 ms fade-out at the tail of the raw VO so breath / plosive
+  # decay doesn't click against the padded silence (important when a scene
+  # lands close to its budget — e.g. scene 1 on the kqVT voice). Then pad
+  # up to the scene duration, and clip if VO overshoots.
+  local wavlen
+  wavlen=$(ffprobe -v error -show_entries format=duration -of default=nw=1:nk=1 "$wav")
+  local fade_st
+  fade_st=$(awk -v d="$wavlen" 'BEGIN { v = d - 0.02; if (v < 0) v = 0; printf "%.3f", v }')
+  ffmpeg -y -i "$wav" \
+    -af "afade=t=out:st=${fade_st}:d=0.02,apad=whole_dur=${dur}" \
+    -t "$dur" -ac 2 -ar 48000 "$padded" </dev/null >/dev/null 2>&1
   echo "file 'scene-${idx}-padded.wav'" >> "$RAW/concat.txt"
 }
 
