@@ -1,0 +1,11 @@
+[twitter dry-run]
+🚨 0xdead…cdef launched on Four.meme
+
+🤖 Guardian verdict: 🔴 HIGH RISK
+⚠️ Risk score: 85/100
+
+🔎 Contract Auditor: Verified proxy delegates to an unverified logic contract at 0xcafe…beef which e…
+
+📜 https://gateway.pinata.cloud/ipfs/bafkreigardenoz8oee5i
+🪪 http://localhost:3001/api/verdicts/4
+

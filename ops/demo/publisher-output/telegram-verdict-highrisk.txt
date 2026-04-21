@@ -1,0 +1,17 @@
+[telegram dry-run]
+🚨 *0xdead…cdef* launched on Four\.meme
+
+🤖 Guardian verdict: *🔴 HIGH RISK*
+⚠️ Risk score: *85/100*
+
+🔎 *Contract Auditor* \(90\): Verified proxy delegates to an unverified logic contract at 0xcafe…beef which exposes an owner\-only setTaxFee\(\) with no upper bound, plus a mint\(\) hidden behind a modifier renamed…
+💧 *Liquidity Analyst* \(85\): LP depth is only $3\.2k USD and 92% of LP tokens sit in a single wallet — the deployer's\. The \`LP locked\` badge on the listing comes from a Unicrypt lock that expires in \~6 hours,…
+👤 *Dev Stalker* \(85\): Deployer 0x4f21…09b2 was funded with exactly 0\.1 ETH from a Tornado Cash withdrawal 7 blocks before deployment\. Wallet age is 3 days 4 hours with zero prior contracts, zero outbou…
+📣 *Sentiment Watcher* \(78\): Twitter: 47 mentions in 2 hours, 44 from accounts younger than 30 days using identical copy \(\`🔥 next 100x 🔥 $TOKEN\`\)\. Telegram: 300\+ members added in 2 hours with zero organic b…
+🎯 *Meta Matcher* \(80\): Cookie\-cutter OpenZeppelin ERC\-20 with \~90% bytecode overlap vs the already\-rugged $XYZ \(2026\-04\-03\)\. Riding the AI\-agent meta 11 days after its peak — late, derivative, no novel…
+
+📜 [Full reasoning on IPFS](https://gateway.pinata.cloud/ipfs/bafkreigardenoz8oee5i)
+🪪 [NFT certificate](http://localhost:3001/api/verdicts/4)
+🔗 [Token on BaseScan](https://sepolia.basescan.org/token/0xdeadbeef1234567890abcdef1234567890abcdef)
+📎 [Mint tx](https://sepolia.basescan.org/tx/0xee7e53d05ee352aa8d4b10d608cdbf9c0502c04ed82d68b3243544f60091dcc3)
+

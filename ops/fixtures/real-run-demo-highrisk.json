@@ -1,0 +1,762 @@
+{
+  "scenario": "base-sepolia-demo-high-risk-v2",
+  "tokenAddress": "0xdeadbeef1234567890abcdef1234567890abcdef",
+  "base": "http://127.0.0.1:3097",
+  "sessionId": "d5116d5b-bede-4e16-88f6-4aab1df15b4a",
+  "durationMs": 4993,
+  "startedAtUnix": 1776791637,
+  "events": [
+    {
+      "t": 16,
+      "event": "session_start",
+      "data": {
+        "sessionId": "d5116d5b-bede-4e16-88f6-4aab1df15b4a",
+        "tokenAddress": "0xdeadbeef1234567890abcdef1234567890abcdef"
+      }
+    },
+    {
+      "t": 589,
+      "event": "context_ready",
+      "data": {
+        "tokenAddress": "0xdeadbeef1234567890abcdef1234567890abcdef"
+      }
+    },
+    {
+      "t": 589,
+      "event": "agent_thinking",
+      "data": {
+        "agent": "contract_auditor",
+        "partial": "Verified proxy delegates"
+      }
+    },
+    {
+      "t": 591,
+      "event": "agent_thinking",
+      "data": {
+        "agent": "liquidity_analyst",
+        "partial": "LP depth is only $3.2k"
+      }
+    },
+    {
+      "t": 591,
+      "event": "agent_thinking",
+      "data": {
+        "agent": "dev_stalker",
+        "partial": "Deployer 0x4f21…09b2 "
+      }
+    },
+    {
+      "t": 591,
+      "event": "agent_thinking",
+      "data": {
+        "agent": "sentiment_watcher",
+        "partial": "Twitter: 47 mentions "
+      }
+    },
+    {
+      "t": 591,
+      "event": "agent_thinking",
+      "data": {
+        "agent": "meta_matcher",
+        "partial": "Cookie-cutter OpenZeppelin"
+      }
+    },
+    {
+      "t": 646,
+      "event": "agent_thinking",
+      "data": {
+        "agent": "contract_auditor",
+        "partial": " to an unverified logic"
+      }
+    },
+    {
+      "t": 646,
+      "event": "agent_thinking",
+      "data": {
+        "agent": "liquidity_analyst",
+        "partial": " USD and 92% of LP tokens"
+      }
+    },
+    {
+      "t": 646,
+      "event": "agent_thinking",
+      "data": {
+        "agent": "dev_stalker",
+        "partial": "was funded with exactly"
+      }
+    },
+    {
+      "t": 646,
+      "event": "agent_thinking",
+      "data": {
+        "agent": "sentiment_watcher",
+        "partial": "in 2 hours, 44 from accounts"
+      }
+    },
+    {
+      "t": 646,
+      "event": "agent_thinking",
+      "data": {
+        "agent": "meta_matcher",
+        "partial": " ERC-20 with ~90% bytecode"
+      }
+    },
+    {
+      "t": 702,
+      "event": "agent_thinking",
+      "data": {
+        "agent": "contract_auditor",
+        "partial": " contract at 0xcafe…beef"
+      }
+    },
+    {
+      "t": 702,
+      "event": "agent_thinking",
+      "data": {
+        "agent": "liquidity_analyst",
+        "partial": " sit in a single wallet"
+      }
+    },
+    {
+      "t": 702,
+      "event": "agent_thinking",
+      "data": {
+        "agent": "dev_stalker",
+        "partial": " 0.1 ETH from a Tornado"
+      }
+    },
+    {
+      "t": 702,
+      "event": "agent_thinking",
+      "data": {
+        "agent": "sentiment_watcher",
+        "partial": " younger than 30 days"
+      }
+    },
+    {
+      "t": 702,
+      "event": "agent_thinking",
+      "data": {
+        "agent": "meta_matcher",
+        "partial": " overlap vs the already-rugged"
+      }
+    },
+    {
+      "t": 760,
+      "event": "agent_thinking",
+      "data": {
+        "agent": "contract_auditor",
+        "partial": " which exposes an owner-only"
+      }
+    },
+    {
+      "t": 760,
+      "event": "agent_thinking",
+      "data": {
+        "agent": "liquidity_analyst",
+        "partial": " — the deployer's. The"
+      }
+    },
+    {
+      "t": 760,
+      "event": "agent_thinking",
+      "data": {
+        "agent": "dev_stalker",
+        "partial": " Cash withdrawal 7 blocks"
+      }
+    },
+    {
+      "t": 760,
+      "event": "agent_thinking",
+      "data": {
+        "agent": "sentiment_watcher",
+        "partial": " using identical copy"
+      }
+    },
+    {
+      "t": 760,
+      "event": "agent_thinking",
+      "data": {
+        "agent": "meta_matcher",
+        "partial": " $XYZ (2026-04-03). Riding"
+      }
+    },
+    {
+      "t": 816,
+      "event": "agent_thinking",
+      "data": {
+        "agent": "contract_auditor",
+        "partial": " setTaxFee() with no "
+      }
+    },
+    {
+      "t": 816,
+      "event": "agent_thinking",
+      "data": {
+        "agent": "liquidity_analyst",
+        "partial": " `LP locked` badge on"
+      }
+    },
+    {
+      "t": 817,
+      "event": "agent_thinking",
+      "data": {
+        "agent": "dev_stalker",
+        "partial": " before deployment. Wallet"
+      }
+    },
+    {
+      "t": 817,
+      "event": "agent_thinking",
+      "data": {
+        "agent": "sentiment_watcher",
+        "partial": " (`🔥 next 100x 🔥 $TOKEN`)."
+      }
+    },
+    {
+      "t": 817,
+      "event": "agent_thinking",
+      "data": {
+        "agent": "meta_matcher",
+        "partial": " the AI-agent meta 11"
+      }
+    },
+    {
+      "t": 875,
+      "event": "agent_thinking",
+      "data": {
+        "agent": "contract_auditor",
+        "partial": "upper bound, plus a mint()"
+      }
+    },
+    {
+      "t": 875,
+      "event": "agent_thinking",
+      "data": {
+        "agent": "liquidity_analyst",
+        "partial": " the listing comes from"
+      }
+    },
+    {
+      "t": 875,
+      "event": "agent_thinking",
+      "data": {
+        "agent": "dev_stalker",
+        "partial": " age is 3 days 4 hours"
+      }
+    },
+    {
+      "t": 875,
+      "event": "agent_thinking",
+      "data": {
+        "agent": "sentiment_watcher",
+        "partial": " Telegram: 300+ members"
+      }
+    },
+    {
+      "t": 875,
+      "event": "agent_thinking",
+      "data": {
+        "agent": "meta_matcher",
+        "partial": " days after its peak "
+      }
+    },
+    {
+      "t": 933,
+      "event": "agent_thinking",
+      "data": {
+        "agent": "contract_auditor",
+        "partial": " hidden behind a modifier"
+      }
+    },
+    {
+      "t": 933,
+      "event": "agent_thinking",
+      "data": {
+        "agent": "liquidity_analyst",
+        "partial": " a Unicrypt lock that"
+      }
+    },
+    {
+      "t": 933,
+      "event": "agent_thinking",
+      "data": {
+        "agent": "dev_stalker",
+        "partial": " with zero prior contracts,"
+      }
+    },
+    {
+      "t": 933,
+      "event": "agent_thinking",
+      "data": {
+        "agent": "sentiment_watcher",
+        "partial": " added in 2 hours with"
+      }
+    },
+    {
+      "t": 933,
+      "event": "agent_thinking",
+      "data": {
+        "agent": "meta_matcher",
+        "partial": "— late, derivative, no"
+      }
+    },
+    {
+      "t": 991,
+      "event": "agent_thinking",
+      "data": {
+        "agent": "contract_auditor",
+        "partial": " renamed `buyback`. Classic"
+      }
+    },
+    {
+      "t": 991,
+      "event": "agent_thinking",
+      "data": {
+        "agent": "liquidity_analyst",
+        "partial": " expires in ~6 hours,"
+      }
+    },
+    {
+      "t": 991,
+      "event": "agent_thinking",
+      "data": {
+        "agent": "dev_stalker",
+        "partial": " zero outbound DeFi activity,"
+      }
+    },
+    {
+      "t": 991,
+      "event": "agent_thinking",
+      "data": {
+        "agent": "sentiment_watcher",
+        "partial": " zero organic back-and-forth"
+      }
+    },
+    {
+      "t": 991,
+      "event": "agent_thinking",
+      "data": {
+        "agent": "meta_matcher",
+        "partial": " novel narrative. The"
+      }
+    },
+    {
+      "t": 1049,
+      "event": "agent_thinking",
+      "data": {
+        "agent": "contract_auditor",
+        "partial": " stealth-mint rug surface:"
+      }
+    },
+    {
+      "t": 1049,
+      "event": "agent_thinking",
+      "data": {
+        "agent": "liquidity_analyst",
+        "partial": " so the lock is theater,"
+      }
+    },
+    {
+      "t": 1049,
+      "event": "agent_thinking",
+      "data": {
+        "agent": "dev_stalker",
+        "partial": " and no ENS/socials. "
+      }
+    },
+    {
+      "t": 1049,
+      "event": "agent_thinking",
+      "data": {
+        "agent": "sentiment_watcher",
+        "partial": " — no questions, no disagreements,"
+      }
+    },
+    {
+      "t": 1049,
+      "event": "agent_thinking",
+      "data": {
+        "agent": "meta_matcher",
+        "partial": " addresses aping in on"
+      }
+    },
+    {
+      "t": 1106,
+      "event": "agent_thinking",
+      "data": {
+        "agent": "contract_auditor",
+        "partial": " owner can unilaterally"
+      }
+    },
+    {
+      "t": 1106,
+      "event": "agent_thinking",
+      "data": {
+        "agent": "liquidity_analyst",
+        "partial": " not protection. Any "
+      }
+    },
+    {
+      "t": 1106,
+      "event": "agent_thinking",
+      "data": {
+        "agent": "dev_stalker",
+        "partial": "The 0.1-ETH-from-mixer"
+      }
+    },
+    {
+      "t": 1106,
+      "event": "agent_thinking",
+      "data": {
+        "agent": "sentiment_watcher",
+        "partial": " just shill reposts and"
+      }
+    },
+    {
+      "t": 1106,
+      "event": "agent_thinking",
+      "data": {
+        "agent": "meta_matcher",
+        "partial": " the early tape are the"
+      }
+    },
+    {
+      "t": 1164,
+      "event": "agent_thinking",
+      "data": {
+        "agent": "contract_auditor",
+        "partial": " push fee to 100% or "
+      }
+    },
+    {
+      "t": 1164,
+      "event": "agent_thinking",
+      "data": {
+        "agent": "liquidity_analyst",
+        "partial": "seller over ~$400 collapses"
+      }
+    },
+    {
+      "t": 1164,
+      "event": "agent_thinking",
+      "data": {
+        "agent": "dev_stalker",
+        "partial": " funding pattern matches"
+      }
+    },
+    {
+      "t": 1164,
+      "event": "agent_thinking",
+      "data": {
+        "agent": "sentiment_watcher",
+        "partial": " emoji spam. Textbook"
+      }
+    },
+    {
+      "t": 1164,
+      "event": "agent_thinking",
+      "data": {
+        "agent": "meta_matcher",
+        "partial": " same wallets that exit-liquidity'd"
+      }
+    },
+    {
+      "t": 1223,
+      "event": "agent_thinking",
+      "data": {
+        "agent": "contract_auditor",
+        "partial": "inflate supply on demand."
+      }
+    },
+    {
+      "t": 1223,
+      "event": "agent_thinking",
+      "data": {
+        "agent": "liquidity_analyst",
+        "partial": " price, and at unlock"
+      }
+    },
+    {
+      "t": 1223,
+      "event": "agent_thinking",
+      "data": {
+        "agent": "dev_stalker",
+        "partial": " four tokens launched"
+      }
+    },
+    {
+      "t": 1223,
+      "event": "agent_thinking",
+      "data": {
+        "agent": "sentiment_watcher",
+        "partial": " bot-farm + paid-influencer"
+      }
+    },
+    {
+      "t": 1223,
+      "event": "agent_thinking",
+      "data": {
+        "agent": "meta_matcher",
+        "partial": " PUPSY v2 last week. "
+      }
+    },
+    {
+      "t": 1280,
+      "event": "agent_thinking",
+      "data": {
+        "agent": "contract_auditor",
+        "partial": " Do not buy until the"
+      }
+    },
+    {
+      "t": 1280,
+      "event": "agent_thinking",
+      "data": {
+        "agent": "liquidity_analyst",
+        "partial": " the deployer can walk"
+      }
+    },
+    {
+      "t": 1280,
+      "event": "agent_thinking",
+      "data": {
+        "agent": "dev_stalker",
+        "partial": " on this same launchpad"
+      }
+    },
+    {
+      "t": 1280,
+      "event": "agent_thinking",
+      "data": {
+        "agent": "sentiment_watcher",
+        "partial": " coordinated pump pattern."
+      }
+    },
+    {
+      "t": 1280,
+      "event": "agent_thinking",
+      "data": {
+        "agent": "meta_matcher",
+        "partial": "Exit-liquidity geometry,"
+      }
+    },
+    {
+      "t": 1338,
+      "event": "agent_thinking",
+      "data": {
+        "agent": "contract_auditor",
+        "partial": " implementation contract"
+      }
+    },
+    {
+      "t": 1338,
+      "event": "agent_thinking",
+      "data": {
+        "agent": "liquidity_analyst",
+        "partial": " away with effectively"
+      }
+    },
+    {
+      "t": 1338,
+      "event": "agent_thinking",
+      "data": {
+        "agent": "dev_stalker",
+        "partial": " that all rugged within"
+      }
+    },
+    {
+      "t": 1338,
+      "event": "agent_verdict",
+      "data": {
+        "agent": "sentiment_watcher",
+        "score": 78,
+        "reasoning": "Twitter: 47 mentions in 2 hours, 44 from accounts younger than 30 days using identical copy (`🔥 next 100x 🔥 $TOKEN`). Telegram: 300+ members added in 2 hours with zero organic back-and-forth — no questions, no disagreements, just shill reposts and emoji spam. Textbook bot-farm + paid-influencer coordinated pump pattern.",
+        "latencyMs": 749
+      }
+    },
+    {
+      "t": 1338,
+      "event": "agent_thinking",
+      "data": {
+        "agent": "meta_matcher",
+        "partial": " not a launch worth early"
+      }
+    },
+    {
+      "t": 1394,
+      "event": "agent_thinking",
+      "data": {
+        "agent": "contract_auditor",
+        "partial": " is verified and the "
+      }
+    },
+    {
+      "t": 1394,
+      "event": "agent_thinking",
+      "data": {
+        "agent": "liquidity_analyst",
+        "partial": " 100% of the pool."
+      }
+    },
+    {
+      "t": 1394,
+      "event": "agent_thinking",
+      "data": {
+        "agent": "dev_stalker",
+        "partial": " 72h of deploy (XYZ 2026-04-03,"
+      }
+    },
+    {
+      "t": 1394,
+      "event": "agent_thinking",
+      "data": {
+        "agent": "meta_matcher",
+        "partial": " allocation."
+      }
+    },
+    {
+      "t": 1449,
+      "event": "agent_thinking",
+      "data": {
+        "agent": "contract_auditor",
+        "partial": "mint path is audited."
+      }
+    },
+    {
+      "t": 1449,
+      "event": "agent_verdict",
+      "data": {
+        "agent": "liquidity_analyst",
+        "score": 85,
+        "reasoning": "LP depth is only $3.2k USD and 92% of LP tokens sit in a single wallet — the deployer's. The `LP locked` badge on the listing comes from a Unicrypt lock that expires in ~6 hours, so the lock is theater, not protection. Any seller over ~$400 collapses price, and at unlock the deployer can walk away with effectively 100% of the pool.",
+        "latencyMs": 861
+      }
+    },
+    {
+      "t": 1449,
+      "event": "agent_thinking",
+      "data": {
+        "agent": "dev_stalker",
+        "partial": " PQR 2026-04-11, ABC "
+      }
+    },
+    {
+      "t": 1449,
+      "event": "agent_verdict",
+      "data": {
+        "agent": "meta_matcher",
+        "score": 80,
+        "reasoning": "Cookie-cutter OpenZeppelin ERC-20 with ~90% bytecode overlap vs the already-rugged $XYZ (2026-04-03). Riding the AI-agent meta 11 days after its peak — late, derivative, no novel narrative. The addresses aping in on the early tape are the same wallets that exit-liquidity'd PUPSY v2 last week. Exit-liquidity geometry, not a launch worth early allocation.",
+        "latencyMs": 861
+      }
+    },
+    {
+      "t": 1506,
+      "event": "agent_verdict",
+      "data": {
+        "agent": "contract_auditor",
+        "score": 90,
+        "reasoning": "Verified proxy delegates to an unverified logic contract at 0xcafe…beef which exposes an owner-only setTaxFee() with no upper bound, plus a mint() hidden behind a modifier renamed `buyback`. Classic stealth-mint rug surface: owner can unilaterally push fee to 100% or inflate supply on demand. Do not buy until the implementation contract is verified and the mint path is audited.",
+        "latencyMs": 918
+      }
+    },
+    {
+      "t": 1506,
+      "event": "agent_thinking",
+      "data": {
+        "agent": "dev_stalker",
+        "partial": "2026-04-15, MNO 2026-04-18)."
+      }
+    },
+    {
+      "t": 1585,
+      "event": "agent_verdict",
+      "data": {
+        "agent": "dev_stalker",
+        "score": 85,
+        "reasoning": "Deployer 0x4f21…09b2 was funded with exactly 0.1 ETH from a Tornado Cash withdrawal 7 blocks before deployment. Wallet age is 3 days 4 hours with zero prior contracts, zero outbound DeFi activity, and no ENS/socials. The 0.1-ETH-from-mixer funding pattern matches four tokens launched on this same launchpad that all rugged within 72h of deploy (XYZ 2026-04-03, PQR 2026-04-11, ABC 2026-04-15, MNO 2026-04-18).",
+        "latencyMs": 975
+      }
+    },
+    {
+      "t": 4993,
+      "event": "final_verdict",
+      "data": {
+        "tokenAddress": "0xdeadbeef1234567890abcdef1234567890abcdef",
+        "tokenName": "",
+        "tokenSymbol": "",
+        "analysisTimestamp": 1776791642,
+        "overallScore": 85,
+        "tier": "HIGH_RISK",
+        "agents": {
+          "contract_auditor": {
+            "score": 90,
+            "reasoning": "Verified proxy delegates to an unverified logic contract at 0xcafe…beef which exposes an owner-only setTaxFee() with no upper bound, plus a mint() hidden behind a modifier renamed `buyback`. Classic stealth-mint rug surface: owner can unilaterally push fee to 100% or inflate supply on demand. Do not buy until the implementation contract is verified and the mint path is audited."
+          },
+          "liquidity_analyst": {
+            "score": 85,
+            "reasoning": "LP depth is only $3.2k USD and 92% of LP tokens sit in a single wallet — the deployer's. The `LP locked` badge on the listing comes from a Unicrypt lock that expires in ~6 hours, so the lock is theater, not protection. Any seller over ~$400 collapses price, and at unlock the deployer can walk away with effectively 100% of the pool."
+          },
+          "dev_stalker": {
+            "score": 85,
+            "reasoning": "Deployer 0x4f21…09b2 was funded with exactly 0.1 ETH from a Tornado Cash withdrawal 7 blocks before deployment. Wallet age is 3 days 4 hours with zero prior contracts, zero outbound DeFi activity, and no ENS/socials. The 0.1-ETH-from-mixer funding pattern matches four tokens launched on this same launchpad that all rugged within 72h of deploy (XYZ 2026-04-03, PQR 2026-04-11, ABC 2026-04-15, MNO 2026-04-18)."
+          },
+          "sentiment_watcher": {
+            "score": 78,
+            "reasoning": "Twitter: 47 mentions in 2 hours, 44 from accounts younger than 30 days using identical copy (`🔥 next 100x 🔥 $TOKEN`). Telegram: 300+ members added in 2 hours with zero organic back-and-forth — no questions, no disagreements, just shill reposts and emoji spam. Textbook bot-farm + paid-influencer coordinated pump pattern."
+          },
+          "meta_matcher": {
+            "score": 80,
+            "reasoning": "Cookie-cutter OpenZeppelin ERC-20 with ~90% bytecode overlap vs the already-rugged $XYZ (2026-04-03). Riding the AI-agent meta 11 days after its peak — late, derivative, no novel narrative. The addresses aping in on the early tape are the same wallets that exit-liquidity'd PUPSY v2 last week. Exit-liquidity geometry, not a launch worth early allocation."
+          }
+        },
+        "reasoningIpfsUri": "ipfs://bafkreigardenoz8oee5i",
+        "verdictNftTokenId": 4,
+        "txHash": "0xee7e53d05ee352aa8d4b10d608cdbf9c0502c04ed82d68b3243544f60091dcc3",
+        "chainId": 84532
+      }
+    },
+    {
+      "t": 4993,
+      "event": "session_end",
+      "data": {
+        "sessionId": "d5116d5b-bede-4e16-88f6-4aab1df15b4a"
+      }
+    }
+  ],
+  "verdict": {
+    "tokenAddress": "0xdeadbeef1234567890abcdef1234567890abcdef",
+    "tokenName": "",
+    "tokenSymbol": "",
+    "analysisTimestamp": 1776791642,
+    "overallScore": 85,
+    "tier": "HIGH_RISK",
+    "agents": {
+      "contract_auditor": {
+        "score": 90,
+        "reasoning": "Verified proxy delegates to an unverified logic contract at 0xcafe…beef which exposes an owner-only setTaxFee() with no upper bound, plus a mint() hidden behind a modifier renamed `buyback`. Classic stealth-mint rug surface: owner can unilaterally push fee to 100% or inflate supply on demand. Do not buy until the implementation contract is verified and the mint path is audited."
+      },
+      "liquidity_analyst": {
+        "score": 85,
+        "reasoning": "LP depth is only $3.2k USD and 92% of LP tokens sit in a single wallet — the deployer's. The `LP locked` badge on the listing comes from a Unicrypt lock that expires in ~6 hours, so the lock is theater, not protection. Any seller over ~$400 collapses price, and at unlock the deployer can walk away with effectively 100% of the pool."
+      },
+      "dev_stalker": {
+        "score": 85,
+        "reasoning": "Deployer 0x4f21…09b2 was funded with exactly 0.1 ETH from a Tornado Cash withdrawal 7 blocks before deployment. Wallet age is 3 days 4 hours with zero prior contracts, zero outbound DeFi activity, and no ENS/socials. The 0.1-ETH-from-mixer funding pattern matches four tokens launched on this same launchpad that all rugged within 72h of deploy (XYZ 2026-04-03, PQR 2026-04-11, ABC 2026-04-15, MNO 2026-04-18)."
+      },
+      "sentiment_watcher": {
+        "score": 78,
+        "reasoning": "Twitter: 47 mentions in 2 hours, 44 from accounts younger than 30 days using identical copy (`🔥 next 100x 🔥 $TOKEN`). Telegram: 300+ members added in 2 hours with zero organic back-and-forth — no questions, no disagreements, just shill reposts and emoji spam. Textbook bot-farm + paid-influencer coordinated pump pattern."
+      },
+      "meta_matcher": {
+        "score": 80,
+        "reasoning": "Cookie-cutter OpenZeppelin ERC-20 with ~90% bytecode overlap vs the already-rugged $XYZ (2026-04-03). Riding the AI-agent meta 11 days after its peak — late, derivative, no novel narrative. The addresses aping in on the early tape are the same wallets that exit-liquidity'd PUPSY v2 last week. Exit-liquidity geometry, not a launch worth early allocation."
+      }
+    },
+    "reasoningIpfsUri": "ipfs://bafkreigardenoz8oee5i",
+    "verdictNftTokenId": 4,
+    "txHash": "0xee7e53d05ee352aa8d4b10d608cdbf9c0502c04ed82d68b3243544f60091dcc3",
+    "chainId": 84532
+  }
+}
