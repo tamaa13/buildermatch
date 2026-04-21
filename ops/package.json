@@ -1,0 +1,24 @@
+{
+  "name": "memegard-ops",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "bun --watch src/index.ts",
+    "start": "bun src/index.ts",
+    "typecheck": "tsc --noEmit",
+    "pin": "bun src/ipfs-pin.ts",
+    "publish:tweet": "bun src/twitter-bot.ts",
+    "publish:tg": "bun src/telegram-bot.ts",
+    "demo:render": "bun scripts/render-demo.ts"
+  },
+  "dependencies": {
+    "grammy": "^1.30.0",
+    "twitter-api-v2": "^1.18.2",
+    "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "@types/bun": "latest",
+    "typescript": "^5.6.3"
+  }
+}
