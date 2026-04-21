@@ -12,6 +12,8 @@
 Paste a Four.meme token contract address. Five specialised Claude-powered agents pull fresh on-chain + social data, argue the risk, and converge on a verdict. The orchestrator pins the full debate transcript to IPFS and mints an ERC-721 verdict certificate on Base Sepolia (chainId `84532`). Twitter + Telegram bots broadcast the result the moment it's finalised.
 
 > **Chain choice:** Base Sepolia is the public PoC — a funded deployer wallet let us ship on hackathon day. BNB Chain (Chapel testnet → mainnet, where Four.meme lives) is **one env swap away**: `CHAIN_ID`, `RPC_URL`, `EXPLORER_URL` are read from env end-to-end, zero code change to retarget. Production target: BNB.
+>
+> **Deployed VerdictRegistry:** [`0x4f635A02B6Cf998A0508dADE3e2f85e5a2dCAB7a`](https://sepolia.basescan.org/address/0x4f635A02B6Cf998A0508dADE3e2f85e5a2dCAB7a) on Base Sepolia (`84532`). Deploy tx: [`0x4dd1…d320`](https://sepolia.basescan.org/tx/0x4dd110c3d520fa7a2a428fa5af8f7823158426a6091b1287d8cc645f8ca3d320).
 
 Every verdict is:
 

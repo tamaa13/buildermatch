@@ -59,7 +59,8 @@ Four.meme AI Sprint — **AI Agent** + **DeFi Security** (pick both if the form 
 | Live URL | `https://memegard.vercel.app` (placeholder — frontend-dev deploys) |
 | GitHub | `https://github.com/<owner>/memegard` (repo must be public before submission) |
 | Pitch deck | `ops/pitch/pitch.pdf` upload OR Google Slides link |
-| Base Sepolia contract | `https://sepolia.basescan.org/address/<CONTRACT_ADDRESS>` (swap after contract-dev deploys) |
+| Base Sepolia contract | https://sepolia.basescan.org/address/0x4f635A02B6Cf998A0508dADE3e2f85e5a2dCAB7a |
+| Deploy tx | https://sepolia.basescan.org/tx/0x4dd110c3d520fa7a2a428fa5af8f7823158426a6091b1287d8cc645f8ca3d320 |
 | Twitter | `https://x.com/<handle>` (swap after handle claim) |
 | Telegram | `https://t.me/<channel>` (swap after channel creation) |
 
@@ -82,7 +83,7 @@ Use these from `ops/screenshots/`:
 - [ ] Upload `ops/pitch/pitch.pdf`
 - [ ] Make GitHub repo public (if currently private) and paste the link
 - [ ] **Save as draft** — do not hit Submit until:
-  - [ ] Base Sepolia contract address is populated (BNB Chapel mention in description)
+  - [x] Base Sepolia contract deployed `0x4f635A02B6Cf998A0508dADE3e2f85e5a2dCAB7a` (BNB Chapel mention in description)
   - [ ] Final demo video (with VO) has been uploaded
   - [ ] Frontend-dev's Vercel URL is live and linked
   - [ ] README.md on main branch is final

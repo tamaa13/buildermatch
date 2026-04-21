@@ -7,7 +7,7 @@ Target submit: **21:00 WIB** → 2 h buffer for community vote push.
 
 | Time | Owner | Action | Blocked by |
 | --- | --- | --- | --- |
-| T–04:00 (17:00) | contract-dev | Base Sepolia deploy confirmed, CONTRACT_ADDRESS pasted to all .env files (BNB Chapel is env-swap roadmap, not blocker) | funded deployer wallet (ready) |
+| T–04:00 (17:00) | ~~contract-dev~~ main | ✅ Base Sepolia deploy DONE at `0x4f635A02B6Cf998A0508dADE3e2f85e5a2dCAB7a` (block 40511465, tx `0x4dd1…d320`); main executed after contract-dev silent 10min post-pivot. BNB Chapel remains env-swap roadmap. | — |
 | T–04:00 (17:00) | agent-backend | Real-E2E dry run against Base Sepolia, produce `fixtures/real-run-A.json` + `real-run-B.json` | ANTHROPIC_API_KEY + token addresses |
 | T–04:00 (17:00) | frontend-dev | Deploy to Vercel, paste URL | backend reachable + CONTRACT_ADDRESS |
 | T–03:00 (18:00) | ops | Record + layer VO onto demo-local.mp4 → demo.mp4 | ElevenLabs access OR self-recording |

@@ -23,7 +23,7 @@ Paste these in Vercel Project → Settings → Environment Variables. Split acro
 | Key | Scope | Value (prod) | Notes |
 | --- | --- | --- | --- |
 | `NEXT_PUBLIC_BACKEND_URL` | P+Pre+Dev | `https://api.<your-backend-host>` | Points SSE/ /api/verdicts poll target. If backend is not yet hosted, use a tunneled URL (ngrok / cloudflared) for demo; document it in the DoraHacks form. |
-| `NEXT_PUBLIC_CONTRACT_ADDRESS` | P+Pre+Dev | `0x...` Base Sepolia deployment | Swap when contract-dev deploys. BNB Chapel retarget = same env var. |
+| `NEXT_PUBLIC_CONTRACT_ADDRESS` | P+Pre+Dev | `0x4f635A02B6Cf998A0508dADE3e2f85e5a2dCAB7a` | Live VerdictRegistry on Base Sepolia. BNB Chapel retarget = same env var, new address. |
 | `NEXT_PUBLIC_CHAIN_ID` | P+Pre+Dev | `84532` | Base Sepolia. For BNB Chapel retarget use `97`; for anvil local use `31337`. |
 | `NEXT_PUBLIC_CHAIN_RPC` | P+Pre+Dev | `https://sepolia.base.org` | Public Base Sepolia RPC. For BNB Chapel: `https://data-seed-prebsc-1-s1.binance.org:8545`. |
 | `NEXT_PUBLIC_EXPLORER_URL` | P+Pre+Dev | `https://sepolia.basescan.org` | In-app permalinks. For BNB Chapel: `https://testnet.bscscan.com`. |

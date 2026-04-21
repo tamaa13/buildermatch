@@ -103,7 +103,7 @@ Built for @fourmeme_io's ~90% Chinese audience — 中文 docs shipped day 1.
 
 ```
 🎯 Try it: [VERCEL_URL]
-📜 Contract: sepolia.basescan.org/address/[ADDR]
+📜 Contract: sepolia.basescan.org/address/0x4f635A02B6Cf998A0508dADE3e2f85e5a2dCAB7a
 🗳️ Upvote us: [DORAHACKS_URL]
 👾 Code: github.com/[OWNER]/memegard
 💬 Telegram: t.me/[CHANNEL]

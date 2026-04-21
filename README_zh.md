@@ -12,6 +12,8 @@
 把一个 Four.meme 代币合约地址丢进来。**五个** Claude 驱动的专家 AI 智能体会实时拉取链上 + 社交数据、互相辩论、最终达成风险判决。编排器把完整辩论记录 pin 到 IPFS,并在 **Base Sepolia 测试网**(chainId `84532`)上 mint 一张 ERC-721 判决证书 NFT。Twitter + Telegram 机器人在判决落链的瞬间向整个社区广播。
 
 > **关于链的选择:** Base Sepolia 是本次黑客松的公开 PoC —— 因为我们有一个已经充值的部署者钱包,当天就可以上线。BNB Chain(Chapel 测试网 → 主网,Four.meme 所在的链)只需**一次环境变量切换**即可迁移:`CHAIN_ID`、`RPC_URL`、`EXPLORER_URL` 全部由 env 驱动,零代码改动。**生产目标:BNB Chain**。
+>
+> **已部署的 VerdictRegistry:** [`0x4f635A02B6Cf998A0508dADE3e2f85e5a2dCAB7a`](https://sepolia.basescan.org/address/0x4f635A02B6Cf998A0508dADE3e2f85e5a2dCAB7a) · Base Sepolia(`84532`)· [部署交易](https://sepolia.basescan.org/tx/0x4dd110c3d520fa7a2a428fa5af8f7823158426a6091b1287d8cc645f8ca3d320)。
 
 每一份判决都是:
 

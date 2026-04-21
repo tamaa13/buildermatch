@@ -55,7 +55,7 @@ Demo videos get hosted on **YouTube, Unlisted** — never Public (judges-only, n
 ## 3. Live URLs (test each in a fresh incognito window)
 
 - [ ] **Vercel frontend** — loads, shows landing hero, "Run Guardian Analysis" button is clickable
-- [ ] **Base Sepolia contract** — BaseScan page loads, contract is verified (bonus) or at least has a bytecode
+- [ ] **Base Sepolia contract** — https://sepolia.basescan.org/address/0x4f635A02B6Cf998A0508dADE3e2f85e5a2dCAB7a loads, contract is verified (bonus) or at least has a bytecode
 - [ ] **DoraHacks project URL** — matches what's in the Twitter launch thread / Telegram pin / README
 - [ ] **GitHub repo** — opens for someone not logged in
 - [ ] **IPFS pin** (sample) — open one of the verdict reasoningIpfsUri through the gateway, JSON loads
@@ -79,7 +79,7 @@ Demo videos get hosted on **YouTube, Unlisted** — never Public (judges-only, n
   - [ ] Live demo: Vercel URL
   - [ ] Twitter: `https://x.com/memegard_ai`
   - [ ] Telegram: `https://t.me/memegard_ai`
-- [ ] Contract address field: Base Sepolia address from contract-dev (BNB Chapel is on the roadmap, note in description if the form asks about chain)
+- [ ] Contract address field: `0x4f635A02B6Cf998A0508dADE3e2f85e5a2dCAB7a` (Base Sepolia). BNB Chapel on the roadmap — note in description if the form asks about chain.
 - [ ] Chain: Base Sepolia (PoC); mention "BNB Chain planned" in the description if the form has a free-text chain field
 - [ ] **BEP20 prize-payout address** (copy from `ops/submission/PRIVATE/payout.md`, never from here or any other committed file)
 
