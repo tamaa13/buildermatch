@@ -51,7 +51,7 @@ render_scene 1  6  "A thousand tokens launch on Four meme every day. Ninety five
 render_scene 2  7  "Five AI agents. Live debate. Verdict on chain."
 render_scene 3 15  "Paste a contract. Five agents debate in parallel. Contract auditor. Liquidity analyst. Dev stalker. Sentiment watcher. Meta matcher."
 render_scene 4  7  "In ten seconds, a verdict."
-render_scene 5 15  "The whole debate is pinned to I P F S. A verdict N F T mints on B N B. Forever on chain, forever auditable."
+render_scene 5 15  "The whole debate is pinned to I P F S. A verdict N F T mints on chain. Forever on chain, forever auditable."
 render_scene 6 10  "memegard. Upvote on Dora Hacks."
 
 # Concat the 6 padded scenes into one 60s voiceover.

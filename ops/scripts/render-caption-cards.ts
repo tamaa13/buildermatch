@@ -44,7 +44,7 @@ const cards: Card[] = [
   {
     name: "05-verdict",
     timecode: "0:35–0:50",
-    title: "Pinned to IPFS. Minted on BNB.",
+    title: "Pinned to IPFS. Minted on-chain.",
     subtitle: "Forever auditable.",
   },
   {
