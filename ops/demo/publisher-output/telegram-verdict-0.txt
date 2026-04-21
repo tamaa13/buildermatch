@@ -1,0 +1,17 @@
+[telegram dry-run]
+🚨 *0x55d3…7955* launched on Four\.meme
+
+🤖 Guardian verdict: *🟡 MEDIUM RISK*
+⚠️ Risk score: *63/100*
+
+🔎 *Contract Auditor* \(85\): Contract source is not verified on BscScan\. Unverified contracts on a meme launchpad routinely hide mint/blacklist/fee\-manipulation rug surface\. Treated as HIGH\_RISK until verifie…
+💧 *Liquidity Analyst* \(55\): LLM analysis unavailable; liquidity data partial\. Default slightly above MEDIUM to be cautious\. \(mock\)
+👤 *Dev Stalker* \(50\): LLM analysis unavailable; wallet history inconclusive\. \(mock\)
+📣 *Sentiment Watcher* \(50\): Sentiment feed unavailable for this run\. Default MEDIUM so one missing signal doesn't dominate the swarm\. \(mock\)
+🎯 *Meta Matcher* \(55\): LLM analysis unavailable; default slightly above MEDIUM\. \(mock\)
+
+📜 [Full reasoning on IPFS](https://gateway.pinata.cloud/ipfs/bafkreigardenm9k2mihg)
+🪪 [NFT certificate](http://localhost:3001/api/verdicts/0)
+🔗 [Token on BaseScan](https://sepolia.basescan.org/token/0x55d398326f99059ff775485246999027b3197955)
+📎 [Mint tx](https://sepolia.basescan.org/tx/0x3eac2040f43dff5f0c058f634138e0498286cf8eee66771908db2de4e442beb7)
+

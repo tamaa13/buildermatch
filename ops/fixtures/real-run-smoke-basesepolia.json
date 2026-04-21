@@ -1,0 +1,266 @@
+{
+  "scenario": "base-sepolia-smoke-mockagents",
+  "tokenAddress": "0x55d398326f99059ff775485246999027b3197955",
+  "base": "http://127.0.0.1:3097",
+  "sessionId": "633de86c-df9c-4afa-8c0f-f27efa81c32d",
+  "durationMs": 3241,
+  "startedAtUnix": 1776791328,
+  "events": [
+    {
+      "t": 11,
+      "event": "session_start",
+      "data": {
+        "sessionId": "633de86c-df9c-4afa-8c0f-f27efa81c32d",
+        "tokenAddress": "0x55d398326f99059ff775485246999027b3197955"
+      }
+    },
+    {
+      "t": 559,
+      "event": "context_ready",
+      "data": {
+        "tokenAddress": "0x55d398326f99059ff775485246999027b3197955"
+      }
+    },
+    {
+      "t": 559,
+      "event": "agent_thinking",
+      "data": {
+        "agent": "liquidity_analyst",
+        "partial": "LLM analysis unavailable;"
+      }
+    },
+    {
+      "t": 560,
+      "event": "agent_thinking",
+      "data": {
+        "agent": "dev_stalker",
+        "partial": "LLM analysis unavailable;"
+      }
+    },
+    {
+      "t": 560,
+      "event": "agent_thinking",
+      "data": {
+        "agent": "sentiment_watcher",
+        "partial": "Sentiment feed unavailable"
+      }
+    },
+    {
+      "t": 560,
+      "event": "agent_thinking",
+      "data": {
+        "agent": "meta_matcher",
+        "partial": "LLM analysis unavailable;"
+      }
+    },
+    {
+      "t": 560,
+      "event": "agent_verdict",
+      "data": {
+        "agent": "contract_auditor",
+        "score": 85,
+        "reasoning": "Contract source is not verified on BscScan. Unverified contracts on a meme launchpad routinely hide mint/blacklist/fee-manipulation rug surface. Treated as HIGH_RISK until verified.",
+        "latencyMs": 0
+      }
+    },
+    {
+      "t": 601,
+      "event": "agent_thinking",
+      "data": {
+        "agent": "liquidity_analyst",
+        "partial": " liquidity data partial."
+      }
+    },
+    {
+      "t": 601,
+      "event": "agent_thinking",
+      "data": {
+        "agent": "dev_stalker",
+        "partial": " wallet history inconclusive."
+      }
+    },
+    {
+      "t": 601,
+      "event": "agent_thinking",
+      "data": {
+        "agent": "sentiment_watcher",
+        "partial": " for this run. Default"
+      }
+    },
+    {
+      "t": 601,
+      "event": "agent_thinking",
+      "data": {
+        "agent": "meta_matcher",
+        "partial": " default slightly above"
+      }
+    },
+    {
+      "t": 644,
+      "event": "agent_thinking",
+      "data": {
+        "agent": "liquidity_analyst",
+        "partial": " Default slightly above"
+      }
+    },
+    {
+      "t": 644,
+      "event": "agent_verdict",
+      "data": {
+        "agent": "dev_stalker",
+        "score": 50,
+        "reasoning": "LLM analysis unavailable; wallet history inconclusive. (mock)",
+        "latencyMs": 86
+      }
+    },
+    {
+      "t": 644,
+      "event": "agent_thinking",
+      "data": {
+        "agent": "sentiment_watcher",
+        "partial": " MEDIUM so one missing"
+      }
+    },
+    {
+      "t": 644,
+      "event": "agent_thinking",
+      "data": {
+        "agent": "meta_matcher",
+        "partial": " MEDIUM."
+      }
+    },
+    {
+      "t": 686,
+      "event": "agent_thinking",
+      "data": {
+        "agent": "liquidity_analyst",
+        "partial": " MEDIUM to be cautious."
+      }
+    },
+    {
+      "t": 686,
+      "event": "agent_thinking",
+      "data": {
+        "agent": "sentiment_watcher",
+        "partial": " signal doesn't dominate"
+      }
+    },
+    {
+      "t": 686,
+      "event": "agent_verdict",
+      "data": {
+        "agent": "meta_matcher",
+        "score": 55,
+        "reasoning": "LLM analysis unavailable; default slightly above MEDIUM. (mock)",
+        "latencyMs": 128
+      }
+    },
+    {
+      "t": 728,
+      "event": "agent_verdict",
+      "data": {
+        "agent": "liquidity_analyst",
+        "score": 55,
+        "reasoning": "LLM analysis unavailable; liquidity data partial. Default slightly above MEDIUM to be cautious. (mock)",
+        "latencyMs": 170
+      }
+    },
+    {
+      "t": 728,
+      "event": "agent_thinking",
+      "data": {
+        "agent": "sentiment_watcher",
+        "partial": " the swarm."
+      }
+    },
+    {
+      "t": 795,
+      "event": "agent_verdict",
+      "data": {
+        "agent": "sentiment_watcher",
+        "score": 50,
+        "reasoning": "Sentiment feed unavailable for this run. Default MEDIUM so one missing signal doesn't dominate the swarm. (mock)",
+        "latencyMs": 213
+      }
+    },
+    {
+      "t": 3241,
+      "event": "final_verdict",
+      "data": {
+        "tokenAddress": "0x55d398326f99059ff775485246999027b3197955",
+        "tokenName": "",
+        "tokenSymbol": "",
+        "analysisTimestamp": 1776791331,
+        "overallScore": 63,
+        "tier": "MEDIUM_RISK",
+        "agents": {
+          "contract_auditor": {
+            "score": 85,
+            "reasoning": "Contract source is not verified on BscScan. Unverified contracts on a meme launchpad routinely hide mint/blacklist/fee-manipulation rug surface. Treated as HIGH_RISK until verified."
+          },
+          "liquidity_analyst": {
+            "score": 55,
+            "reasoning": "LLM analysis unavailable; liquidity data partial. Default slightly above MEDIUM to be cautious. (mock)"
+          },
+          "dev_stalker": {
+            "score": 50,
+            "reasoning": "LLM analysis unavailable; wallet history inconclusive. (mock)"
+          },
+          "sentiment_watcher": {
+            "score": 50,
+            "reasoning": "Sentiment feed unavailable for this run. Default MEDIUM so one missing signal doesn't dominate the swarm. (mock)"
+          },
+          "meta_matcher": {
+            "score": 55,
+            "reasoning": "LLM analysis unavailable; default slightly above MEDIUM. (mock)"
+          }
+        },
+        "reasoningIpfsUri": "ipfs://bafkreigardenm9k2mihg",
+        "verdictNftTokenId": 0,
+        "txHash": "0x3eac2040f43dff5f0c058f634138e0498286cf8eee66771908db2de4e442beb7",
+        "chainId": 84532
+      }
+    },
+    {
+      "t": 3241,
+      "event": "session_end",
+      "data": {
+        "sessionId": "633de86c-df9c-4afa-8c0f-f27efa81c32d"
+      }
+    }
+  ],
+  "verdict": {
+    "tokenAddress": "0x55d398326f99059ff775485246999027b3197955",
+    "tokenName": "",
+    "tokenSymbol": "",
+    "analysisTimestamp": 1776791331,
+    "overallScore": 63,
+    "tier": "MEDIUM_RISK",
+    "agents": {
+      "contract_auditor": {
+        "score": 85,
+        "reasoning": "Contract source is not verified on BscScan. Unverified contracts on a meme launchpad routinely hide mint/blacklist/fee-manipulation rug surface. Treated as HIGH_RISK until verified."
+      },
+      "liquidity_analyst": {
+        "score": 55,
+        "reasoning": "LLM analysis unavailable; liquidity data partial. Default slightly above MEDIUM to be cautious. (mock)"
+      },
+      "dev_stalker": {
+        "score": 50,
+        "reasoning": "LLM analysis unavailable; wallet history inconclusive. (mock)"
+      },
+      "sentiment_watcher": {
+        "score": 50,
+        "reasoning": "Sentiment feed unavailable for this run. Default MEDIUM so one missing signal doesn't dominate the swarm. (mock)"
+      },
+      "meta_matcher": {
+        "score": 55,
+        "reasoning": "LLM analysis unavailable; default slightly above MEDIUM. (mock)"
+      }
+    },
+    "reasoningIpfsUri": "ipfs://bafkreigardenm9k2mihg",
+    "verdictNftTokenId": 0,
+    "txHash": "0x3eac2040f43dff5f0c058f634138e0498286cf8eee66771908db2de4e442beb7",
+    "chainId": 84532
+  }
+}

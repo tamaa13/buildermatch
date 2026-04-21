@@ -1,0 +1,11 @@
+[twitter dry-run]
+🚨 0x55d3…7955 launched on Four.meme
+
+🤖 Guardian verdict: 🟡 MEDIUM RISK
+⚠️ Risk score: 63/100
+
+🔎 Contract Auditor: Contract source is not verified on BscScan. Unverified contracts on a meme laun…
+
+📜 https://gateway.pinata.cloud/ipfs/bafkreigardenm9k2mihg
+🪪 http://localhost:3001/api/verdicts/0
+

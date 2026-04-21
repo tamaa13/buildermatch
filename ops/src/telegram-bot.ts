@@ -1,7 +1,7 @@
 import { Bot } from "grammy";
 import { config, hasTelegramCreds } from "./config.ts";
 import { formatTelegram } from "./format.ts";
-import type { Verdict } from "./types.ts";
+import { extractVerdicts, type Verdict } from "./types.ts";
 
 let bot: Bot | null = null;
 
@@ -41,9 +41,11 @@ async function runCli() {
     process.exit(1);
   }
   const raw = await Bun.file(path).text();
-  const v = JSON.parse(raw) as Verdict;
-  const res = await publishVerdict(v);
-  console.log(JSON.stringify(res, null, 2));
+  const verdicts = extractVerdicts(JSON.parse(raw));
+  for (const v of verdicts) {
+    const res = await publishVerdict(v);
+    console.log(JSON.stringify(res, null, 2));
+  }
 }
 
 if (import.meta.main) {

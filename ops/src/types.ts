@@ -63,6 +63,26 @@ export const VerdictListSchema = z.object({
 
 export type VerdictList = z.infer<typeof VerdictListSchema>;
 
+/**
+ * Extract one or more Verdicts from a fixture/file/body of unknown shape.
+ * Accepts (in order):
+ *   1. `{ verdicts: Verdict[], cursor?: number|null }` — served as-is.
+ *   2. `{ scenario?, tokenAddress?, sessionId?, events?, verdict: Verdict }` —
+ *      agent-backend's SSE-replay envelope (pluck `.verdict`).
+ *   3. Raw Verdict — any object with `tokenAddress: string` + `overallScore: number`.
+ */
+export function extractVerdicts(raw: unknown): Verdict[] {
+  if (raw && typeof raw === "object") {
+    const obj = raw as Record<string, unknown>;
+    if (Array.isArray(obj.verdicts)) return obj.verdicts as Verdict[];
+    if (obj.verdict && typeof obj.verdict === "object") return [obj.verdict as Verdict];
+    if (typeof obj.tokenAddress === "string" && typeof obj.overallScore === "number") {
+      return [obj as unknown as Verdict];
+    }
+  }
+  throw new Error("fixture did not match any known shape");
+}
+
 export const HealthSchema = z.object({
   ok: z.boolean().optional(),
   contractAddress: z.string().optional(),

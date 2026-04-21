@@ -35,6 +35,22 @@ function txScanUrl(txHash: string): string {
   return `${config.explorerUrl.replace(/\/$/, "")}/tx/${txHash}`;
 }
 
+function shortAddr(addr: string): string {
+  if (addr.length < 10) return addr;
+  return `${addr.slice(0, 6)}…${addr.slice(-4)}`;
+}
+
+function displayName(v: Verdict): string {
+  const name = v.tokenName?.trim();
+  if (name) return name;
+  return shortAddr(v.tokenAddress);
+}
+
+function displaySymbol(v: Verdict): string {
+  const sym = v.tokenSymbol?.trim();
+  return sym ? ` ($${sym})` : "";
+}
+
 function nftPermalink(v: Verdict): string {
   if (config.frontendUrl) {
     return `${config.frontendUrl.replace(/\/$/, "")}/verdict/${v.verdictNftTokenId}`;
@@ -51,7 +67,7 @@ export function formatTweet(v: Verdict): string {
   const permalink = nftPermalink(v);
 
   const header =
-    `🚨 ${v.tokenName} ($${v.tokenSymbol}) launched on Four.meme\n\n` +
+    `🚨 ${displayName(v)}${displaySymbol(v)} launched on Four.meme\n\n` +
     `🤖 Guardian verdict: ${tier}\n` +
     `⚠️ Risk score: ${v.overallScore}/100\n`;
 
@@ -105,7 +121,10 @@ export function formatTelegram(v: Verdict): string {
   const permalink = nftPermalink(v);
 
   const lines: string[] = [];
-  lines.push(`🚨 *${mdEscape(v.tokenName)}* \\($${mdEscape(v.tokenSymbol)}\\) launched on Four\\.meme`);
+  const tgSym = v.tokenSymbol?.trim()
+    ? ` \\($${mdEscape(v.tokenSymbol.trim())}\\)`
+    : "";
+  lines.push(`🚨 *${mdEscape(displayName(v))}*${tgSym} launched on Four\\.meme`);
   lines.push("");
   lines.push(`🤖 Guardian verdict: *${mdEscape(tier)}*`);
   lines.push(`⚠️ Risk score: *${v.overallScore}/100*`);
