@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
+import { useAccount, useDisconnect } from "wagmi";
 
 type NavItem = { k: string; label: string; href: string; badge?: number };
 
@@ -13,8 +14,17 @@ interface NavProps {
 
 export function Nav({ myEns = "you.eth", matchedCount = 0 }: NavProps) {
   const pathname = usePathname();
+  const { address, isConnected } = useAccount();
+  const { disconnect } = useDisconnect();
   const [onlineDotMounted, setOnlineDotMounted] = useState(false);
+  const [hovering, setHovering] = useState(false);
   useEffect(() => setOnlineDotMounted(true), []);
+
+  const displayLabel = isConnected && address
+    ? hovering
+      ? "Disconnect ↗"
+      : `${address.slice(0, 6)}…${address.slice(-4)}`
+    : myEns;
 
   const items: NavItem[] = [
     { k: "home", label: "Home", href: "/" },
@@ -108,9 +118,28 @@ export function Nav({ myEns = "you.eth", matchedCount = 0 }: NavProps) {
           );
         })}
         <div style={{ width: 1, height: 20, background: "var(--rule)", margin: "0 12px" }} />
-        <div
+        <button
+          type="button"
+          onClick={() => {
+            if (isConnected) disconnect();
+          }}
+          onMouseEnter={() => setHovering(true)}
+          onMouseLeave={() => setHovering(false)}
+          disabled={!isConnected}
           className="mono"
-          style={{ fontSize: 11, color: "var(--ink-3)", display: "flex", alignItems: "center", gap: 8 }}
+          style={{
+            fontSize: 11,
+            color: hovering && isConnected ? "var(--terracotta)" : "var(--ink-3)",
+            display: "flex",
+            alignItems: "center",
+            gap: 8,
+            background: "none",
+            border: "none",
+            padding: "6px 10px",
+            cursor: isConnected ? "pointer" : "default",
+            letterSpacing: "0.04em",
+          }}
+          title={isConnected ? "Click to disconnect wallet" : ""}
         >
           {onlineDotMounted && (
             <span
@@ -118,12 +147,12 @@ export function Nav({ myEns = "you.eth", matchedCount = 0 }: NavProps) {
                 width: 6,
                 height: 6,
                 borderRadius: "50%",
-                background: "var(--moss)",
+                background: isConnected ? "var(--moss)" : "var(--ink-4)",
               }}
             />
           )}
-          {myEns}
-        </div>
+          {displayLabel}
+        </button>
       </div>
     </nav>
   );

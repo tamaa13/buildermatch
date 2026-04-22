@@ -1,14 +1,14 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { use, useEffect, useState } from "react";
 import { Icon } from "@/components/icons";
 import { Nav } from "@/components/nav";
 import { DataRow, MetaBlock } from "@/components/shared";
 import { api } from "@/lib/api";
+import { useMeId } from "@/lib/use-me";
 import type { BuilderProfile } from "@/lib/types";
-
-const DEMO_ME_ID = "0x3fab2c7d1a90b5e88a51a62c9c4ea1b30f0d5301"; // the protagonist's seed profile
 
 export default function ProfilePage({
   params,
@@ -16,12 +16,26 @@ export default function ProfilePage({
   params: Promise<{ address: string }>;
 }) {
   const { address } = use(params);
-  const resolvedId = address === "me" ? DEMO_ME_ID : decodeURIComponent(address).toLowerCase();
+  const router = useRouter();
+  const { id: meId, isGuest } = useMeId();
+
+  // /profile/me needs a connected wallet. Bounce guests back to the landing
+  // page so they see the connect prompt rather than a stale placeholder.
+  useEffect(() => {
+    if (address === "me" && isGuest) router.replace("/");
+  }, [address, isGuest, router]);
+
+  const resolvedId =
+    address === "me"
+      ? meId
+      : decodeURIComponent(address).toLowerCase();
   const [me, setMe] = useState<BuilderProfile | null>(null);
   const [copied, setCopied] = useState(false);
   const [err, setErr] = useState<string | null>(null);
+  const [filter, setFilter] = useState<"All" | "Deployed" | "Voted" | "Authored" | "Audited">("All");
 
   useEffect(() => {
+    if (!resolvedId) return;
     let cancelled = false;
     (async () => {
       try {
@@ -433,26 +447,32 @@ export default function ProfilePage({
                 }}
               >
                 <span className="label">Filter</span>
-                {["All", "Deployed", "Voted", "Authored", "Audited"].map(
-                  (f, i) => (
-                    <span
-                      key={f}
-                      className="mono"
-                      style={{
-                        fontSize: 11,
-                        letterSpacing: "0.06em",
-                        color: i === 0 ? "var(--ink)" : "var(--ink-3)",
-                        textTransform: "uppercase",
-                        borderBottom:
-                          i === 0
+                {(["All", "Deployed", "Voted", "Authored", "Audited"] as const).map(
+                  (f) => {
+                    const active = filter === f;
+                    return (
+                      <button
+                        key={f}
+                        onClick={() => setFilter(f)}
+                        className="mono"
+                        style={{
+                          fontSize: 11,
+                          letterSpacing: "0.06em",
+                          color: active ? "var(--ink)" : "var(--ink-3)",
+                          textTransform: "uppercase",
+                          borderBottom: active
                             ? "1px solid var(--ink)"
                             : "1px solid transparent",
-                        paddingBottom: 1,
-                      }}
-                    >
-                      {f}
-                    </span>
-                  ),
+                          paddingBottom: 1,
+                          background: "none",
+                          padding: 0,
+                          cursor: "pointer",
+                        }}
+                      >
+                        {f}
+                      </button>
+                    );
+                  },
                 )}
               </div>
             </div>
@@ -490,7 +510,7 @@ export default function ProfilePage({
                   ),
                 )}
               </div>
-              {me.receipts.map((r, i) => (
+              {filteredReceipts(me.receipts, filter).map((r, i) => (
                 <DataRow key={i} idx={i + 1} {...r} />
               ))}
             </div>
@@ -510,10 +530,15 @@ export default function ProfilePage({
                   letterSpacing: "0.06em",
                 }}
               >
-                Showing {me.receipts.length} receipts ·{" "}
-                <span className="link-underline">
+                Showing {filteredReceipts(me.receipts, filter).length} receipts ·{" "}
+                <a
+                  href={`https://sepolia.basescan.org/address/${me.address}`}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="link-underline"
+                >
                   view on explorer
-                </span>
+                </a>
               </span>
               <span
                 className="mono"
@@ -531,6 +556,15 @@ export default function ProfilePage({
       </div>
     </>
   );
+}
+
+function filteredReceipts(
+  receipts: BuilderProfile["receipts"],
+  filter: "All" | "Deployed" | "Voted" | "Authored" | "Audited",
+) {
+  if (filter === "All") return receipts;
+  const needle = filter.toLowerCase();
+  return receipts.filter((r) => r.type.toLowerCase().includes(needle));
 }
 
 function IdRow({ k, v }: { k: string; v: string }) {

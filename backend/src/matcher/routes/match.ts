@@ -41,7 +41,16 @@ matchRoutes.get("/match/candidates", async (c) => {
     }
   }
 
-  const pool = listProfiles().filter((p) => p.id !== viewer.id);
+  // Exclude the viewer themselves. Also exclude duplicates — if the viewer
+  // linked a GitHub handle, filter out other wallets that linked the same
+  // handle (common during local testing when one user experiments with
+  // multiple wallets; otherwise they'd see "themselves" in the queue).
+  const viewerGithub = viewer.github?.toLowerCase().trim();
+  const pool = listProfiles().filter((p) => {
+    if (p.id === viewer.id) return false;
+    if (viewerGithub && p.github?.toLowerCase().trim() === viewerGithub) return false;
+    return true;
+  });
   const reqId = c.get("reqId");
   log.info("match.candidates compute", { reqId, viewer: viewer.id, poolSize: pool.length });
 

@@ -1,5 +1,6 @@
 import { createConfig, http } from "wagmi";
 import { baseSepolia, bscTestnet } from "wagmi/chains";
+import { injected, metaMask } from "@wagmi/connectors";
 import type { Chain } from "viem";
 
 export const CHAIN_ID = Number(process.env.NEXT_PUBLIC_CHAIN_ID ?? 84532);
@@ -33,6 +34,15 @@ const activeChain: Chain =
 
 export const wagmiConfig = createConfig({
   chains: [activeChain],
+  connectors: [
+    injected({ shimDisconnect: true }),
+    metaMask({
+      dappMetadata: {
+        name: "BuilderMatch",
+        url: "https://buildermatch.app",
+      },
+    }),
+  ],
   transports: {
     [activeChain.id]: http(rpcUrl),
   },

@@ -12,6 +12,11 @@ export const config = {
   anthropicApiKey: env.ANTHROPIC_API_KEY ?? "",
   claudeModel: env.CLAUDE_MODEL ?? "claude-sonnet-4-6",
 
+  // OpenRouter unifies access to Claude/GPT/Gemini/Llama behind one key. When
+  // OPENROUTER_API_KEY is set, llm.ts prefers it over direct Anthropic.
+  openrouterApiKey: env.OPENROUTER_API_KEY ?? "",
+  openrouterModel: env.OPENROUTER_MODEL ?? "anthropic/claude-sonnet-4",
+
   bscscanApiKey: env.BSCSCAN_API_KEY ?? "",
   bscscanBase: env.BSCSCAN_TESTNET_BASE ?? "https://api-testnet.bscscan.com/api",
 

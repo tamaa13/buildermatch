@@ -20,6 +20,10 @@ async function j<T>(path: string, init?: RequestInit): Promise<T> {
     ...init,
     headers: {
       "content-type": "application/json",
+      // ngrok free-tier serves an interstitial HTML page on the first
+      // browser request to any ngrok-free.app URL, which breaks fetch JSON
+      // parsing. Any non-empty value on this header skips the interstitial.
+      "ngrok-skip-browser-warning": "1",
       ...(init?.headers ?? {}),
     },
   });
@@ -371,8 +375,66 @@ export const api = {
     });
   },
 
+  async myChats(profileId: string): Promise<
+    Array<{
+      chatId: string;
+      partnerId: string;
+      partner: BuilderProfile | null;
+      compatScore: number;
+      icebreakerDraft: string | null;
+      messageCount: number;
+      createdAt: number;
+      lastMessageAt: number;
+    }>
+  > {
+    const r = await j<{
+      chats: Array<{
+        chatId: string;
+        partnerId: string;
+        partner: BackendProfile | null;
+        icebreakerDraft: string | null;
+        messageCount: number;
+        createdAt: number;
+        lastMessageAt: number;
+      }>;
+    }>(`/api/chats?profileId=${encodeURIComponent(profileId)}`);
+    // Hydrate compatibility score from cached candidate ranking when possible.
+    const cands = await this.candidates(profileId, 50).catch(() => []);
+    const scoreByCandidate = new Map(cands.map((c) => [c.id, c.compatibility]));
+    return (r.chats ?? []).map((c) => ({
+      chatId: c.chatId,
+      partnerId: c.partnerId,
+      partner: c.partner ? mapProfile(c.partner) : null,
+      compatScore: scoreByCandidate.get(c.partnerId) ?? 0,
+      icebreakerDraft: c.icebreakerDraft,
+      messageCount: c.messageCount,
+      createdAt: c.createdAt,
+      lastMessageAt: c.lastMessageAt,
+    }));
+  },
+
   streamChatUrl(chatId: string, as: string): string {
     return `${BACKEND}/api/chat/${encodeURIComponent(chatId)}?as=${encodeURIComponent(as)}`;
+  },
+
+  async chatMessages(
+    chatId: string,
+    as: string,
+    since = 0,
+  ): Promise<{
+    messages: Array<{
+      id: string;
+      chatId: string;
+      fromProfileId: string;
+      text: string;
+      ts: number;
+    }>;
+    icebreakerDraft: string | null;
+    lastMessageAt: number;
+  }> {
+    return j(
+      `/api/chat/${encodeURIComponent(chatId)}/messages?as=${encodeURIComponent(as)}&since=${since}`,
+    );
   },
 
   async sendChat(

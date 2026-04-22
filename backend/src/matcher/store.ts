@@ -1,17 +1,14 @@
 import type { Attestation, Chat, ChatMessage, Match, Profile } from "../types";
-import { SEED_PROFILES } from "../seed/profiles";
 
-// In-memory datastore. Restart wipes state except for seed profiles, which
-// are always re-loaded. Production would push this to Postgres; for the
-// hackathon MVP a Map is fine and keeps the surface tight.
+// In-memory datastore — pool contains only real users who have connected a
+// wallet and built a profile. No NPC seeds. Production would push this to
+// Postgres; for the hackathon MVP a Map is fine and keeps the surface tight.
 
 const profiles = new Map<string, Profile>();
 const likes = new Set<string>(); // `${fromId}->${toId}`
 const chats = new Map<string, Chat>();
 const attestations = new Map<string, Attestation>(); // keyed by match id
 const matches = new Map<string, Match[]>(); // viewerId → ranked matches (cached)
-
-for (const p of SEED_PROFILES) profiles.set(p.id, p);
 
 export function upsertProfile(p: Profile): Profile {
   profiles.set(p.id, p);
@@ -57,6 +54,16 @@ export function getOrCreateChat(a: string, b: string): { chat: Chat; created: bo
 
 export function getChat(id: string): Chat | undefined {
   return chats.get(id);
+}
+
+export function listChatsForProfile(profileId: string): Chat[] {
+  const out: Chat[] = [];
+  for (const chat of chats.values()) {
+    if (chat.profileIds.includes(profileId)) out.push(chat);
+  }
+  return out.sort(
+    (a, b) => (b.lastMessageAt ?? b.createdAt) - (a.lastMessageAt ?? a.createdAt),
+  );
 }
 
 export function appendChatMessage(chatId: string, msg: ChatMessage) {

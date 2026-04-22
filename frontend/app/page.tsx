@@ -2,7 +2,8 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import { useAccount, useConnect, useDisconnect } from "wagmi";
 import { Icon } from "@/components/icons";
 import { api } from "@/lib/api";
 
@@ -12,9 +13,19 @@ interface HomeStats {
   attestations: number;
 }
 
+type ConnectStage = "idle" | "connecting" | "syncing" | "synced";
+
 export default function Landing() {
   const router = useRouter();
-  const [connecting, setConnecting] = useState(false);
+  const { address, isConnected } = useAccount();
+  const { connectors, connectAsync, isPending: isConnectPending, error: connectError } = useConnect();
+  const { disconnect } = useDisconnect();
+
+  const [stage, setStage] = useState<ConnectStage>("idle");
+  const [github, setGithub] = useState("");
+  const [syncError, setSyncError] = useState<string | null>(null);
+  const [autoSyncAttempted, setAutoSyncAttempted] = useState(false);
+
   const [stats, setStats] = useState<HomeStats>({
     profiles: 15,
     matches: 0,
@@ -34,14 +45,92 @@ export default function Landing() {
       .catch(() => {});
   }, []);
 
-  async function connect() {
-    setConnecting(true);
-    // In the demo narrative, "connect" means we take the user into fenway's profile.
-    // If a real wallet integration is wired, replace this with wagmi connect flow.
-    setTimeout(() => {
-      router.push("/profile/me");
-    }, 900);
+  // If already connected on mount (e.g. after wallet reload), detect profile
+  // and route straight to it so the UX is fast for repeat visitors.
+  useEffect(() => {
+    if (!isConnected || !address || autoSyncAttempted) return;
+    setAutoSyncAttempted(true);
+    (async () => {
+      try {
+        const p = await api.profile(address.toLowerCase());
+        if (p?.id) {
+          router.push(`/profile/${address.toLowerCase()}`);
+        }
+        // If profile not found, stay on page so user can supply GitHub.
+      } catch {
+        // 404 → stay on page, show GitHub step.
+      }
+    })();
+  }, [isConnected, address, autoSyncAttempted, router]);
+
+  // Desktop-with-extension uses the EIP-1193 injected connector. Mobile
+  // Safari / Chrome has no `window.ethereum`, so we fall back to the
+  // MetaMask SDK connector which opens the app via `metamask://` deep-link.
+  const [hasInjected, setHasInjected] = useState(false);
+  useEffect(() => {
+    setHasInjected(
+      typeof window !== "undefined" &&
+        typeof (window as { ethereum?: unknown }).ethereum !== "undefined",
+    );
+  }, []);
+
+  const metamaskConnector = useMemo(() => {
+    const injected = connectors.find((c) => c.id === "injected");
+    // @wagmi/connectors exposes the MetaMask SDK connector under the id
+    // `metaMaskSDK`, not `metaMask`. That SDK is what handles the
+    // mobile deep-link flow when window.ethereum is absent.
+    const mmSdk = connectors.find(
+      (c) =>
+        c.id === "metaMaskSDK" ||
+        c.id === "metaMask" ||
+        c.id === "io.metamask",
+    );
+    return (hasInjected ? injected ?? mmSdk : mmSdk ?? injected) ?? connectors[0];
+  }, [connectors, hasInjected]);
+
+  async function connectWallet() {
+    if (!metamaskConnector) {
+      setSyncError("No wallet detected. Install MetaMask to continue.");
+      return;
+    }
+    setStage("connecting");
+    setSyncError(null);
+    try {
+      await connectAsync({ connector: metamaskConnector });
+      setStage("idle"); // auto-sync effect will handle the rest
+    } catch (e) {
+      setStage("idle");
+      setSyncError((e as Error).message ?? "Connect cancelled.");
+    }
   }
+
+  async function syncProfile() {
+    if (!address) return;
+    setStage("syncing");
+    setSyncError(null);
+    try {
+      await api.buildProfile({
+        wallet: address,
+        github: github.trim() || undefined,
+      });
+      setStage("synced");
+      router.push(`/profile/${address.toLowerCase()}`);
+    } catch (e) {
+      setStage("idle");
+      setSyncError((e as Error).message ?? "Profile sync failed.");
+    }
+  }
+
+  const connectLabel =
+    stage === "connecting" || isConnectPending
+      ? "Opening MetaMask…"
+      : stage === "syncing"
+        ? "Reading onchain history…"
+        : isConnected
+          ? "Sync profile"
+          : "Connect wallet";
+
+  const showGithubStep = isConnected && !autoSyncAttempted && stage !== "syncing";
 
   return (
     <div
@@ -145,64 +234,137 @@ export default function Landing() {
             }}
           >
             <div className="label" style={{ marginBottom: 16 }}>
-              Step one
+              {isConnected ? "Step two" : "Step one"}
             </div>
             <div
               className="serif"
               style={{ fontSize: 28, lineHeight: 1.15, marginBottom: 24 }}
             >
-              Connect a wallet to see your profile.
+              {isConnected
+                ? "Link your GitHub — or skip to sync from onchain only."
+                : "Connect a wallet to see your profile."}
             </div>
 
+            {isConnected && (
+              <>
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                    padding: "10px 12px",
+                    background: "var(--paper)",
+                    border: "1px solid var(--rule)",
+                    marginBottom: 12,
+                  }}
+                >
+                  <span
+                    className="mono"
+                    style={{ fontSize: 11, color: "var(--ink-2)" }}
+                  >
+                    {address
+                      ? `${address.slice(0, 6)}…${address.slice(-4)}`
+                      : ""}
+                  </span>
+                  <button
+                    onClick={() => disconnect()}
+                    className="mono"
+                    style={{
+                      fontSize: 10,
+                      color: "var(--ink-3)",
+                      background: "none",
+                      border: "none",
+                      letterSpacing: "0.1em",
+                      textTransform: "uppercase",
+                      cursor: "pointer",
+                    }}
+                  >
+                    Disconnect
+                  </button>
+                </div>
+                <input
+                  type="text"
+                  placeholder="github handle (optional)"
+                  value={github}
+                  onChange={(e) => setGithub(e.target.value)}
+                  disabled={stage === "syncing"}
+                  style={{
+                    width: "100%",
+                    padding: "12px 14px",
+                    border: "1px solid var(--rule-strong)",
+                    background: "var(--paper)",
+                    fontFamily: "var(--mono)",
+                    fontSize: 12,
+                    marginBottom: 12,
+                    outline: "none",
+                  }}
+                />
+              </>
+            )}
+
             <button
-              onClick={connect}
-              disabled={connecting}
+              onClick={isConnected ? syncProfile : connectWallet}
+              disabled={stage === "connecting" || stage === "syncing" || isConnectPending}
               className="btn"
               style={{
                 width: "100%",
                 justifyContent: "space-between",
-                background: connecting ? "var(--ink-2)" : "var(--ink)",
+                background:
+                  stage === "connecting" || stage === "syncing"
+                    ? "var(--ink-2)"
+                    : "var(--ink)",
                 padding: "16px 20px",
               }}
             >
-              <span
-                style={{ display: "flex", alignItems: "center", gap: 12 }}
-              >
+              <span style={{ display: "flex", alignItems: "center", gap: 12 }}>
                 <Icon name="wallet" size={16} />
-                {connecting
-                  ? "Reading onchain history…"
-                  : "Connect wallet"}
+                {connectLabel}
               </span>
               <Icon name="arrow" size={16} />
             </button>
 
-            <div style={{ display: "flex", gap: 12, marginTop: 16 }}>
-              {["MetaMask", "Rainbow", "WalletConnect", "Coinbase"].map(
-                (w, i, arr) => (
-                  <span
-                    key={w}
-                    className="mono"
-                    style={{
-                      fontSize: 10.5,
-                      color: "var(--ink-3)",
-                      letterSpacing: "0.06em",
-                    }}
-                  >
-                    {w}
-                    {i < arr.length - 1 && (
-                      <span
-                        style={{
-                          margin: "0 6px",
-                          color: "var(--ink-4)",
-                        }}
-                      >
-                        ·
-                      </span>
-                    )}
-                  </span>
-                ),
-              )}
-            </div>
+            {(syncError || connectError) && (
+              <div
+                className="mono"
+                style={{
+                  fontSize: 11,
+                  color: "var(--terracotta)",
+                  marginTop: 12,
+                }}
+              >
+                {syncError ?? connectError?.message}
+              </div>
+            )}
+
+            {!isConnected && (
+              <div style={{ display: "flex", gap: 12, marginTop: 16 }}>
+                {["MetaMask", "Rainbow", "WalletConnect", "Coinbase"].map(
+                  (w, i, arr) => (
+                    <span
+                      key={w}
+                      className="mono"
+                      style={{
+                        fontSize: 10.5,
+                        color: "var(--ink-3)",
+                        letterSpacing: "0.06em",
+                      }}
+                    >
+                      {w}
+                      {i < arr.length - 1 && (
+                        <span
+                          style={{
+                            margin: "0 6px",
+                            color: "var(--ink-4)",
+                          }}
+                        >
+                          ·
+                        </span>
+                      )}
+                    </span>
+                  ),
+                )}
+              </div>
+            )}
 
             <div
               style={{
@@ -236,7 +398,7 @@ export default function Landing() {
       <div
         style={{
           display: "grid",
-          gridTemplateColumns: "repeat(4, 1fr)",
+          gridTemplateColumns: "repeat(3, 1fr)",
           borderTop: "1px solid var(--ink)",
           borderBottom: "1px solid var(--ink)",
           padding: "24px 0",
@@ -259,26 +421,18 @@ export default function Landing() {
             v: stats.attestations.toLocaleString(),
             suffix: "minted on Base Sepolia",
           },
-          {
-            k: "Active builders",
-            v: "2,103",
-            suffix: "past 7 days",
-          },
-        ].map((s, i) => (
+        ].map((s, i, arr) => (
           <div
             key={i}
             style={{
               padding: "0 28px",
-              borderRight: i < 3 ? "1px solid var(--rule)" : "none",
+              borderRight: i < arr.length - 1 ? "1px solid var(--rule)" : "none",
             }}
           >
             <div className="eyebrow" style={{ marginBottom: 10 }}>
               {s.k}
             </div>
-            <div
-              className="serif num"
-              style={{ fontSize: 42, lineHeight: 1 }}
-            >
+            <div className="serif num" style={{ fontSize: 42, lineHeight: 1 }}>
               {s.v}
             </div>
             <div
@@ -436,14 +590,12 @@ export default function Landing() {
             }}
           >
             We built this because we're tired of a signup flow where the first
-            question is{" "}
-            <em>&ldquo;tell us about yourself&rdquo;</em>. You already did.
-            Four years of it. It&rsquo;s public. Let us just read it.
+            question is <em>&ldquo;tell us about yourself&rdquo;</em>. You
+            already did. Four years of it. It&rsquo;s public. Let us just read
+            it.
           </p>
         </div>
-        <div
-          style={{ display: "flex", flexDirection: "column", gap: 12 }}
-        >
+        <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
           <Link
             href="/feed"
             className="btn btn-ghost"

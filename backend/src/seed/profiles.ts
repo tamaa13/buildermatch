@@ -1,14 +1,15 @@
 import type { Profile } from "../types";
 
-// 15 synthetic seed profiles spanning common hackathon-builder archetypes.
-// Wallets are randomly generated 0x addresses, NOT real people — using real
-// famous wallets without consent would be gross. Each profile is deep enough
-// that CompatibilityAnalyzer has signal to work with.
+// Synthetic demo-cast profiles — fictional builders designed to give the
+// matcher enough signal variety (skills × domains × commitment × values) for
+// the compatibility agent to rank meaningfully. Wallets are randomly
+// generated; these are NPC accounts, not people. The `github` field is
+// intentionally null because we don't want the frontend or GitHub API to
+// chase 404s for handles that don't exist.
 export const SEED_PROFILES: Profile[] = [
   {
     id: "0x3fab2c7d1a90b5e88a51a62c9c4ea1b30f0d5301",
     wallet: "0x3fab2c7d1a90b5e88a51a62c9c4ea1b30f0d5301",
-    github: "fenway-0x",
     displayName: "fenway.eth",
     avatarUrl: "https://api.dicebear.com/9.x/bottts-neutral/svg?seed=fenway",
     bio: "L1 protocol researcher — spent the last 18 months on data-availability sampling proofs. Wrote two EIP drafts, mostly living in Rust + Yul. Looking for a builder who can turn my research into a shippable client and isn't afraid of merkle trees.",
@@ -17,10 +18,10 @@ export const SEED_PROFILES: Profile[] = [
     values: ["open-source", "decentralisation", "long-term"],
     commitment: "full-time",
     onchainReceipts: [
-      { kind: "deployed_contract", chainId: 1, address: "0xAB12...DA4", note: "DA proof verifier MVP" },
+      { kind: "deployed_contract", chainId: 1, note: "DA proof verifier MVP" },
       { kind: "dao_vote", chainId: 1, note: "Voted NO on Arbitrum Short-Term Incentive Program" },
     ],
-    githubStats: { username: "fenway-0x", publicRepos: 34, totalStars: 812, topLanguages: ["Rust", "Solidity", "Python"], activeLast90d: true },
+    githubStats: undefined,
     reputation: { trustScore: 88, redFlags: [], endorsements: 6 },
     createdAt: 1_745_000_000,
     seeded: true,
@@ -28,7 +29,6 @@ export const SEED_PROFILES: Profile[] = [
   {
     id: "0x9c1e52a7b03f19e84c0f1a3d2b88b4d6f0e1c4a2",
     wallet: "0x9c1e52a7b03f19e84c0f1a3d2b88b4d6f0e1c4a2",
-    github: "lumen-yieldlab",
     displayName: "lumen.eth",
     avatarUrl: "https://api.dicebear.com/9.x/bottts-neutral/svg?seed=lumen",
     bio: "Built 3 live yield protocols across Arbitrum + Base, current TVL $14M combined. Obsessed with gas-efficient AMMs and correct-by-construction accounting. Not interested in another UI-first memecoin project.",
@@ -37,10 +37,10 @@ export const SEED_PROFILES: Profile[] = [
     values: ["revenue-first", "rigour", "decentralisation"],
     commitment: "full-time",
     onchainReceipts: [
-      { kind: "deployed_contract", chainId: 42161, address: "0xDE3...F12", note: "YieldLab v2 vault" },
-      { kind: "deployed_contract", chainId: 8453, address: "0xC91...E0A", note: "Concentrated-liquidity AMM" },
+      { kind: "deployed_contract", chainId: 42161, note: "YieldLab v2 vault" },
+      { kind: "deployed_contract", chainId: 8453, note: "Concentrated-liquidity AMM" },
     ],
-    githubStats: { username: "lumen-yieldlab", publicRepos: 22, totalStars: 412, topLanguages: ["Solidity", "TypeScript"], activeLast90d: true },
+    githubStats: undefined,
     reputation: { trustScore: 82, redFlags: [], endorsements: 4 },
     createdAt: 1_744_300_000,
     seeded: true,
@@ -48,7 +48,6 @@ export const SEED_PROFILES: Profile[] = [
   {
     id: "0x5d7a3f9b21e0c4a876b9e1f2d3c4a5b6e7f80912",
     wallet: "0x5d7a3f9b21e0c4a876b9e1f2d3c4a5b6e7f80912",
-    github: "quiver-ui",
     displayName: "quiver",
     avatarUrl: "https://api.dicebear.com/9.x/bottts-neutral/svg?seed=quiver",
     bio: "Frontend + design for Web3 products. Shipped the UIs for two cycle-1 DeFi dApps judged as 'actually usable'. I speak wagmi, viem, RainbowKit, and Figma. Pair me with someone who writes great contracts but can't make them feel good.",
@@ -59,7 +58,7 @@ export const SEED_PROFILES: Profile[] = [
     onchainReceipts: [
       { kind: "notable_tx", chainId: 8453, note: "deployed own ENS subdomain registry" },
     ],
-    githubStats: { username: "quiver-ui", publicRepos: 41, totalStars: 1_248, topLanguages: ["TypeScript", "CSS"], activeLast90d: true },
+    githubStats: undefined,
     reputation: { trustScore: 90, redFlags: [], endorsements: 9 },
     createdAt: 1_744_900_000,
     seeded: true,
@@ -67,7 +66,6 @@ export const SEED_PROFILES: Profile[] = [
   {
     id: "0x8f21d34b6a5c7e90e2b4f6c1d8a9b0c2d4e5f601",
     wallet: "0x8f21d34b6a5c7e90e2b4f6c1d8a9b0c2d4e5f601",
-    github: "blaze-launchpad",
     displayName: "blaze",
     avatarUrl: "https://api.dicebear.com/9.x/bottts-neutral/svg?seed=blaze",
     bio: "Ran 6 meme launches on Four.meme + pump.fun, two hit $2M mcap. Understand the exact moment a chart flips from pump to dump. Looking for a technical cofounder to build an honest launchpad — tired of the rug economy.",
@@ -78,7 +76,7 @@ export const SEED_PROFILES: Profile[] = [
     onchainReceipts: [
       { kind: "token_mint", chainId: 56, note: "launched $PEPI (peaked $2.1M mcap, down 60%)" },
     ],
-    githubStats: { username: "blaze-launchpad", publicRepos: 4, totalStars: 22, topLanguages: ["TypeScript"], activeLast90d: true },
+    githubStats: undefined,
     reputation: { trustScore: 60, redFlags: ["primarily trader background, light on shipped infra"], endorsements: 2 },
     createdAt: 1_745_400_000,
     seeded: true,
@@ -86,7 +84,6 @@ export const SEED_PROFILES: Profile[] = [
   {
     id: "0x2a1b9c7d5e0f4a6b3c8d2e5f1a4b7c9e0d2f3a4b",
     wallet: "0x2a1b9c7d5e0f4a6b3c8d2e5f1a4b7c9e0d2f3a4b",
-    github: "sage-dao-ops",
     displayName: "sage.dao",
     avatarUrl: "https://api.dicebear.com/9.x/bottts-neutral/svg?seed=sage",
     bio: "Treasury + governance operator for two $50M+ DAOs. Snapshot proposal count: 47. I can turn messy community fights into shipped motions. Not a dev — looking for a technical partner to build the governance tooling I keep hand-rolling in Python.",
@@ -98,7 +95,7 @@ export const SEED_PROFILES: Profile[] = [
       { kind: "dao_vote", chainId: 1, note: "authored Nouns Prop 412 (extend auction by 24h)" },
       { kind: "dao_vote", chainId: 1, note: "47 votes cast across 8 DAOs since 2023" },
     ],
-    githubStats: { username: "sage-dao-ops", publicRepos: 11, totalStars: 64, topLanguages: ["Python", "Markdown"], activeLast90d: true },
+    githubStats: undefined,
     reputation: { trustScore: 85, redFlags: [], endorsements: 11 },
     createdAt: 1_742_500_000,
     seeded: true,
@@ -106,7 +103,6 @@ export const SEED_PROFILES: Profile[] = [
   {
     id: "0x6e3a5b7c9d1f2a4b6c8d0e2f4a6b8c0d2e4f6a8b",
     wallet: "0x6e3a5b7c9d1f2a4b6c8d0e2f4a6b8c0d2e4f6a8b",
-    github: "aranea-zk",
     displayName: "aranea",
     avatarUrl: "https://api.dicebear.com/9.x/bottts-neutral/svg?seed=aranea",
     bio: "ZK cryptographer. PhD halfway through. Live in Circom + Noir. Built a private voting circuit used in one small DAO. Want to apply ZK to something dumb and fun, not another 'privacy-preserving institutional settlement' deck.",
@@ -115,9 +111,9 @@ export const SEED_PROFILES: Profile[] = [
     values: ["rigour", "open-source", "curiosity"],
     commitment: "hobby",
     onchainReceipts: [
-      { kind: "deployed_contract", chainId: 1, address: "0xFE0...B23", note: "anonymous voting circuit verifier" },
+      { kind: "deployed_contract", chainId: 1, note: "anonymous voting circuit verifier" },
     ],
-    githubStats: { username: "aranea-zk", publicRepos: 19, totalStars: 480, topLanguages: ["Rust", "Circom", "TypeScript"], activeLast90d: true },
+    githubStats: undefined,
     reputation: { trustScore: 80, redFlags: [], endorsements: 5 },
     createdAt: 1_743_800_000,
     seeded: true,
@@ -125,7 +121,6 @@ export const SEED_PROFILES: Profile[] = [
   {
     id: "0xabf4c7d2e9f0a1b3c5d7e9f0a2b4c6d8e0f2a4b6",
     wallet: "0xabf4c7d2e9f0a1b3c5d7e9f0a2b4c6d8e0f2a4b6",
-    github: "kato-indie",
     displayName: "kato",
     avatarUrl: "https://api.dicebear.com/9.x/bottts-neutral/svg?seed=kato",
     bio: "Shipped 4 solo hackathon projects, 2 won. Generalist — contracts, backend, frontend, can even draw. Looking for a specialist to go deep with on one idea instead of my usual 'ship, move on' cycle.",
@@ -137,7 +132,7 @@ export const SEED_PROFILES: Profile[] = [
       { kind: "deployed_contract", chainId: 8453, note: "ETHGlobal finalist project (community tipping)" },
       { kind: "deployed_contract", chainId: 10, note: "mini POAP-clone for meetups" },
     ],
-    githubStats: { username: "kato-indie", publicRepos: 58, totalStars: 312, topLanguages: ["TypeScript", "Solidity"], activeLast90d: true },
+    githubStats: undefined,
     reputation: { trustScore: 78, redFlags: ["high repo count, inconsistent long-term maintenance"], endorsements: 7 },
     createdAt: 1_745_200_000,
     seeded: true,
@@ -145,7 +140,6 @@ export const SEED_PROFILES: Profile[] = [
   {
     id: "0x14e8a3b6c9d2f0a1b4c6d8e0f2a4b6c8d0e2f4a6",
     wallet: "0x14e8a3b6c9d2f0a1b4c6d8e0f2a4b6c8d0e2f4a6",
-    github: "rho-mod",
     displayName: "rho",
     avatarUrl: "https://api.dicebear.com/9.x/bottts-neutral/svg?seed=rho",
     bio: "Community lead across 4 Discords, collectively 120k members. I can make a new project feel alive on day 1. No dev skills — don't try to get me to write Solidity. Pair me with a dev who can't be bothered with Discord politics.",
@@ -154,7 +148,7 @@ export const SEED_PROFILES: Profile[] = [
     values: ["community-first", "honesty"],
     commitment: "full-time",
     onchainReceipts: [],
-    githubStats: { username: "rho-mod", publicRepos: 2, totalStars: 3, topLanguages: ["Markdown"], activeLast90d: false },
+    githubStats: undefined,
     reputation: { trustScore: 75, redFlags: ["zero on-chain activity"], endorsements: 14 },
     createdAt: 1_744_100_000,
     seeded: true,
@@ -162,7 +156,6 @@ export const SEED_PROFILES: Profile[] = [
   {
     id: "0x7b2d4e6f8a0c1d3e5f7a9b0c2d4e6f8a0b2c4d6e",
     wallet: "0x7b2d4e6f8a0c1d3e5f7a9b0c2d4e6f8a0b2c4d6e",
-    github: "orion-audit",
     displayName: "orion",
     avatarUrl: "https://api.dicebear.com/9.x/bottts-neutral/svg?seed=orion",
     bio: "Smart contract auditor, Code4rena top-30 in 2024. Found 2 criticals, 11 highs across audit contests. Happy to be the 'adult in the room' for a team that moves fast but doesn't want to lose funds.",
@@ -173,7 +166,7 @@ export const SEED_PROFILES: Profile[] = [
     onchainReceipts: [
       { kind: "notable_tx", chainId: 1, note: "submitted 14 audit reports on Code4rena" },
     ],
-    githubStats: { username: "orion-audit", publicRepos: 9, totalStars: 118, topLanguages: ["Solidity"], activeLast90d: true },
+    githubStats: undefined,
     reputation: { trustScore: 92, redFlags: [], endorsements: 8 },
     createdAt: 1_743_000_000,
     seeded: true,
@@ -181,7 +174,6 @@ export const SEED_PROFILES: Profile[] = [
   {
     id: "0x23f6a8b0c2d4e6f8a0b2c4d6e8f0a2b4c6d8e0f2",
     wallet: "0x23f6a8b0c2d4e6f8a0b2c4d6e8f0a2b4c6d8e0f2",
-    github: "mira-pixel",
     displayName: "mira",
     avatarUrl: "https://api.dicebear.com/9.x/bottts-neutral/svg?seed=mira",
     bio: "Web3 product designer. NFT art background, now obsessed with making wallets feel like apps, not like 1997 Linux menus. Portfolio includes two shipped wallet UX redesigns and a Farcaster client.",
@@ -192,7 +184,7 @@ export const SEED_PROFILES: Profile[] = [
     onchainReceipts: [
       { kind: "token_mint", chainId: 8453, note: "NFT collection 'Lattice' — 500 unique" },
     ],
-    githubStats: { username: "mira-pixel", publicRepos: 12, totalStars: 67, topLanguages: ["TypeScript"], activeLast90d: true },
+    githubStats: undefined,
     reputation: { trustScore: 83, redFlags: [], endorsements: 5 },
     createdAt: 1_744_700_000,
     seeded: true,
@@ -200,7 +192,6 @@ export const SEED_PROFILES: Profile[] = [
   {
     id: "0x91c3b5d7e9f0a2b4c6d8e0f2a4b6c8d0e2f4a6b8",
     wallet: "0x91c3b5d7e9f0a2b4c6d8e0f2a4b6c8d0e2f4a6b8",
-    github: "helios-games",
     displayName: "helios",
     avatarUrl: "https://api.dicebear.com/9.x/bottts-neutral/svg?seed=helios",
     bio: "On-chain game dev. 8 years of Unity, now building fully-onchain roguelikes on Base. Obsessed with game-feel + actually-fun-to-play, not 'points you get for wallet activity'.",
@@ -211,7 +202,7 @@ export const SEED_PROFILES: Profile[] = [
     onchainReceipts: [
       { kind: "deployed_contract", chainId: 8453, note: "Roguelike session contract (2,300 plays)" },
     ],
-    githubStats: { username: "helios-games", publicRepos: 28, totalStars: 401, topLanguages: ["C#", "Solidity"], activeLast90d: true },
+    githubStats: undefined,
     reputation: { trustScore: 79, redFlags: [], endorsements: 4 },
     createdAt: 1_744_500_000,
     seeded: true,
@@ -219,7 +210,6 @@ export const SEED_PROFILES: Profile[] = [
   {
     id: "0x5a7b9c0d2e4f6a8b0c2d4e6f8a0b2c4d6e8f0a2b",
     wallet: "0x5a7b9c0d2e4f6a8b0c2d4e6f8a0b2c4d6e8f0a2b",
-    github: "nyx-infra",
     displayName: "nyx",
     avatarUrl: "https://api.dicebear.com/9.x/bottts-neutral/svg?seed=nyx",
     bio: "Infra eng — run custom indexers, RPC load balancers, and a private archive node fleet. If your dApp needs to serve data faster than Alchemy at 1/5 the cost, talk to me.",
@@ -230,7 +220,7 @@ export const SEED_PROFILES: Profile[] = [
     onchainReceipts: [
       { kind: "notable_tx", chainId: 1, note: "Ran a public mempool indexer (24k rps peak)" },
     ],
-    githubStats: { username: "nyx-infra", publicRepos: 17, totalStars: 234, topLanguages: ["Go", "Rust"], activeLast90d: true },
+    githubStats: undefined,
     reputation: { trustScore: 86, redFlags: [], endorsements: 6 },
     createdAt: 1_743_400_000,
     seeded: true,
@@ -238,7 +228,6 @@ export const SEED_PROFILES: Profile[] = [
   {
     id: "0xcf2a4b6c8d0e2f4a6b8c0d2e4f6a8b0c2d4e6f8a",
     wallet: "0xcf2a4b6c8d0e2f4a6b8c0d2e4f6a8b0c2d4e6f8a",
-    github: "vega-growth",
     displayName: "vega",
     avatarUrl: "https://api.dicebear.com/9.x/bottts-neutral/svg?seed=vega",
     bio: "Growth hacker. Scaled 2 crypto apps from 0 to 50k users. Paid acquisition + viral-loop design + founder-mode Twitter. Looking for a product I can honestly champion; ghostwriting another farming guide burnt me out.",
@@ -247,7 +236,7 @@ export const SEED_PROFILES: Profile[] = [
     values: ["revenue-first", "community-first", "honesty"],
     commitment: "side-project",
     onchainReceipts: [],
-    githubStats: { username: "vega-growth", publicRepos: 3, totalStars: 12, topLanguages: ["TypeScript"], activeLast90d: false },
+    githubStats: undefined,
     reputation: { trustScore: 72, redFlags: ["zero deployed contracts"], endorsements: 4 },
     createdAt: 1_744_000_000,
     seeded: true,
@@ -255,7 +244,6 @@ export const SEED_PROFILES: Profile[] = [
   {
     id: "0x38b5c7d9e0f2a4b6c8d0e2f4a6b8c0d2e4f6a8b0",
     wallet: "0x38b5c7d9e0f2a4b6c8d0e2f4a6b8c0d2e4f6a8b0",
-    github: "parsa-compliance",
     displayName: "parsa",
     avatarUrl: "https://api.dicebear.com/9.x/bottts-neutral/svg?seed=parsa",
     bio: "Lawyer turned crypto-native BD. Structured 4 token launches through EU MiCA. I am extremely not a dev; I am the person who keeps your launch from becoming an SEC press release. If your stack is 'ready to ship' and you haven't talked to a lawyer, we should talk.",
@@ -272,7 +260,6 @@ export const SEED_PROFILES: Profile[] = [
   {
     id: "0x76d8e0f2a4b6c8d0e2f4a6b8c0d2e4f6a8b0c2d4",
     wallet: "0x76d8e0f2a4b6c8d0e2f4a6b8c0d2e4f6a8b0c2d4",
-    github: "tessera-analytics",
     displayName: "tessera",
     avatarUrl: "https://api.dicebear.com/9.x/bottts-neutral/svg?seed=tessera",
     bio: "On-chain data scientist. Wrote the Dune dashboard three protocols now reference. Can spot a wash-trading cluster in five minutes. Looking to build something that puts the tools I keep hand-rolling into a product.",
@@ -283,7 +270,7 @@ export const SEED_PROFILES: Profile[] = [
     onchainReceipts: [
       { kind: "notable_tx", chainId: 1, note: "Dune dashboard referenced by 3 protocols' docs" },
     ],
-    githubStats: { username: "tessera-analytics", publicRepos: 14, totalStars: 178, topLanguages: ["Python", "SQL"], activeLast90d: true },
+    githubStats: undefined,
     reputation: { trustScore: 81, redFlags: [], endorsements: 5 },
     createdAt: 1_743_500_000,
     seeded: true,

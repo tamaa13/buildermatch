@@ -1,14 +1,14 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Icon } from "@/components/icons";
 import { Nav } from "@/components/nav";
 import { Avatar } from "@/components/shared";
 import { api } from "@/lib/api";
+import { useMeId } from "@/lib/use-me";
 import type { BuilderProfile, ChatMessage } from "@/lib/types";
-
-const DEMO_ME_ID = "0x3fab2c7d1a90b5e88a51a62c9c4ea1b30f0d5301";
 
 interface Conversation {
   chatId: string;
@@ -19,6 +19,15 @@ interface Conversation {
 }
 
 export default function MatchPage() {
+  const router = useRouter();
+  const { id: meId, isGuest } = useMeId();
+
+  // Disconnecting returns you to the landing page instead of stranding you
+  // on a page tied to a wallet that's no longer connected.
+  useEffect(() => {
+    if (isGuest) router.replace("/");
+  }, [isGuest, router]);
+
   const [me, setMe] = useState<BuilderProfile | null>(null);
   const [conversations, setConversations] = useState<Conversation[]>([]);
   const [selectedChatId, setSelectedChatId] = useState<string | null>(null);
@@ -28,70 +37,65 @@ export default function MatchPage() {
   const [mintedMatches, setMintedMatches] = useState<
     Record<string, { tokenId: number; txHash: string }>
   >({});
-  const esRef = useRef<EventSource | null>(null);
   const chatEndRef = useRef<HTMLDivElement>(null);
 
-  // Bootstrap: fetch my profile first (fast), then seed mutual matches in background (slow)
+  // Bootstrap: fetch my profile + genuine mutual-match chats.
+  // Polling every 4s so the "matches" panel reacts when the other user swipes
+  // right — critical for the real 2-session demo flow.
   useEffect(() => {
+    if (!meId) return;
     let cancelled = false;
 
-    // Fast path: my profile, so nav shell + empty-state render immediately
     api
-      .profile(DEMO_ME_ID)
+      .profile(meId)
       .then((p) => {
         if (!cancelled) setMe(p);
       })
       .catch(() => {});
 
-    // Slow path: try to seed 2 mutual matches with a short total timeout.
-    // If anything stalls, we just fall back to empty-state which is fine.
-    const seedPromise = (async () => {
-      const top2 = (await api.candidates(DEMO_ME_ID, 4)).slice(0, 2);
-      if (cancelled) return [] as Conversation[];
-
-      const results = await Promise.allSettled(
-        top2.map(async (cand) => {
-          await api.like(DEMO_ME_ID, cand.id).catch(() => null);
-          const r2 = await api.like(cand.id, DEMO_ME_ID).catch(() => null);
-          if (!r2?.mutual || !r2.chatId) return null;
-          const partner = await api.profile(cand.id).catch(() => null);
-          if (!partner) return null;
-          return {
-            chatId: r2.chatId,
-            partner,
-            compatScore: cand.compatibility,
-            messages: [],
-          } satisfies Conversation;
-        }),
-      );
-
-      return results
-        .flatMap((r) => (r.status === "fulfilled" && r.value ? [r.value] : []));
-    })();
-
-    const timeout = new Promise<Conversation[]>((resolve) =>
-      setTimeout(() => resolve([]), 8000),
-    );
-
-    Promise.race([seedPromise, timeout]).then((convs) => {
-      if (cancelled) return;
-      setConversations(convs);
-      if (convs.length > 0) {
-        setSelectedChatId(convs[0].chatId);
+    const refresh = async () => {
+      try {
+        const chats = await api.myChats(meId);
+        if (cancelled) return;
+        setConversations((prev) => {
+          // Preserve already-loaded messages for chats that still exist.
+          const prevById = new Map(prev.map((c) => [c.chatId, c]));
+          const next: Conversation[] = chats
+            .filter((c) => c.partner)
+            .map((c) => ({
+              chatId: c.chatId,
+              partner: c.partner!,
+              compatScore: c.compatScore,
+              icebreaker: c.icebreakerDraft ?? undefined,
+              messages: prevById.get(c.chatId)?.messages ?? [],
+            }));
+          return next;
+        });
+        setSelectedChatId((curr) => {
+          if (curr && chats.some((c) => c.chatId === curr)) return curr;
+          return chats[0]?.chatId ?? null;
+        });
+      } catch {
+        /* ignore transient errors */
       }
-    });
+    };
 
+    refresh();
+    const iv = setInterval(refresh, 4000);
     return () => {
       cancelled = true;
+      clearInterval(iv);
     };
-  }, []);
+  }, [meId]);
 
-  // Subscribe to SSE of the selected chat
+  // Poll chat messages every 1.2s. SSE would be lower-latency but free
+  // tunnels (ngrok-free, cloudflared quick) buffer streaming responses, so
+  // messages would appear to stall. Polling is boring but works everywhere.
   useEffect(() => {
-    if (!selectedChatId || !me) return;
-    const url = api.streamChatUrl(selectedChatId, DEMO_ME_ID);
-    const es = new EventSource(url);
-    esRef.current = es;
+    if (!selectedChatId || !me || !meId) return;
+    let cancelled = false;
+    let since = 0;
+    let lastSeenIds = new Set<string>();
 
     const applyMessage = (m: ChatMessage) => {
       setConversations((prev) =>
@@ -103,54 +107,54 @@ export default function MatchPage() {
       );
     };
 
-    es.addEventListener("chat_open", (ev) => {
+    // Reset on (re)subscribe so switching between two mutual matches doesn't
+    // leak the previous conversation's tail into the new view.
+    setConversations((prev) =>
+      prev.map((c) =>
+        c.chatId === selectedChatId ? { ...c, messages: [] } : c,
+      ),
+    );
+    lastSeenIds = new Set();
+    since = 0;
+
+    const poll = async () => {
+      if (cancelled) return;
       try {
-        const data = JSON.parse((ev as MessageEvent<string>).data);
-        if (data?.messages) {
+        const r = await api.chatMessages(selectedChatId, meId, since);
+        if (cancelled) return;
+        if (r.icebreakerDraft) {
           setConversations((prev) =>
             prev.map((c) =>
-              c.chatId === selectedChatId ? { ...c, messages: data.messages } : c,
+              c.chatId === selectedChatId
+                ? { ...c, icebreaker: r.icebreakerDraft ?? c.icebreaker }
+                : c,
             ),
           );
         }
-      } catch {
-        /* ignore */
-      }
-    });
-    es.addEventListener("icebreaker_ready", (ev) => {
-      try {
-        const data = JSON.parse((ev as MessageEvent<string>).data);
-        if (data?.text) {
-          setConversations((prev) =>
-            prev.map((c) =>
-              c.chatId === selectedChatId ? { ...c, icebreaker: data.text } : c,
-            ),
-          );
-        }
-      } catch {
-        /* ignore */
-      }
-    });
-    es.addEventListener("message", (ev) => {
-      try {
-        const data = JSON.parse((ev as MessageEvent<string>).data);
-        if (data?.text) {
+        for (const m of r.messages) {
+          if (lastSeenIds.has(m.id)) continue;
+          lastSeenIds.add(m.id);
+          if (m.ts > since) since = m.ts;
           applyMessage({
-            who: data.fromProfileId === DEMO_ME_ID ? "you" : "them",
-            at: "now",
-            text: data.text,
+            who: m.fromProfileId === meId ? "you" : "them",
+            at: formatTime(m.ts),
+            text: m.text,
           });
         }
       } catch {
-        /* ignore */
+        /* ignore transient errors; next tick will retry */
       }
-    });
+    };
+
+    // Fast initial load, then steady cadence.
+    poll();
+    const iv = setInterval(poll, 1200);
 
     return () => {
-      es.close();
-      esRef.current = null;
+      cancelled = true;
+      clearInterval(iv);
     };
-  }, [selectedChatId, me]);
+  }, [selectedChatId, me, meId]);
 
   useEffect(() => {
     setIcebreakerUsed(false);
@@ -167,11 +171,11 @@ export default function MatchPage() {
   );
 
   async function send() {
-    if (!draft.trim() || !selected) return;
+    if (!draft.trim() || !selected || !meId) return;
     const text = draft.trim();
     setDraft("");
     try {
-      await api.sendChat(selected.chatId, DEMO_ME_ID, text);
+      await api.sendChat(selected.chatId, meId, text);
     } catch {
       // add optimistically anyway
       setConversations((prev) =>
@@ -206,8 +210,8 @@ export default function MatchPage() {
         setMintedMatches((prev) => ({
           ...prev,
           [selected.chatId]: {
-            tokenId: r.attestation.attestationTokenId ?? 0,
-            txHash: r.attestation.attestationTxHash ?? "",
+            tokenId: r.attestation.tokenId ?? 0,
+            txHash: r.attestation.txHash ?? "",
           },
         }));
       }
@@ -287,8 +291,7 @@ export default function MatchPage() {
         style={{
           display: "grid",
           gridTemplateColumns: "220px 1fr 300px",
-          height: "calc(100vh - 65px)",
-          overflow: "hidden",
+          minHeight: "calc(100vh - 65px)",
         }}
       >
         {/* Left: match list */}
@@ -783,7 +786,7 @@ export default function MatchPage() {
                   }}
                 >
                   <Icon name="spark" size={13} />
-                  <span>{minting ? "Minting on-chain…" : "Mint attestation (demo)"}</span>
+                  <span>{minting ? "Minting on-chain…" : "Mint collaboration NFT"}</span>
                 </button>
               )}
 
@@ -832,4 +835,10 @@ function getShared(a: BuilderProfile, b: BuilderProfile): string[] {
   return [...new Set([...b.skills, ...b.domains])]
     .filter((x) => aSet.has(x))
     .slice(0, 5);
+}
+
+function formatTime(ts?: number): string {
+  if (!ts) return "now";
+  const d = new Date(ts);
+  return d.toLocaleTimeString(undefined, { hour: "2-digit", minute: "2-digit" });
 }

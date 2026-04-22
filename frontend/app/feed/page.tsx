@@ -6,12 +6,12 @@ import { Icon } from "@/components/icons";
 import { Nav } from "@/components/nav";
 import { Avatar, CompatBar, DottedScore } from "@/components/shared";
 import { api } from "@/lib/api";
+import { useMeId } from "@/lib/use-me";
 import type { Candidate } from "@/lib/types";
-
-const DEMO_ME_ID = "0x3fab2c7d1a90b5e88a51a62c9c4ea1b30f0d5301";
 
 export default function FeedPage() {
   const router = useRouter();
+  const { id: meId, isGuest } = useMeId();
   const [candidates, setCandidates] = useState<Candidate[]>([]);
   const [idx, setIdx] = useState(0);
   const [swipe, setSwipe] = useState<"pass" | "match" | null>(null);
@@ -22,14 +22,21 @@ export default function FeedPage() {
   const startX = useRef(0);
   const dragging = useRef(false);
 
+  // Disconnecting the wallet on any signed-in route should bounce the user
+  // back to the landing page instead of stranding them on a stale view.
+  useEffect(() => {
+    if (isGuest) router.replace("/");
+  }, [isGuest, router]);
+
   const current = candidates[idx];
   const hasMore = idx < candidates.length;
 
   useEffect(() => {
+    if (!meId) return;
     let cancelled = false;
     (async () => {
       try {
-        const r = await api.candidates(DEMO_ME_ID, 15);
+        const r = await api.candidates(meId, 15);
         if (!cancelled) setCandidates(r);
       } catch {
         /* ignore */
@@ -38,17 +45,17 @@ export default function FeedPage() {
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [meId]);
 
   const decide = useMemo(
     () => async (verdict: "pass" | "match") => {
-      if (!current) return;
+      if (!current || !meId) return;
       setSwipe(verdict);
       let mutual = false;
       let chatId: string | undefined;
       if (verdict === "match") {
         try {
-          const r = await api.like(DEMO_ME_ID, current.id);
+          const r = await api.like(meId, current.id);
           mutual = !!r.mutual;
           chatId = r.chatId;
         } catch {
@@ -102,15 +109,14 @@ export default function FeedPage() {
 
   return (
     <>
-      <Nav matchedCount={matchedCount} myEns={DEMO_ME_ID === "fenway" ? "fenway.eth" : DEMO_ME_ID} />
+      <Nav matchedCount={matchedCount} myEns={meId ?? undefined} />
 
       <div
         className="rise"
         style={{
           display: "grid",
           gridTemplateColumns: "240px 1fr 260px",
-          height: "calc(100vh - 65px)",
-          overflow: "hidden",
+          minHeight: "calc(100vh - 65px)",
         }}
       >
         {/* Left sidebar */}
@@ -762,10 +768,11 @@ export default function FeedPage() {
             }}
           >
             {[
-              ["Skill complement", "65%"],
-              ["Domain overlap", "20%"],
-              ["Commitment", "10%"],
-              ["Timezone", "5%"],
+              ["Skill complement", "32%"],
+              ["Values alignment", "26%"],
+              ["Domain overlap", "14%"],
+              ["Commitment fit", "14%"],
+              ["Reputation synergy", "14%"],
             ].map(([k, v]) => (
               <div
                 key={k}

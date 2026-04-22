@@ -1,7 +1,12 @@
 import { Hono } from "hono";
 import { streamSSE } from "hono/streaming";
 import { z } from "zod";
-import { appendChatMessage, getChat, getProfile } from "../store";
+import {
+  appendChatMessage,
+  getChat,
+  getProfile,
+  listChatsForProfile,
+} from "../store";
 import { broadcastToTopic, createSession, subscribe } from "../../sessions";
 import { encodeSse } from "../../util/sse";
 import type { ChatMessage, SseEvent } from "../../types";
@@ -10,6 +15,54 @@ import { log } from "../../util/log";
 type Variables = { reqId: string };
 
 export const chatRoutes = new Hono<{ Variables: Variables }>();
+
+// GET /api/chat/:chatId/messages?since=<ts> — polling fallback for clients
+// behind reverse proxies that buffer SSE (e.g. ngrok-free, cloudflared quick
+// tunnels). Returns the full message list and the current icebreaker draft.
+// When `since` is provided, only messages with `ts > since` are returned —
+// typical poll cadence is every 1–2s.
+chatRoutes.get("/chat/:chatId/messages", (c) => {
+  const chatId = c.req.param("chatId");
+  const asId = c.req.query("as")?.toLowerCase();
+  const sinceRaw = c.req.query("since");
+  const since = sinceRaw ? Number(sinceRaw) : 0;
+  const chat = getChat(chatId);
+  if (!chat) return c.json({ error: "chat not found" }, 404);
+  if (!asId || !chat.profileIds.includes(asId)) {
+    return c.json({ error: "not a participant in this chat" }, 403);
+  }
+  const messages = chat.messages.filter((m) => m.ts > since);
+  return c.json({
+    chatId,
+    messages,
+    icebreakerDraft: chat.icebreakerDraft ?? null,
+    profileIds: chat.profileIds,
+    lastMessageAt: chat.lastMessageAt ?? chat.createdAt,
+  });
+});
+
+// GET /api/chats?profileId=X — list all mutual-match chats for the given
+// profile. Used by the Matches page to hydrate without forging mutuals.
+chatRoutes.get("/chats", (c) => {
+  const profileId = c.req.query("profileId")?.toLowerCase();
+  if (!profileId) return c.json({ error: "profileId required" }, 400);
+  const chats = listChatsForProfile(profileId);
+  const enriched = chats.map((chat) => {
+    const partnerId = chat.profileIds.find((id) => id !== profileId) ?? "";
+    const partner = getProfile(partnerId);
+    return {
+      chatId: chat.id,
+      profileIds: chat.profileIds,
+      partnerId,
+      partner: partner ?? null,
+      messageCount: chat.messages.length,
+      createdAt: chat.createdAt,
+      lastMessageAt: chat.lastMessageAt ?? chat.createdAt,
+      icebreakerDraft: chat.icebreakerDraft ?? null,
+    };
+  });
+  return c.json({ chats: enriched, count: enriched.length });
+});
 
 // GET /api/chat/:chatId — SSE stream.
 // The client identifies itself via ?as=<profileId> so we can 403 outsiders
@@ -36,7 +89,19 @@ chatRoutes.get("/chat/:chatId", (c) => {
     session.buffer.push({ event: "icebreaker_ready", data: { chatId, draft: chat.icebreakerDraft } });
   }
 
+  // Tell nginx/cloudflared proxies not to buffer this response. Cloudflare
+  // quick tunnels + other reverse proxies buffer SSE by default, which makes
+  // the stream appear silent to the client — events sit server-side until
+  // the buffer fills or the connection closes. This header forces a
+  // per-chunk passthrough so writeSSE frames reach the browser immediately.
+  c.header("X-Accel-Buffering", "no");
+  c.header("Cache-Control", "no-cache, no-transform");
+
   return streamSSE(c, async (stream) => {
+    // Prime the pipe with ~2KB of comment padding. Some proxies buffer the
+    // first 2KB regardless of headers; this forces the first real event
+    // through immediately after.
+    await stream.write(":" + " ".repeat(2048) + "\n\n");
     let ended = false;
     const queue: SseEvent[] = [];
     let resolve: (() => void) | null = null;

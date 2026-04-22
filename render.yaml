@@ -1,0 +1,41 @@
+services:
+  - type: web
+    name: buildermatch-backend
+    runtime: docker
+    plan: free
+    region: singapore
+    rootDir: backend
+    dockerfilePath: ./Dockerfile
+    healthCheckPath: /api/health
+    autoDeploy: true
+    envVars:
+      - key: PORT
+        value: "3001"
+      - key: LOG_LEVEL
+        value: info
+      - key: CHAIN_ID
+        value: "84532"
+      - key: RPC_URL
+        value: https://sepolia.base.org
+      - key: CONTRACT_ADDRESS
+        value: "0x4f635A02B6Cf998A0508dADE3e2f85e5a2dCAB7a"
+      - key: MOCK_CHAIN
+        value: "false"
+      - key: MOCK_IPFS
+        value: "false"
+      - key: MOCK_SENTIMENT
+        value: "false"
+      - key: MOCK_AGENTS
+        value: "false"
+      - key: DEMO_HIGH_RISK
+        value: "false"
+      - key: DEMO_MODE
+        value: "true"
+      - key: OPENROUTER_MODEL
+        value: anthropic/claude-sonnet-4.6
+      # Set the secrets below manually in the Render dashboard — Render will
+      # prompt for them when the service is first provisioned.
+      - key: ORCHESTRATOR_PRIVATE_KEY
+        sync: false
+      - key: OPENROUTER_API_KEY
+        sync: false

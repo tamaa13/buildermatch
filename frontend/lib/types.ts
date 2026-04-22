@@ -53,17 +53,23 @@ export interface ChatMessage {
   text: string;
 }
 
+// Matches the backend `Attestation` shape returned from /api/attestation/mint.
+// The frontend previously referred to these as "Match" with prefixed names
+// (attestationTokenId, attestationTxHash) — those never matched the wire
+// format and silently returned undefined.
 export interface Match {
+  id: string;
   matchId: string;
-  chatId: string;
-  fromId: string;
-  toId: string;
+  endorser: string;
+  attestee: string;
   compatScore: number;
-  icebreaker?: string;
-  createdAt: number;
-  attestationMinted?: boolean;
-  attestationTokenId?: number;
-  attestationTxHash?: string;
+  endorsementText: string;
+  ipfsUri: string;
+  reasoningHash: string;
+  tokenId: number;
+  txHash: string;
+  chainId: number;
+  mintedAt: number;
 }
 
 export interface SystemState {
