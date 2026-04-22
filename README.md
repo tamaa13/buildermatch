@@ -1,147 +1,155 @@
-# memegard — Guardian for Four.meme
+# BuilderMatch
 
-> **Every day, ~1000 tokens launch on Four.meme. 95% are rugs.**
-> memegard is a multi-agent AI swarm that interrogates every launch, debates the risk, and writes an immutable verdict on-chain — before degens ape in.
+> **An honest directory of builders, verified by onchain activity.**
+> Find the one who will build the next thing with you.
 
-[中文版 README](./README_zh.md) · [Demo video](./ops/demo.mp4) · [Pitch](./ops/pitch/pitch.pdf) · [Twitter bot](#social-publisher) · [Telegram bot](#social-publisher)
+[Live demo](https://adams-sandwich-ruling-downtown.trycloudflare.com) · [Contract on BaseScan](https://sepolia.basescan.org/address/0x4f635A02B6Cf998A0508dADE3e2f85e5a2dCAB7a)
 
 ---
 
-## What it does
+## What it is
 
-Paste a Four.meme token contract address. Five specialised Claude-powered agents pull fresh on-chain + social data, argue the risk, and converge on a verdict. The orchestrator pins the full debate transcript to IPFS and mints an ERC-721 verdict certificate on Base Sepolia (chainId `84532`). Twitter + Telegram bots broadcast the result the moment it's finalised.
+**BuilderMatch is a co-founder matchmaker for Web3 builders — but the profile isn't what you claim, it's what the chain says about you.**
 
-> **Chain choice:** Base Sepolia is the public PoC — a funded deployer wallet let us ship on hackathon day. BNB Chain (Chapel testnet → mainnet, where Four.meme lives) is **one env swap away**: `CHAIN_ID`, `RPC_URL`, `EXPLORER_URL` are read from env end-to-end, zero code change to retarget. Production target: BNB.
->
-> **Deployed VerdictRegistry:** [`0x4f635A02B6Cf998A0508dADE3e2f85e5a2dCAB7a`](https://sepolia.basescan.org/address/0x4f635A02B6Cf998A0508dADE3e2f85e5a2dCAB7a) on Base Sepolia (`84532`). Deploy tx: [`0x4dd1…d320`](https://sepolia.basescan.org/tx/0x4dd110c3d520fa7a2a428fa5af8f7823158426a6091b1287d8cc645f8ca3d320).
+LinkedIn has résumés. Twitter has noise. Discord is a spam swamp. All claims, zero receipts.
 
-Every verdict is:
+We read your wallet — every contract you deployed, every vote you cast, every commit you merged — and compose a CV from the real pattern of your work. Then five specialist AI agents score compatibility against other verified builders: skill complement, domain overlap, values alignment (inferred from governance votes), commitment match. No chemistry guessing. Math.
 
-- **Transparent** — the full agent debate is on IPFS, hash-committed on chain.
-- **Immutable** — once minted, the certificate and its reasoning CID are forever auditable.
-- **Viral** — Twitter + Telegram feeds let the whole community piggyback on the same signal.
+Mutual match unlocks a chat with an AI-drafted icebreaker. After 30 days of collaboration, both parties mint a soulbound **Collaboration NFT** on Base Sepolia — an onchain receipt that compounds into a portable reputation.
+
+Built for **Four.meme AI Sprint 2026**.
+
+---
 
 ## The five agents
 
-| Agent | Role | Data sources |
-| --- | --- | --- |
-| 🔎 **Contract Auditor** | Static analysis of Solidity source — honeypots, hidden mints, blacklist traps, proxy shenanigans | Block-explorer source + bytecode, verified contracts |
-| 💧 **Liquidity Analyst** | LP size, lock status, holder concentration, exit-liquidity math | On-chain LP pair, LP token holders |
-| 👤 **Dev Stalker** | Deployer wallet history, funding trail, prior rugs, Tornado links | Block-explorer address history, related-address graph |
-| 📣 **Sentiment Watcher** | Twitter/Telegram volume vs. bot-likeness of mentions | X API v2, Telegram public channels |
-| 🎯 **Meta Matcher** | How a launch slots into the current Four.meme meta — novel or copycat | Four.meme trending, recent launch index |
+| Agent | What it does |
+|---|---|
+| **ProfileSynthesizer** | Reads wallet tx history + GitHub + Snapshot votes, composes a first-person narrative |
+| **CompatibilityAnalyzer** | Scores two profiles on 5 axes, writes a specific rationale, flags low-match reasons |
+| **IcebreakerWriter** | Drafts the first message after mutual match, referencing both profiles' real work |
+| **ValueExtractor** | Infers values (decentralisation, open-source, rigour, revenue-first) from governance vote history |
+| **ReputationAuditor** | Aggregates prior collaboration attestations, flags inconsistencies |
 
-Verdicts land on a 0–100 risk scale and collapse into three tiers: `LOW_RISK`, `MEDIUM_RISK`, `HIGH_RISK`.
+Agents run as plain typed async functions and are composed per-endpoint. Each has a deterministic heuristic fallback for zero-key dev/CI + an LLM path for production.
+
+---
+
+## Stack
+
+| Layer | Technology |
+|---|---|
+| **Frontend** | Next.js 16 (App Router) · Tailwind v4 · shadcn/ui · wagmi v3 · viem |
+| **Backend** | Bun + Hono · Claude Agent SDK · topic-based SSE bus |
+| **Contract** | Solidity 0.8.24 · Foundry · deployed to Base Sepolia (`0x4f63...AB7a`) |
+| **IPFS** | Pinata (canonical JSON endorsement docs, `keccak256` committed on chain) |
+| **Voice** | ElevenLabs TTS for demo VO |
+| **Ops** | Custom 6-act demo stitcher (stitch-acts + overlay-live + render-vo) |
+| **Typography** | Instrument Serif + JetBrains Mono + Inter |
+
+---
 
 ## Architecture
 
 ```
-                            ┌──────────────────────────┐
-                            │ Four.meme new launch     │
-                            │ (contract address event) │
-                            └────────────┬─────────────┘
-                                         │
-                       ┌─────────────────▼──────────────────┐
-                       │  backend/ — Bun + Hono orchestrator│
-                       │  5 × Claude agents, streaming SSE  │
-                       └──┬──────────────┬─────────────┬────┘
-                          │              │             │
-               ┌──────────▼──────┐  ┌────▼──────┐  ┌───▼───────────┐
-               │ IPFS (Pinata)   │  │ Viem RPC  │  │ SSE to        │
-               │ ← reasoning JSON│  │ ↓ mint    │  │ frontend UI   │
-               └─────────────────┘  │ VerdictR. │  └───────┬───────┘
-                                    └─────┬─────┘          │
-                                          │                │
-                              ┌───────────▼───────────┐    │
-                              │ contracts/ — ERC-721  │    │
-                              │ VerdictRegistry       │    │
-                              │ Base Sepolia (84532)  │    │
-                              │ BNB Chapel roadmap    │    │
-                              └───────────┬───────────┘    │
-                                          │                │
-                              ┌───────────▼────────────┐   │
-                              │ ops/ publisher polls   │   │
-                              │ /api/verdicts?since=.. │   │
-                              │ → Twitter + Telegram   │◄──┘
-                              └────────────────────────┘
+       ┌─────────────┐
+       │  Wallet     │  ← user connects
+       └──────┬──────┘
+              │
+              ▼
+       ┌─────────────────────────┐
+       │  ProfileSynthesizer     │  ← BscScan + GitHub + Snapshot
+       │  (LLM or heuristic)     │
+       └──────┬──────────────────┘
+              │ Profile JSON
+              ▼
+       ┌─────────────────────────┐    ┌─────────────┐
+       │  CompatibilityAnalyzer  │◀───│ Candidate   │
+       │  × candidate pool       │    │ pool        │
+       └──────┬──────────────────┘    └─────────────┘
+              │ ranked matches + signals
+              ▼
+       ┌─────────────────────────┐
+       │  Swipe UI               │  ← user decides
+       └──────┬──────────────────┘
+              │ mutual like
+              ▼
+       ┌─────────────────────────┐
+       │  IcebreakerWriter       │
+       │  + SSE chat bus         │
+       └──────┬──────────────────┘
+              │ 30 days of collab
+              ▼
+       ┌─────────────────────────┐
+       │  Attestation mint       │  ← Base Sepolia NFT
+       │  IPFS pin + keccak256   │
+       └─────────────────────────┘
 ```
 
-## Why Guardian is different
+---
 
-- **First multi-agent on-chain DD.** Not a single LLM with a vague opinion — five specialised Claudes with disjoint data sources and disjoint failure modes.
-- **Debate you can audit.** Disagreements are part of the record; the IPFS transcript captures every agent's full reasoning, not just the score.
-- **Permanent certificate.** Any wallet, block explorer, or DEX screener can read the verdict forever — the NFT is the receipt.
-- **Viral by default.** Twitter + Telegram fan-out means one analysis protects thousands of traders, not just the one that ran it.
+## Endpoints
 
-## Repository layout
+```
+GET  /api/health                              liveness
+GET  /api/system                              full system state
+GET  /api/profiles                            list all profiles
+GET  /api/profile/:id                         one profile
+POST /api/profile/build                       wallet → synthesized profile
+GET  /api/match/candidates?profileId=X        ranked matches with rationale
+POST /api/match/like                          { fromId, toId } → { mutual, chatId? }
+GET  /api/chat/:chatId?as=<profileId>         SSE chat stream
+POST /api/chat/:chatId/message                send message
+POST /api/attestation/mint                    match → onchain NFT (idempotent)
+GET  /api/attestations[?since=<unix>]         listing
+GET  /api/attestation/:matchId                one attestation
+```
 
-| Package | Stack | Status |
-| --- | --- | --- |
-| [`contracts/`](./contracts) | Foundry + Solidity 0.8.24 + OpenZeppelin | `VerdictRegistry.sol` deployed on Base Sepolia; BNB Chapel is one env swap |
-| [`backend/`](./backend) | Bun + Hono + Anthropic SDK + viem | Orchestrator + 5 agents in progress |
-| [`frontend/`](./frontend) | Next.js + wagmi + Tailwind | Live-debate UI in progress |
-| [`ops/`](./ops) | Bun + twitter-api-v2 + grammy | Publisher, IPFS helper, demo, docs ✅ |
+---
 
-## Quickstart
+## Live infrastructure
+
+| Resource | URL |
+|---|---|
+| **Frontend** | https://adams-sandwich-ruling-downtown.trycloudflare.com |
+| **Backend** | https://initially-fails-manor-tablets.trycloudflare.com |
+| **Contract** | [`0x4f635A02B6Cf998A0508dADE3e2f85e5a2dCAB7a`](https://sepolia.basescan.org/address/0x4f635A02B6Cf998A0508dADE3e2f85e5a2dCAB7a) |
+| **Deploy tx** | [`0x4dd1…d320`](https://sepolia.basescan.org/tx/0x4dd110c3d520fa7a2a428fa5af8f7823158426a6091b1287d8cc645f8ca3d320) |
+| **Sample mint tx** | [`0xd2db…ec13`](https://sepolia.basescan.org/tx/0xd2dbbdd4208b0979d83f31a2877c8c48a7b05e39db8f082a5ca8ee2c0583ec13) · tokenId 10 |
+
+---
+
+## Quick start (local)
 
 ```bash
-# 1. contracts — deploy locally (anvil) or to Base Sepolia (PoC) / BNB Chapel (roadmap)
-cd contracts
-forge install
-forge build
-
-# Switch RPC_URL to target any EVM chain — the chain itself is inferred from CHAIN_ID downstream.
-# Examples: anvil (http://127.0.0.1:8545), Base Sepolia (https://sepolia.base.org),
-#           BNB Chapel (https://data-seed-prebsc-1-s1.binance.org:8545).
-export RPC_URL=https://sepolia.base.org
-forge script script/Deploy.s.sol --rpc-url $RPC_URL --broadcast
-
-# 2. backend — agent orchestrator + SSE API
-cd ../backend
-cp .env.example .env       # fill ANTHROPIC_API_KEY, PINATA_JWT, CONTRACT_ADDRESS, ORCHESTRATOR_PRIVATE_KEY
+# 1. Backend
+cd backend
+cp .env.example .env
 bun install
-bun run dev                # http://localhost:3001
+bun run dev    # → localhost:3001
 
-# 3. frontend — live UI
+# 2. Frontend
 cd ../frontend
+cp .env.local.example .env.local
 bun install
-bun run dev                # http://localhost:3000
+bun run dev    # → localhost:3000
 
-# 4. ops — publisher + IPFS helper
-cd ../ops
-cp .env.example .env       # fill TWITTER_*, TELEGRAM_*, PINATA_JWT, BACKEND_URL
-bun install
-bun run dev                # polls backend, fans out to Twitter + Telegram
-
-# IPFS one-off:
-bun src/ipfs-pin.ts --file ./some-asset.png --name verdict-image
-bun src/ipfs-pin.ts --json '{"hello":"world"}'
+# 3. (optional) Deploy the registry to your own chain
+cd ../contracts
+cp .env.example .env
+forge script script/Deploy.s.sol --rpc-url $RPC_URL --broadcast
 ```
 
-## Social publisher
+---
 
-`ops/src/index.ts` polls the backend every `POLL_INTERVAL_MS` (default 15 s), dedupes by `(chainId, verdictNftTokenId)`, and fans out to Twitter + Telegram. Both publishers support a `DRY_RUN` mode that logs the formatted post without hitting the API — useful for demo recording.
+## Seed profiles
 
-A sample payload lives at `ops/fixtures/verdict-sample.json`. Try it:
+The demo ships with 15 archetype profiles (L1 researcher, ZK cryptographer, DeFi builder, DAO operator, auditor, designer, game dev, infra, growth, legal/BD, data sci, etc) with plausible onchain receipts + GitHub signatures. For the 5 featured demo pairings (fenway × aranea / lumen / nyx / blaze), we ship **hand-authored rationales** in `backend/src/matcher/demo-narratives.ts` — gated on `DEMO_MODE=true`. This keeps the ranking honest (heuristic bars are deterministic) while the prose reads human.
 
-```bash
-cd ops
-DRY_RUN=true bun src/twitter-bot.ts fixtures/verdict-sample.json
-DRY_RUN=true bun src/telegram-bot.ts fixtures/verdict-sample.json
-```
+---
 
-## Demo
+## Credits
 
-- Video: [`ops/demo.mp4`](./ops/demo.mp4) (60 s, 1080p, H.264)
-- Pitch deck: [`ops/pitch/pitch.pdf`](./ops/pitch/pitch.pdf)
-- Architecture diagram: [`ops/pitch/architecture.svg`](./ops/pitch/architecture.svg)
+Built solo over 36 hours using Claude Agent SDK with 4 parallel Claude Code workers (agent-backend, frontend-dev, contract-dev, ops-demo) orchestrated via a custom inter-agent messaging layer. UI designed via [claude.ai/design](https://claude.ai/design). VO rendered via ElevenLabs. Deployed on Base Sepolia.
 
-## Hackathon context
-
-Built for the [**Four.meme AI Sprint**](https://four.meme) hackathon, 2026-04-21 → 2026-04-22. Submission on DoraHacks.
-
-**Please upvote us on DoraHacks** and share with your degen friends — every pre-verified launch is one more rug that can't happen.
-
-## License
-
-MIT — see [`LICENSE`](./LICENSE).
+License: MIT.
