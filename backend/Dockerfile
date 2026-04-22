@@ -8,6 +8,8 @@ COPY tsconfig.json ./
 COPY src ./src
 
 ENV NODE_ENV=production
+# PORT is supplied by the host (Render assigns one dynamically). Defaulting
+# here lets the container run standalone without affecting cloud deploys.
 ENV PORT=3001
 EXPOSE 3001
 

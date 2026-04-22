@@ -9,7 +9,10 @@ import {
 } from "viem";
 import { privateKeyToAccount } from "viem/accounts";
 import { baseSepolia, bscTestnet, foundry } from "viem/chains";
-import VerdictRegistryAbi from "../../contracts/abi/VerdictRegistry.json" with { type: "json" };
+// Vendored into backend/src/abi so the Docker image (which copies only the
+// backend directory) has the ABI at build time. Keep it in sync with
+// `contracts/abi/VerdictRegistry.json` whenever the contract changes.
+import VerdictRegistryAbi from "./abi/VerdictRegistry.json" with { type: "json" };
 import { config } from "./config";
 import { log } from "./util/log";
 

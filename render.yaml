@@ -9,8 +9,7 @@ services:
     healthCheckPath: /api/health
     autoDeploy: true
     envVars:
-      - key: PORT
-        value: "3001"
+      # PORT is assigned dynamically by Render — do not hardcode here.
       - key: LOG_LEVEL
         value: info
       - key: CHAIN_ID
