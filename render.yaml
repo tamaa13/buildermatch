@@ -32,6 +32,12 @@ services:
         value: "true"
       - key: OPENROUTER_MODEL
         value: anthropic/claude-sonnet-4.6
+      # Point the "bscscan" fetcher at Base Sepolia's Blockscout API so
+      # synthesizer sees the real txs for Base Sepolia addresses. The env
+      # name is legacy (the module still compiles under that name); the
+      # URL drives actual behavior.
+      - key: BSCSCAN_TESTNET_BASE
+        value: https://base-sepolia.blockscout.com/api
       # Set the secrets below manually in the Render dashboard — Render will
       # prompt for them when the service is first provisioned.
       - key: ORCHESTRATOR_PRIVATE_KEY
