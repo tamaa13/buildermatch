@@ -76,16 +76,21 @@ export default function Landing() {
 
   const metamaskConnector = useMemo(() => {
     const injected = connectors.find((c) => c.id === "injected");
-    // @wagmi/connectors exposes the MetaMask SDK connector under the id
-    // `metaMaskSDK`, not `metaMask`. That SDK is what handles the
-    // mobile deep-link flow when window.ethereum is absent.
+    const wc = connectors.find((c) => c.id === "walletConnect");
     const mmSdk = connectors.find(
       (c) =>
         c.id === "metaMaskSDK" ||
         c.id === "metaMask" ||
         c.id === "io.metamask",
     );
-    return (hasInjected ? injected ?? mmSdk : mmSdk ?? injected) ?? connectors[0];
+    // Desktop with extension → injected.
+    // Mobile / no extension → WalletConnect (universal QR + mobile
+    // deep-links for MetaMask, Rainbow, Trust, Coinbase, etc).
+    // Fall back to MetaMask SDK only when WC isn't configured.
+    return (
+      (hasInjected ? injected ?? wc ?? mmSdk : wc ?? mmSdk ?? injected) ??
+      connectors[0]
+    );
   }, [connectors, hasInjected]);
 
   async function connectWallet() {
