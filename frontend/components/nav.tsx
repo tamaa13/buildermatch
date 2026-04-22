@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useAccount, useDisconnect } from "wagmi";
+import { setLang, useLang, useT } from "@/lib/i18n";
 
 type NavItem = { k: string; label: string; href: string; badge?: number };
 
@@ -19,18 +20,20 @@ export function Nav({ myEns = "you.eth", matchedCount = 0 }: NavProps) {
   const [onlineDotMounted, setOnlineDotMounted] = useState(false);
   const [hovering, setHovering] = useState(false);
   useEffect(() => setOnlineDotMounted(true), []);
+  const t = useT();
+  const lang = useLang();
 
   const displayLabel = isConnected && address
     ? hovering
-      ? "Disconnect ↗"
+      ? `${t("btn.disconnect")} ↗`
       : `${address.slice(0, 6)}…${address.slice(-4)}`
     : myEns;
 
   const items: NavItem[] = [
-    { k: "home", label: "Home", href: "/" },
-    { k: "profile", label: "My CV", href: "/profile/me" },
-    { k: "feed", label: "Feed", href: "/feed" },
-    { k: "match", label: "Matches", href: "/match", badge: matchedCount },
+    { k: "home", label: t("nav.home"), href: "/" },
+    { k: "profile", label: t("nav.profile"), href: "/profile/me" },
+    { k: "feed", label: t("nav.feed"), href: "/feed" },
+    { k: "match", label: t("nav.matches"), href: "/match", badge: matchedCount },
   ];
 
   const activeKey =
@@ -118,6 +121,24 @@ export function Nav({ myEns = "you.eth", matchedCount = 0 }: NavProps) {
           );
         })}
         <div style={{ width: 1, height: 20, background: "var(--rule)", margin: "0 12px" }} />
+        <button
+          type="button"
+          onClick={() => setLang(lang === "zh" ? "en" : "zh")}
+          className="mono"
+          style={{
+            fontSize: 11,
+            color: "var(--ink-3)",
+            background: "none",
+            border: "1px solid var(--rule)",
+            padding: "4px 10px",
+            cursor: "pointer",
+            letterSpacing: "0.08em",
+            marginRight: 8,
+          }}
+          title="Switch language"
+        >
+          {t("lang.toggle")}
+        </button>
         <button
           type="button"
           onClick={() => {

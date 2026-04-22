@@ -6,6 +6,7 @@ import { useEffect, useMemo, useState } from "react";
 import { useAccount, useConnect, useDisconnect } from "wagmi";
 import { Icon } from "@/components/icons";
 import { api } from "@/lib/api";
+import { useT } from "@/lib/i18n";
 
 interface HomeStats {
   profiles: number;
@@ -17,6 +18,7 @@ type ConnectStage = "idle" | "connecting" | "syncing" | "synced";
 
 export default function Landing() {
   const router = useRouter();
+  const t = useT();
   const { address, isConnected } = useAccount();
   const { connectors, connectAsync, isPending: isConnectPending, error: connectError } = useConnect();
   const { disconnect } = useDisconnect();
@@ -175,12 +177,12 @@ export default function Landing() {
 
   const connectLabel =
     stage === "connecting" || isConnectPending
-      ? "Opening MetaMask…"
+      ? t("btn.openingWallet")
       : stage === "syncing"
-        ? "Reading onchain history…"
+        ? t("btn.readingChain")
         : isConnected
-          ? "Sync profile"
-          : "Connect wallet";
+          ? t("btn.syncProfile")
+          : t("btn.connect");
 
   const showGithubStep = isConnected && !autoSyncAttempted && stage !== "syncing";
 
@@ -207,7 +209,7 @@ export default function Landing() {
             textTransform: "uppercase",
           }}
         >
-          Vol. 04 · No. 17 · April 2026
+          {t("masthead.edition")}
         </span>
         <span
           className="mono"
@@ -217,7 +219,7 @@ export default function Landing() {
             textTransform: "uppercase",
           }}
         >
-          Lisbon · New York · Tokyo
+          {t("masthead.cities")}
         </span>
         <span
           className="mono"
@@ -227,7 +229,7 @@ export default function Landing() {
             textTransform: "uppercase",
           }}
         >
-          An honest directory of builders
+          {t("masthead.tagline")}
         </span>
       </div>
 
@@ -243,21 +245,21 @@ export default function Landing() {
       >
         <div>
           <div className="eyebrow" style={{ marginBottom: 28 }}>
-            — A co-founder directory, verified onchain
+            {t("hero.eyebrow")}
           </div>
           <h1
             className="display"
             style={{ fontSize: "clamp(60px, 8vw, 120px)", marginBottom: 28 }}
           >
-            Find the one
+            {t("hero.h1.line1")}
             <br />
             <em style={{ fontStyle: "italic", color: "var(--ink-2)" }}>
-              who will build
+              {t("hero.h1.line2")}
             </em>
             <br />
-            the next thing
+            {t("hero.h1.line3")}
             <br />
-            with you.
+            {t("hero.h1.line4")}
           </h1>
           <p
             style={{
@@ -267,12 +269,7 @@ export default function Landing() {
               lineHeight: 1.55,
             }}
           >
-            LinkedIn has résumés. Twitter has noise. We have{" "}
-            <span className="serif" style={{ fontStyle: "italic" }}>
-              receipts
-            </span>
-            &nbsp;— contracts you deployed, DAOs you voted in, code you shipped.
-            Connect a wallet, and your profile writes itself.
+            {t("hero.sub")}
           </p>
         </div>
 
@@ -286,15 +283,13 @@ export default function Landing() {
             }}
           >
             <div className="label" style={{ marginBottom: 16 }}>
-              {isConnected ? "Step two" : "Step one"}
+              {isConnected ? t("step.two") : t("step.one")}
             </div>
             <div
               className="serif"
               style={{ fontSize: 28, lineHeight: 1.15, marginBottom: 24 }}
             >
-              {isConnected
-                ? "Link your GitHub — or skip to sync from onchain only."
-                : "Connect a wallet to see your profile."}
+              {isConnected ? t("step.github") : t("step.connect")}
             </div>
 
             {isConnected && (
@@ -331,7 +326,7 @@ export default function Landing() {
                       cursor: "pointer",
                     }}
                   >
-                    Disconnect
+                    {t("btn.disconnect")}
                   </button>
                 </div>
                 {verifiedGithub ? (
@@ -361,7 +356,7 @@ export default function Landing() {
                         textTransform: "uppercase",
                       }}
                     >
-                      ✓ Verified
+                      {t("btn.verified")}
                     </span>
                   </div>
                 ) : (
@@ -380,7 +375,7 @@ export default function Landing() {
                       style={{ display: "flex", alignItems: "center", gap: 10 }}
                     >
                       <Icon name="link" size={14} />
-                      Connect GitHub
+                      {t("btn.connectGithub")}
                     </span>
                     <Icon name="arrow" size={12} />
                   </button>
@@ -474,8 +469,7 @@ export default function Landing() {
               letterSpacing: "0.04em",
             }}
           >
-            Read-only signature. We never touch funds. Profiles are public by
-            default.
+            {t("note.readonly")}
           </div>
         </div>
       </section>
@@ -493,19 +487,19 @@ export default function Landing() {
       >
         {[
           {
-            k: "Profiles built",
+            k: t("stats.profiles"),
             v: stats.profiles.toLocaleString(),
-            suffix: "from onchain activity",
+            suffix: t("stats.profilesSuffix"),
           },
           {
-            k: "Mutual matches",
+            k: t("stats.matches"),
             v: stats.matches.toLocaleString(),
-            suffix: "since launch",
+            suffix: t("stats.matchesSuffix"),
           },
           {
-            k: "Collaboration NFTs",
+            k: t("stats.attestations"),
             v: stats.attestations.toLocaleString(),
-            suffix: "minted on Base Sepolia",
+            suffix: t("stats.attestationsSuffix"),
           },
         ].map((s, i, arr) => (
           <div
@@ -546,7 +540,7 @@ export default function Landing() {
             marginBottom: 48,
           }}
         >
-          <div className="eyebrow">§ 01 — Method</div>
+          <div className="eyebrow">{t("method.heading")}</div>
           <div
             className="serif"
             style={{
@@ -556,9 +550,9 @@ export default function Landing() {
               maxWidth: 680,
             }}
           >
-            Three steps, no pitching.
+            {t("method.tagline1")}
             <br />
-            The data is already there.
+            {t("method.tagline2")}
           </div>
         </div>
 
@@ -664,7 +658,7 @@ export default function Landing() {
       >
         <div>
           <div className="eyebrow" style={{ marginBottom: 20 }}>
-            § 02 — A note from the editors
+            {t("manifesto.heading")}
           </div>
           <p
             className="serif"
@@ -675,10 +669,7 @@ export default function Landing() {
               maxWidth: 520,
             }}
           >
-            We built this because we're tired of a signup flow where the first
-            question is <em>&ldquo;tell us about yourself&rdquo;</em>. You
-            already did. Four years of it. It&rsquo;s public. Let us just read
-            it.
+            {t("manifesto.body")}
           </p>
         </div>
         <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
@@ -687,7 +678,7 @@ export default function Landing() {
             className="btn btn-ghost"
             style={{ width: "100%", justifyContent: "space-between" }}
           >
-            <span>Browse the feed as a guest</span>
+            <span>{t("btn.browseGuest")}</span>
             <Icon name="arrow" size={14} />
           </Link>
           <Link
@@ -695,7 +686,7 @@ export default function Landing() {
             className="btn btn-ghost"
             style={{ width: "100%", justifyContent: "space-between" }}
           >
-            <span>See a sample profile</span>
+            <span>{t("btn.sampleProfile")}</span>
             <Icon name="arrow" size={14} />
           </Link>
         </div>
@@ -718,7 +709,7 @@ export default function Landing() {
             letterSpacing: "0.1em",
           }}
         >
-          © BuilderMatch Press · Verified on Base Sepolia
+          {t("footer.copy")}
         </span>
         <span
           className="mono"
@@ -728,7 +719,7 @@ export default function Landing() {
             letterSpacing: "0.1em",
           }}
         >
-          Source-available ·{" "}
+          {t("footer.sourceAvailable")} ·{" "}
           <a
             href="https://github.com/tamaa13/buildermatch"
             target="_blank"
