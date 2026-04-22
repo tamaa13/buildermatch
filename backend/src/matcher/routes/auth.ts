@@ -54,8 +54,21 @@ function verifyState(state: string): { wallet: string; redirect?: string; nonce:
 }
 
 authRoutes.get("/auth/github/start", (c) => {
-  if (!config.githubOauthClientId || !config.githubOauthSecret) {
-    return c.json({ error: "github_oauth_not_configured" }, 500);
+  // Enumerate which individual env vars are missing so the error message
+  // tells you exactly what to fix on the host. We only surface names here,
+  // never values — safe to expose publicly.
+  const missing: string[] = [];
+  if (!config.githubOauthClientId) missing.push("GITHUB_OAUTH_CLIENT_ID");
+  if (!config.githubOauthSecret) missing.push("GITHUB_OAUTH_STATE_SECRET");
+  if (!config.githubOauthClientSecret) missing.push("GITHUB_OAUTH_CLIENT_SECRET");
+  if (missing.length > 0) {
+    return c.json(
+      {
+        error: "github_oauth_not_configured",
+        missing,
+      },
+      500,
+    );
   }
   const wallet = c.req.query("wallet")?.toLowerCase();
   const redirect = c.req.query("redirect");
