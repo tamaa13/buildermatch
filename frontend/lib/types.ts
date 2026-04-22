@@ -85,4 +85,11 @@ export interface SystemState {
   likeCount: number;
   chatCount: number;
   attestationCount: number;
+  compatWeights?: {
+    skillComplement: number;
+    valuesAlignment: number;
+    domainOverlap: number;
+    commitmentFit: number;
+    reputationSynergy: number;
+  };
 }

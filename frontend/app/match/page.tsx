@@ -8,6 +8,7 @@ import { Nav } from "@/components/nav";
 import { Avatar } from "@/components/shared";
 import { api } from "@/lib/api";
 import { useMeId } from "@/lib/use-me";
+import { useT } from "@/lib/i18n";
 import type { BuilderProfile, ChatMessage } from "@/lib/types";
 
 interface Conversation {
@@ -20,6 +21,7 @@ interface Conversation {
 
 export default function MatchPage() {
   const router = useRouter();
+  const t = useT();
   const { id: meId, isGuest } = useMeId();
 
   // Disconnecting returns you to the landing page instead of stranding you
@@ -227,7 +229,7 @@ export default function MatchPage() {
       <>
         <Nav />
         <div style={{ padding: "120px 48px", textAlign: "center" }}>
-          <div className="eyebrow">Loading your matches…</div>
+          <div className="eyebrow">{t("match.loading")}</div>
         </div>
       </>
     );
@@ -247,13 +249,13 @@ export default function MatchPage() {
           }}
         >
           <div className="eyebrow" style={{ marginBottom: 24 }}>
-            § No mutual matches yet
+            {t("match.noMutualHead")}
           </div>
           <h1
             className="display"
             style={{ fontSize: 64, marginBottom: 24 }}
           >
-            <em>Mutual</em> is the whole point.
+            {t("match.mutualPoint")}
           </h1>
           <p
             className="serif"
@@ -265,11 +267,10 @@ export default function MatchPage() {
               lineHeight: 1.4,
             }}
           >
-            When someone you swiped on swipes you back, the chat unlocks here.
-            Until then, keep swiping.
+            {t("match.noMutualBody")}
           </p>
           <Link href="/feed" className="btn">
-            <span>Back to the feed</span>
+            <span>{t("match.backToFeed")}</span>
             <Icon name="arrow" />
           </Link>
         </div>
@@ -303,7 +304,7 @@ export default function MatchPage() {
           }}
         >
           <div className="eyebrow" style={{ padding: "0 24px 16px" }}>
-            § Mutual matches · {conversations.length}
+            {t("match.mutualCount")} · {conversations.length}
           </div>
           {conversations.map((conv) => {
             const active = selectedChatId === conv.chatId;
@@ -374,7 +375,7 @@ export default function MatchPage() {
               }}
             >
               <div className="eyebrow" style={{ marginBottom: 16 }}>
-                § Mutual match · unlocked{" "}
+                {t("match.unlocked")}{" "}
                 {new Date().toLocaleDateString("en-US", {
                   month: "short",
                   day: "numeric",
@@ -487,7 +488,7 @@ export default function MatchPage() {
                     flexWrap: "wrap",
                   }}
                 >
-                  <span className="label">Shared ground</span>
+                  <span className="label">{t("match.sharedGround")}</span>
                   {getShared(me, partner).map((s) => (
                     <span
                       key={s}
@@ -528,7 +529,7 @@ export default function MatchPage() {
                   textTransform: "uppercase",
                 }}
               >
-                — chat unlocked —
+                {t("match.chatUnlocked")}
               </div>
 
               {messages.map((m, i) => (
@@ -609,7 +610,7 @@ export default function MatchPage() {
                       flexShrink: 0,
                     }}
                   >
-                    Ai draft
+                    {t("match.aiDraft")}
                   </span>
                   <span
                     className="serif"
@@ -639,7 +640,7 @@ export default function MatchPage() {
                       flexShrink: 0,
                     }}
                   >
-                    Use this
+                    {t("match.useThis")}
                   </button>
                 </div>
               )}
@@ -656,7 +657,7 @@ export default function MatchPage() {
                   value={draft}
                   onChange={(e) => setDraft(e.target.value)}
                   onKeyDown={(e) => e.key === "Enter" && send()}
-                  placeholder={`Write to ${partner.ens}…`}
+                  placeholder={`${t("match.writeTo")} ${partner.ens}…`}
                   style={{
                     flex: 1,
                     fontSize: 15,
@@ -677,7 +678,7 @@ export default function MatchPage() {
                     cursor: "pointer",
                   }}
                 >
-                  Send ↵
+                  {t("match.send")}
                 </button>
               </div>
             </div>
@@ -694,7 +695,7 @@ export default function MatchPage() {
             }}
           >
             <div className="eyebrow" style={{ marginBottom: 20 }}>
-              § Collaboration
+              {t("match.collabSection")}
             </div>
 
             <div
@@ -733,8 +734,8 @@ export default function MatchPage() {
                   }}
                 >
                   {mint
-                    ? `collab Nº ${mint.tokenId}`
-                    : "collab Nº —"}
+                    ? `${t("match.collabNo")} ${mint.tokenId}`
+                    : t("match.collabDash")}
                 </div>
               </div>
 
@@ -742,9 +743,7 @@ export default function MatchPage() {
                 className="serif"
                 style={{ fontSize: 20, lineHeight: 1.2, marginBottom: 8 }}
               >
-                {mint
-                  ? "Collaboration NFT minted."
-                  : "After 30 days, mint a Collaboration NFT."}
+                {mint ? t("match.mintedHead") : t("match.mintPrompt")}
               </div>
               <p
                 style={{
@@ -756,18 +755,18 @@ export default function MatchPage() {
               >
                 {mint ? (
                   <>
-                    Receipt on Base Sepolia · soulbound ·{" "}
+                    {t("match.mintedCaption")}{" "}
                     <a
                       href={`https://sepolia.basescan.org/tx/${mint.txHash}`}
                       target="_blank"
                       rel="noreferrer"
                       className="link-underline"
                     >
-                      view tx
+                      {t("match.viewTx")}
                     </a>
                   </>
                 ) : (
-                  "An onchain receipt that you two worked together. Soulbound, non-transferable — appears on both profiles."
+                  t("match.mintCaption")
                 )}
               </p>
 
@@ -786,7 +785,7 @@ export default function MatchPage() {
                   }}
                 >
                   <Icon name="spark" size={13} />
-                  <span>{minting ? "Minting on-chain…" : "Mint collaboration NFT"}</span>
+                  <span>{minting ? t("match.minting") : t("match.mintCta")}</span>
                 </button>
               )}
 
@@ -808,7 +807,7 @@ export default function MatchPage() {
                       marginBottom: 4,
                     }}
                   >
-                    Token Nº {mint.tokenId}
+                    {t("match.tokenNo")} {mint.tokenId}
                   </div>
                   <div
                     className="mono"

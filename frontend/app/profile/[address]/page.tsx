@@ -8,6 +8,7 @@ import { Nav } from "@/components/nav";
 import { DataRow, MetaBlock } from "@/components/shared";
 import { api } from "@/lib/api";
 import { useMeId } from "@/lib/use-me";
+import { useT } from "@/lib/i18n";
 import type { BuilderProfile } from "@/lib/types";
 
 export default function ProfilePage({
@@ -17,6 +18,7 @@ export default function ProfilePage({
 }) {
   const { address } = use(params);
   const router = useRouter();
+  const t = useT();
   const { id: meId, isGuest } = useMeId();
 
   // /profile/me needs a connected wallet. Bounce guests back to the landing
@@ -71,10 +73,10 @@ export default function ProfilePage({
         }}
       >
         <div className="eyebrow" style={{ marginBottom: 16 }}>
-          Profile not indexed
+          {t("profile.notIndexedHead")}
         </div>
         <h1 className="display" style={{ fontSize: 48 }}>
-          <em>{resolvedId}</em> is not yet on file.
+          <em>{resolvedId}</em> {t("profile.notOnFile")}
         </h1>
         <p style={{ color: "var(--ink-3)", marginTop: 16 }}>{err}</p>
       </div>
@@ -91,7 +93,7 @@ export default function ProfilePage({
             padding: "120px 48px",
           }}
         >
-          <div className="eyebrow">Reading onchain history…</div>
+          <div className="eyebrow">{t("profile.loading")}</div>
         </div>
       </>
     );
@@ -131,7 +133,7 @@ export default function ProfilePage({
               textTransform: "uppercase",
             }}
           >
-            § Onchain CV · auto-generated
+            {t("profile.section")}
           </span>
           <span
             className="mono"
@@ -157,7 +159,7 @@ export default function ProfilePage({
         >
           <div>
             <div className="eyebrow" style={{ marginBottom: 20 }}>
-              Profile Nº {me.address.slice(2, 6).toUpperCase()}
+              {t("profile.nro")} {me.address.slice(2, 6).toUpperCase()}
             </div>
             <h1
               className="display"
@@ -247,16 +249,16 @@ export default function ProfilePage({
             }}
           >
             <MetaBlock
-              label="Location"
+              label={t("profile.meta.location")}
               value={me.location}
               suffix={me.timezone}
             />
-            <MetaBlock label="Commitment" value={me.commitment} />
-            <MetaBlock label="Looking for" value={me.lookingFor} />
+            <MetaBlock label={t("profile.meta.commitment")} value={me.commitment} />
+            <MetaBlock label={t("profile.meta.lookingFor")} value={me.lookingFor} />
 
             <div>
               <div className="label" style={{ marginBottom: 12 }}>
-                Skills
+                {t("profile.skills")}
               </div>
               <div
                 style={{ display: "flex", flexWrap: "wrap", gap: 6 }}
@@ -271,7 +273,7 @@ export default function ProfilePage({
 
             <div>
               <div className="label" style={{ marginBottom: 12 }}>
-                Domains
+                {t("profile.domains")}
               </div>
               <div
                 style={{ display: "flex", flexWrap: "wrap", gap: 6 }}
@@ -294,7 +296,7 @@ export default function ProfilePage({
             {me.values && me.values.length > 0 && (
               <div>
                 <div className="label" style={{ marginBottom: 12 }}>
-                  Values
+                  {t("profile.values")}
                 </div>
                 <div
                   style={{
@@ -323,7 +325,7 @@ export default function ProfilePage({
               }}
             >
               <div className="label" style={{ marginBottom: 12 }}>
-                Identity
+                {t("profile.identity")}
               </div>
               <div
                 style={{
@@ -345,7 +347,7 @@ export default function ProfilePage({
           {/* Right: narrative + stats */}
           <div>
             <div className="eyebrow" style={{ marginBottom: 20 }}>
-              — The Narrative · ai-composed from onchain signal
+              {t("profile.narrativeHead")}
             </div>
             <p
               className="serif"
@@ -369,7 +371,7 @@ export default function ProfilePage({
                 marginBottom: 40,
               }}
             >
-              Composed by memegard orchestrator · reasoning hash pinned to IPFS
+              {t("profile.orchestrator")}
             </div>
 
             {/* Stats */}
@@ -383,10 +385,10 @@ export default function ProfilePage({
               }}
             >
               {[
-                ["Deployed", me.stats.deployed.toString()],
-                ["DAOs active", me.stats.daos.toString()],
-                ["Commits", me.stats.commits.toLocaleString()],
-                ["Audits", me.stats.audits.toString()],
+                [t("profile.stat.deployed"), me.stats.deployed.toString()],
+                [t("profile.stat.daos"), me.stats.daos.toString()],
+                [t("profile.stat.commits"), me.stats.commits.toLocaleString()],
+                [t("profile.stat.audits"), me.stats.audits.toString()],
               ].map(([k, v], i) => (
                 <div
                   key={k}
@@ -425,7 +427,7 @@ export default function ProfilePage({
             >
               <div>
                 <div className="eyebrow" style={{ marginBottom: 12 }}>
-                  § Receipts
+                  {t("profile.receipts")}
                 </div>
                 <div
                   className="serif"
@@ -436,7 +438,7 @@ export default function ProfilePage({
                     fontStyle: "italic",
                   }}
                 >
-                  Evidence, not claims.
+                  {t("profile.evidence")}
                 </div>
               </div>
               <div
@@ -446,34 +448,40 @@ export default function ProfilePage({
                   gap: 16,
                 }}
               >
-                <span className="label">Filter</span>
-                {(["All", "Deployed", "Voted", "Minted"] as const).map(
-                  (f) => {
-                    const active = filter === f;
-                    return (
-                      <button
-                        key={f}
-                        onClick={() => setFilter(f)}
-                        className="mono"
-                        style={{
-                          fontSize: 11,
-                          letterSpacing: "0.06em",
-                          color: active ? "var(--ink)" : "var(--ink-3)",
-                          textTransform: "uppercase",
-                          borderBottom: active
-                            ? "1px solid var(--ink)"
-                            : "1px solid transparent",
-                          paddingBottom: 1,
-                          background: "none",
-                          padding: 0,
-                          cursor: "pointer",
-                        }}
-                      >
-                        {f}
-                      </button>
-                    );
-                  },
-                )}
+                <span className="label">{t("profile.filter")}</span>
+                {(["All", "Deployed", "Voted", "Minted"] as const).map((f) => {
+                  const active = filter === f;
+                  const labelKey =
+                    f === "All"
+                      ? "profile.filter.all"
+                      : f === "Deployed"
+                        ? "profile.filter.deployed"
+                        : f === "Voted"
+                          ? "profile.filter.voted"
+                          : "profile.filter.minted";
+                  return (
+                    <button
+                      key={f}
+                      onClick={() => setFilter(f)}
+                      className="mono"
+                      style={{
+                        fontSize: 11,
+                        letterSpacing: "0.06em",
+                        color: active ? "var(--ink)" : "var(--ink-3)",
+                        textTransform: "uppercase",
+                        borderBottom: active
+                          ? "1px solid var(--ink)"
+                          : "1px solid transparent",
+                        paddingBottom: 1,
+                        background: "none",
+                        padding: 0,
+                        cursor: "pointer",
+                      }}
+                    >
+                      {t(labelKey)}
+                    </button>
+                  );
+                })}
               </div>
             </div>
 
@@ -492,7 +500,13 @@ export default function ProfilePage({
                   borderBottom: "1px solid var(--rule)",
                 }}
               >
-                {["№ Type", "Action", "Venue", "Date", "Value"].map(
+                {[
+                  t("profile.table.type"),
+                  t("profile.table.action"),
+                  t("profile.table.venue"),
+                  t("profile.table.date"),
+                  t("profile.table.value"),
+                ].map(
                   (h, i) => (
                     <span
                       key={h}
@@ -530,14 +544,16 @@ export default function ProfilePage({
                   letterSpacing: "0.06em",
                 }}
               >
-                Showing {filteredReceipts(me.receipts, filter).length} receipts ·{" "}
+                {t("profile.showing")}{" "}
+                {filteredReceipts(me.receipts, filter).length}{" "}
+                {t("profile.receiptsSuffix")} ·{" "}
                 <a
                   href={`https://sepolia.basescan.org/address/${me.address}`}
                   target="_blank"
                   rel="noreferrer"
                   className="link-underline"
                 >
-                  view on explorer
+                  {t("profile.viewExplorer")}
                 </a>
               </span>
               <span
@@ -548,7 +564,7 @@ export default function ProfilePage({
                   letterSpacing: "0.06em",
                 }}
               >
-                Indexed from Base Sepolia + GitHub
+                {t("profile.indexed")}
               </span>
             </div>
           </section>

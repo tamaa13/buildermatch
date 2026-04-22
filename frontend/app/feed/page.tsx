@@ -7,10 +7,12 @@ import { Nav } from "@/components/nav";
 import { Avatar, CompatBar, DottedScore } from "@/components/shared";
 import { api } from "@/lib/api";
 import { useMeId } from "@/lib/use-me";
+import { useT } from "@/lib/i18n";
 import type { Candidate } from "@/lib/types";
 
 export default function FeedPage() {
   const router = useRouter();
+  const t = useT();
   const { id: meId, isGuest } = useMeId();
   const [candidates, setCandidates] = useState<Candidate[]>([]);
   const [idx, setIdx] = useState(0);
@@ -19,8 +21,30 @@ export default function FeedPage() {
   const [history, setHistory] = useState<
     { id: string; verdict: "pass" | "match"; mutual?: boolean; chatId?: string }[]
   >([]);
+  const [compatWeights, setCompatWeights] = useState<{
+    skillComplement: number;
+    valuesAlignment: number;
+    domainOverlap: number;
+    commitmentFit: number;
+    reputationSynergy: number;
+  } | null>(null);
   const startX = useRef(0);
   const dragging = useRef(false);
+
+  // Pull the live compatibility weights from /api/system so the "Ranking
+  // factors" sidebar always reflects the real scorer weights — no drift.
+  useEffect(() => {
+    let cancelled = false;
+    api
+      .system()
+      .then((s) => {
+        if (!cancelled && s.compatWeights) setCompatWeights(s.compatWeights);
+      })
+      .catch(() => {});
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   // Disconnecting the wallet on any signed-in route should bounce the user
   // back to the landing page instead of stranding them on a stale view.
@@ -128,7 +152,7 @@ export default function FeedPage() {
           }}
         >
           <div className="eyebrow" style={{ marginBottom: 20 }}>
-            § Your queue
+            {t("feed.queue")}
           </div>
           <div style={{ display: "flex", flexDirection: "column", gap: 2 }}>
             {candidates.map((c, i) => {
@@ -206,7 +230,7 @@ export default function FeedPage() {
               borderTop: "1px solid var(--rule)",
             }}
           >
-            ← pass · → match · space: skip
+            {t("feed.queue.hint")}
           </div>
         </aside>
 
@@ -234,7 +258,7 @@ export default function FeedPage() {
             }}
           >
             <div className="eyebrow">
-              § Candidate {String(idx + 1).padStart(2, "0")} of {candidates.length || "—"}
+              {t("feed.candidate")} {String(idx + 1).padStart(2, "0")} {t("feed.of")} {candidates.length || "—"}
             </div>
             <div
               className="mono"
@@ -245,7 +269,7 @@ export default function FeedPage() {
                 textTransform: "uppercase",
               }}
             >
-              AI-ranked · compatibility &gt; complementarity &gt; values
+              {t("feed.airanked")}
             </div>
           </div>
 
@@ -328,7 +352,7 @@ export default function FeedPage() {
                 </div>
 
                 <div className="label" style={{ marginBottom: 10 }}>
-                  Narrative
+                  {t("feed.narrative")}
                 </div>
                 <p
                   className="serif"
@@ -384,7 +408,7 @@ export default function FeedPage() {
                 }}
               >
                 <div className="eyebrow" style={{ marginBottom: 16 }}>
-                  Compatibility
+                  {t("feed.compatibility")}
                 </div>
 
                 <div
@@ -453,7 +477,7 @@ export default function FeedPage() {
 
                 <div style={{ marginTop: 24 }}>
                   <div className="label" style={{ marginBottom: 10 }}>
-                    Why this match
+                    {t("feed.whyMatch")}
                   </div>
                   <p
                     className="serif"
@@ -487,7 +511,7 @@ export default function FeedPage() {
                           marginBottom: 4,
                         }}
                       >
-                        Why the score is low
+                        {t("feed.lowScore")}
                       </div>
                       <div
                         className="serif"
@@ -506,7 +530,7 @@ export default function FeedPage() {
                 {current.complementarity && current.complementarity.length > 0 && (
                   <>
                     <div className="label" style={{ marginBottom: 4 }}>
-                      Complementarity
+                      {t("feed.complementarity")}
                     </div>
                     <div>
                       {current.complementarity.map((c, i) => (
@@ -532,8 +556,8 @@ export default function FeedPage() {
                       letterSpacing: "0.06em",
                     }}
                   >
-                    <Icon name="link" size={11} /> &nbsp;{current.stats.deployed} deployed ·{" "}
-                    {current.stats.commits.toLocaleString()} commits
+                    <Icon name="link" size={11} /> &nbsp;{current.stats.deployed} {t("feed.deployedShort")} ·{" "}
+                    {current.stats.commits.toLocaleString()} {t("feed.commits")}
                   </span>
                 </div>
               </div>
@@ -607,22 +631,21 @@ export default function FeedPage() {
                   color: "var(--ink-2)",
                 }}
               >
-                That&rsquo;s everyone for now.
+                {t("feed.end")}
               </div>
               <div
                 className="mono"
                 style={{ fontSize: 12, color: "var(--ink-3)" }}
               >
-                {history.filter((h) => h.verdict === "match").length} matched ·{" "}
-                {history.filter((h) => h.verdict === "pass").length} passed · new
-                candidates daily
+                {history.filter((h) => h.verdict === "match").length} {t("feed.matched").toLowerCase()} ·{" "}
+                {history.filter((h) => h.verdict === "pass").length} {t("feed.passed").toLowerCase()} · {t("feed.endSuffix")}
               </div>
               <button
                 onClick={() => router.push("/match")}
                 className="btn"
                 style={{ marginTop: 12 }}
               >
-                <span>See your mutual matches</span>
+                <span>{t("feed.seeMutual")}</span>
                 <Icon name="arrow" />
               </button>
             </div>
@@ -647,7 +670,7 @@ export default function FeedPage() {
                 }}
               >
                 <Icon name="x" size={16} />
-                <span>Pass</span>
+                <span>{t("feed.pass")}</span>
                 <span
                   className="num"
                   style={{ color: "var(--ink-4)", marginLeft: 8 }}
@@ -667,7 +690,7 @@ export default function FeedPage() {
                 }}
               >
                 <Icon name="heart" size={16} />
-                <span>Match</span>
+                <span>{t("feed.match")}</span>
                 <span
                   className="num"
                   style={{
@@ -691,7 +714,7 @@ export default function FeedPage() {
           }}
         >
           <div className="eyebrow" style={{ marginBottom: 20 }}>
-            § This session
+            {t("feed.session")}
           </div>
 
           <div
@@ -714,7 +737,7 @@ export default function FeedPage() {
                 className="eyebrow"
                 style={{ marginBottom: 6, fontSize: 9 }}
               >
-                Matched
+                {t("feed.matched")}
               </div>
               <div
                 className="serif num"
@@ -728,7 +751,7 @@ export default function FeedPage() {
                 className="eyebrow"
                 style={{ marginBottom: 6, fontSize: 9 }}
               >
-                Passed
+                {t("feed.passed")}
               </div>
               <div
                 className="serif num"
@@ -740,7 +763,7 @@ export default function FeedPage() {
           </div>
 
           <div className="eyebrow" style={{ marginBottom: 14 }}>
-            § Why these candidates
+            {t("feed.whyCandidates")}
           </div>
           <p
             className="serif"
@@ -752,12 +775,11 @@ export default function FeedPage() {
               marginBottom: 24,
             }}
           >
-            Compatibility scores from onchain signal + GitHub activity + DAO
-            votes. No Twitter. No LinkedIn. Never a stranger.
+            {t("feed.whyBody")}
           </p>
 
           <div className="eyebrow" style={{ marginBottom: 14 }}>
-            § Ranking factors
+            {t("feed.ranking")}
           </div>
           <div
             style={{
@@ -767,13 +789,15 @@ export default function FeedPage() {
               marginBottom: 28,
             }}
           >
-            {[
-              ["Skill complement", "32%"],
-              ["Values alignment", "26%"],
-              ["Domain overlap", "14%"],
-              ["Commitment fit", "14%"],
-              ["Reputation synergy", "14%"],
-            ].map(([k, v]) => (
+            {(
+              [
+                [t("feed.ranking.skill"), compatWeights?.skillComplement],
+                [t("feed.ranking.values"), compatWeights?.valuesAlignment],
+                [t("feed.ranking.domain"), compatWeights?.domainOverlap],
+                [t("feed.ranking.commit"), compatWeights?.commitmentFit],
+                [t("feed.ranking.rep"), compatWeights?.reputationSynergy],
+              ] as Array<[string, number | undefined]>
+            ).map(([k, v]) => (
               <div
                 key={k}
                 style={{
@@ -786,7 +810,9 @@ export default function FeedPage() {
                 }}
               >
                 <span style={{ color: "var(--ink-3)" }}>{k}</span>
-                <span style={{ color: "var(--ink)" }}>{v}</span>
+                <span style={{ color: "var(--ink)" }}>
+                  {typeof v === "number" ? `${Math.round(v * 100)}%` : "—"}
+                </span>
               </div>
             ))}
           </div>

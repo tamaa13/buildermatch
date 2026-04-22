@@ -4,6 +4,7 @@ import { config } from "./config";
 import { log } from "./util/log";
 import { sweepSessions } from "./sessions";
 import { storeStats } from "./matcher/store";
+import { COMPAT_WEIGHTS } from "./matcher/agents/compatibility-analyzer";
 import { profileRoutes } from "./matcher/routes/profile";
 import { matchRoutes } from "./matcher/routes/match";
 import { chatRoutes } from "./matcher/routes/chat";
@@ -70,6 +71,10 @@ app.get("/api/system", (c) => {
     },
     store: storeStats(),
     claudeModel: config.claudeModel,
+    // Surface the matcher's scoring weights so the UI renders the exact
+    // same numbers it actually scored with — no drift between the sidebar
+    // explainer and the algorithm.
+    compatWeights: COMPAT_WEIGHTS,
   });
 });
 

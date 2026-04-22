@@ -79,15 +79,25 @@ function computeBars(a: Profile, b: Profile): CompatBars {
   };
 }
 
+// Weighted sum — complementary skills + shared values drive most signal.
+// Domain overlap matters but too much = duplicative, so modest weight.
+// Exported as the single source of truth so the UI can render the exact
+// same weights it uses to score without risk of drift.
+export const COMPAT_WEIGHTS = {
+  skillComplement: 0.32,
+  valuesAlignment: 0.26,
+  domainOverlap: 0.14,
+  commitmentFit: 0.14,
+  reputationSynergy: 0.14,
+} as const;
+
 function scoreFromBars(b: CompatBars): number {
-  // Weighted sum — complementary skills + shared values drive most signal.
-  // Domain overlap matters but too much = duplicative, so modest weight.
   const raw =
-    b.skillComplement * 0.32 +
-    b.valuesAlignment * 0.26 +
-    b.domainOverlap * 0.14 +
-    b.commitmentFit * 0.14 +
-    b.reputationSynergy * 0.14;
+    b.skillComplement * COMPAT_WEIGHTS.skillComplement +
+    b.valuesAlignment * COMPAT_WEIGHTS.valuesAlignment +
+    b.domainOverlap * COMPAT_WEIGHTS.domainOverlap +
+    b.commitmentFit * COMPAT_WEIGHTS.commitmentFit +
+    b.reputationSynergy * COMPAT_WEIGHTS.reputationSynergy;
   return Math.round(raw);
 }
 
