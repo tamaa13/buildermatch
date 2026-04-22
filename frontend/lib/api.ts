@@ -7,8 +7,11 @@ import type {
   CompatBars,
 } from "./types";
 
-const BACKEND =
-  process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:3001";
+// Empty default = same-origin, so /api/* requests hit Next.js rewrites
+// (which proxy to BACKEND_ORIGIN server-side). For local dev, set
+// NEXT_PUBLIC_BACKEND_URL=http://localhost:3001 in .env.local to bypass
+// the rewrite and go direct to the backend.
+const BACKEND = process.env.NEXT_PUBLIC_BACKEND_URL ?? "";
 
 /** The protagonist user in the demo — fenway.eth seed profile. */
 export const DEMO_ME = "0x3fab2c7d1a90b5e88a51a62c9c4ea1b30f0d5301";
