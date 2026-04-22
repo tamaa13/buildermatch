@@ -145,15 +145,22 @@ if [ "$PROVIDER" = "elevenlabs" ]; then
   cp "$OUT_VO" "${OUT_DIR}/demo-vo-eleven.mp3"
 fi
 
-# Mux voiceover onto the silent base. Base is assumed already at TOTAL_DUR
-# seconds (stitch-acts.sh produced it). If base is shorter, -shortest will
-# clip the VO to match; if longer, VO ends and base tail silence fills.
-ffmpeg -y -i "$BASE" -i "$OUT_VO" \
-  -map 0:v:0 -map 1:a:0 -c:v copy -c:a aac -b:a 192k -movflags +faststart -shortest \
-  "$OUT_MUX" </dev/null >/dev/null 2>&1
-
 echo "[vo] total script duration: ${TOTAL_DUR}s"
-echo "[vo] wrote $OUT_VO  and  $OUT_MUX (provider=${PROVIDER})"
-ffprobe -v error -show_entries format=duration,size \
-  -show_entries stream=codec_name,channels,sample_rate,width,height \
-  -of default=noprint_wrappers=1 "$OUT_MUX"
+
+if [ -n "$BASE" ]; then
+  # Mux voiceover onto the silent base. Base should already be at TOTAL_DUR
+  # seconds (stitch-acts.sh produced it). If base is shorter, -shortest will
+  # clip the VO to match; if longer, VO ends and base tail silence fills.
+  ffmpeg -y -i "$BASE" -i "$OUT_VO" \
+    -map 0:v:0 -map 1:a:0 -c:v copy -c:a aac -b:a 192k -movflags +faststart -shortest \
+    "$OUT_MUX" </dev/null >/dev/null 2>&1
+  echo "[vo] wrote $OUT_VO  and  $OUT_MUX (provider=${PROVIDER})"
+  ffprobe -v error -show_entries format=duration,size \
+    -show_entries stream=codec_name,channels,sample_rate,width,height \
+    -of default=noprint_wrappers=1 "$OUT_MUX"
+else
+  echo "[vo] wrote $OUT_VO (provider=${PROVIDER}, no base — skipping mux)"
+  ffprobe -v error -show_entries format=duration,bit_rate,size \
+    -show_entries stream=codec_name,channels,sample_rate \
+    -of default=noprint_wrappers=1 "$OUT_VO"
+fi
