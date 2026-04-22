@@ -13,8 +13,16 @@ import VerdictRegistryAbi from "../../contracts/abi/VerdictRegistry.json" with {
 import { config } from "./config";
 import { log } from "./util/log";
 
-// Full ABI from the Foundry build. Importing via JSON keeps parity automatic.
-export const VERDICT_REGISTRY_ABI = VerdictRegistryAbi as readonly unknown[];
+// The contract on chain is still called VerdictRegistry (same ABI, same
+// address) — BuilderMatch just repurposes its semantics. We adapt at the
+// wrapper layer: `recordAttestation` calls `recordVerdict` under the hood.
+//
+// Field mapping:
+//   verdict.token          → attestee wallet (the person being endorsed)
+//   verdict.score (uint8)  → compat score 0-100
+//   verdict.reasoningHash  → keccak256(canonical(endorsement JSON))
+//   verdict.ipfsUri        → IPFS uri of the endorsement JSON
+export const REGISTRY_ABI = VerdictRegistryAbi as readonly unknown[];
 
 function chainFor(chainId: number): Chain {
   if (chainId === 31337) return foundry;
@@ -23,12 +31,10 @@ function chainFor(chainId: number): Chain {
   throw new Error(`unsupported chainId ${chainId}; add a branch in chain.ts`);
 }
 
-// Canonical JSON hash: drop whitespace, stable key order, keccak256 the UTF-8 bytes.
-// Must match what we pin to IPFS exactly, otherwise reasoningHash on-chain
-// can't be reproduced from the pinned doc.
 export function canonicalStringify(value: unknown): string {
   return JSON.stringify(sortKeys(value));
 }
+
 function sortKeys(v: unknown): unknown {
   if (Array.isArray(v)) return v.map(sortKeys);
   if (v && typeof v === "object") {
@@ -42,39 +48,41 @@ function sortKeys(v: unknown): unknown {
   return v;
 }
 
-export function reasoningHashOf(payload: unknown): `0x${string}` {
+export function hashOf(payload: unknown): `0x${string}` {
   return keccak256(toBytes(canonicalStringify(payload)));
 }
 
-export interface ChainRecord {
+export interface AttestationReceipt {
   txHash: string;
-  verdictNftTokenId: number;
+  tokenId: number; // VerdictRegistry-issued NFT id
   reasoningHash: `0x${string}`;
   chainId: number;
 }
 
-export async function recordVerdictOnChain(args: {
-  tokenAddress: `0x${string}`;
-  overallScore: number;
+export async function recordAttestationOnChain(args: {
+  attesteeWallet: `0x${string}`;
+  compatScore: number; // 0-100
   ipfsUri: string;
-  reasoningPayload: unknown;
-}): Promise<ChainRecord> {
-  const reasoningHash = reasoningHashOf(args.reasoningPayload);
+  payload: unknown;
+}): Promise<AttestationReceipt> {
+  const reasoningHash = hashOf(args.payload);
 
   if (config.mockChain || !config.contractAddress || !config.orchestratorPrivateKey) {
     const fakeTokenId = Math.floor(Math.random() * 10_000) + 1;
-    const fakeTx = "0x" + [...crypto.getRandomValues(new Uint8Array(32))]
-      .map((b) => b.toString(16).padStart(2, "0"))
-      .join("");
-    log.warn("chain.mock recordVerdict", {
-      tokenAddress: args.tokenAddress,
-      score: args.overallScore,
+    const fakeTx =
+      "0x" +
+      [...crypto.getRandomValues(new Uint8Array(32))]
+        .map((b) => b.toString(16).padStart(2, "0"))
+        .join("");
+    log.warn("chain.mock recordAttestation", {
+      attesteeWallet: args.attesteeWallet,
+      compatScore: args.compatScore,
       reasoningHash,
       ipfsUri: args.ipfsUri,
       fakeTx,
       fakeTokenId,
     });
-    return { txHash: fakeTx, verdictNftTokenId: fakeTokenId, reasoningHash, chainId: config.chainId };
+    return { txHash: fakeTx, tokenId: fakeTokenId, reasoningHash, chainId: config.chainId };
   }
 
   const chain = chainFor(config.chainId);
@@ -85,78 +93,41 @@ export async function recordVerdictOnChain(args: {
   const { request } = await pub.simulateContract({
     account,
     address: config.contractAddress as `0x${string}`,
-    abi: VERDICT_REGISTRY_ABI,
+    abi: REGISTRY_ABI,
     functionName: "recordVerdict",
-    args: [args.tokenAddress, args.overallScore, reasoningHash, args.ipfsUri],
+    args: [args.attesteeWallet, args.compatScore, reasoningHash, args.ipfsUri],
   });
   const txHash = await wallet.writeContract(request);
   const receipt = await pub.waitForTransactionReceipt({ hash: txHash });
 
-  let verdictId = 0;
+  let tokenId = 0;
   for (const entry of receipt.logs) {
     try {
       const decoded = decodeEventLog({
-        abi: VERDICT_REGISTRY_ABI,
+        abi: REGISTRY_ABI,
         data: entry.data,
         topics: entry.topics,
       }) as { eventName: string; args: Record<string, unknown> };
       if (decoded.eventName === "VerdictRecorded") {
-        verdictId = Number(decoded.args.verdictId as bigint);
+        tokenId = Number(decoded.args.verdictId as bigint);
         break;
       }
     } catch {
       /* not our event, skip */
     }
   }
-
-  return { txHash, verdictNftTokenId: verdictId, reasoningHash, chainId: config.chainId };
+  return { txHash, tokenId, reasoningHash, chainId: config.chainId };
 }
 
-// Read helpers — used by /api/verdicts after a restart so the cache can
-// reconcile with on-chain state.
-export async function readVerdictCountByToken(tokenAddress: `0x${string}`): Promise<number> {
+export async function readAttestationCountForWallet(wallet: `0x${string}`): Promise<number> {
   if (config.mockChain || !config.contractAddress) return 0;
   const chain = chainFor(config.chainId);
   const pub = createPublicClient({ chain, transport: http(config.rpcUrl) });
   const n = (await pub.readContract({
     address: config.contractAddress as `0x${string}`,
-    abi: VERDICT_REGISTRY_ABI,
+    abi: REGISTRY_ABI,
     functionName: "verdictCountByToken",
-    args: [tokenAddress],
+    args: [wallet],
   })) as bigint;
   return Number(n);
-}
-
-export async function readVerdict(verdictId: number): Promise<{
-  token: `0x${string}`;
-  score: number;
-  reasoningHash: `0x${string}`;
-  ipfsUri: string;
-  timestamp: number;
-  orchestrator: `0x${string}`;
-} | null> {
-  if (config.mockChain || !config.contractAddress) return null;
-  const chain = chainFor(config.chainId);
-  const pub = createPublicClient({ chain, transport: http(config.rpcUrl) });
-  const raw = (await pub.readContract({
-    address: config.contractAddress as `0x${string}`,
-    abi: VERDICT_REGISTRY_ABI,
-    functionName: "getVerdict",
-    args: [BigInt(verdictId)],
-  })) as {
-    token: `0x${string}`;
-    score: number;
-    reasoningHash: `0x${string}`;
-    ipfsUri: string;
-    timestamp: bigint;
-    orchestrator: `0x${string}`;
-  };
-  return {
-    token: raw.token,
-    score: Number(raw.score),
-    reasoningHash: raw.reasoningHash,
-    ipfsUri: raw.ipfsUri,
-    timestamp: Number(raw.timestamp),
-    orchestrator: raw.orchestrator,
-  };
 }

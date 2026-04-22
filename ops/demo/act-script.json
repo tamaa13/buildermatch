@@ -3,36 +3,36 @@
     "act": 1,
     "name": "hook",
     "duration": 15,
-    "text": "Nyari co-founder di Web3 itu kayak berburu di rawa. DM spam, LinkedIn CV mengkilap, tapi gak ada bukti."
+    "text": "Nyari co-founder di Web3 itu kayak berburu di rawa. DM spam, LinkedIn CV mengkilap, tapi gak ada bukti. Semua claim, nol receipt."
   },
   {
     "act": 2,
     "name": "insight",
     "duration": 15,
-    "text": "Cuma ada satu hal yang gak bisa di-fake: jejak onchain. Kalau lu shipping, wallet lu tau."
+    "text": "Cuma ada satu hal yang gak bisa di-fake. Jejak onchain lu. Kontrak yang lu deploy, vote yang lu cast, commit yang lu merge. Itu bukan klaim. Itu bukti."
   },
   {
     "act": 3,
     "name": "demo-profile",
-    "duration": 20,
-    "text": "BuilderMatch connect wallet — lima detik, AI bikin profile dari on-chain activity. Skill verified. Contributions verified. Gak bisa boong."
+    "duration": 22,
+    "text": "Connect wallet. Lima detik. AI baca tiga tahun aktivitas lu dan susun CV otomatis. Skills dari commit history, domain dari governance votes, narrative dari pattern real. Bukan portfolio yang lu tulis sendiri. Ini yang onchain beneran bilang tentang lu."
   },
   {
     "act": 4,
     "name": "demo-swipe",
     "duration": 25,
-    "text": "Swipe feed sesama builder. AI score compatibility: skill complement, value align, timezone fit. Bukan chemistry feeling — math."
+    "text": "Browse builder yang juga verified. AI ga cuma matching tag. Dia baca skill complement, domain overlap, values alignment dari governance. Aranea: kriptografer ZK. Skill complement seratus persen. Rationale specific. Bukan chemistry feeling. Math."
   },
   {
     "act": 5,
     "name": "demo-match",
     "duration": 25,
-    "text": "Mutual match, buka chat, kolaborasi tiga puluh hari — selesai, mint NFT collaboration. Reputasi lu jadi portable. Next project, matches tau lu real."
+    "text": "Mutual match, chat unlock. AI draft icebreaker berdasarkan profile keduanya. Tiga puluh hari kolaborasi, mint Collaboration NFT ke Base Sepolia. Onchain, soulbound, portable selamanya. Reputasi yang makin lama makin rich."
   },
   {
     "act": 6,
     "name": "vision",
-    "duration": 20,
-    "text": "Lima ratus ribu builder di Web3. Semua nyari partner. BuilderMatch — work with proof."
+    "duration": 18,
+    "text": "Bukan job board. Bukan marketplace. Ini infrastruktur identitas buat lima ratus ribu builder Web3 di dunia. BuilderMatch. Work with proof."
   }
 ]

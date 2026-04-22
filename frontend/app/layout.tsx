@@ -1,23 +1,31 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Instrument_Serif, Inter, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import { Providers } from "./providers";
-import { SiteHeader } from "@/components/site-header";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const serif = Instrument_Serif({
+  variable: "--serif-font",
   subsets: ["latin"],
+  weight: ["400"],
+  style: ["normal", "italic"],
 });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
+const sans = Inter({
+  variable: "--sans-font",
   subsets: ["latin"],
+  weight: ["300", "400", "500", "600"],
+});
+
+const mono = JetBrains_Mono({
+  variable: "--mono-font",
+  subsets: ["latin"],
+  weight: ["300", "400", "500"],
 });
 
 export const metadata: Metadata = {
-  title: "memegard — multi-agent AI DD for Four.meme launches",
+  title: "BuilderMatch — An honest directory of builders",
   description:
-    "Five AI agents debate every Four.meme token. Live verdict. Attestation on-chain.",
+    "Find the one who will build the next thing with you. A co-founder directory, verified onchain.",
 };
 
 export default function RootLayout({
@@ -28,16 +36,10 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased dark`}
+      className={`${serif.variable} ${sans.variable} ${mono.variable}`}
     >
-      <body className="min-h-full flex flex-col">
-        <Providers>
-          <SiteHeader />
-          <main className="flex-1">{children}</main>
-          <footer className="border-t border-border py-6 text-center text-xs text-muted-foreground">
-            memegard · Four.meme AI Sprint · Base Sepolia
-          </footer>
-        </Providers>
+      <body>
+        <Providers>{children}</Providers>
       </body>
     </html>
   );

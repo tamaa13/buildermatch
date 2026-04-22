@@ -33,9 +33,19 @@ export async function getSourceCode(address: string): Promise<{
   }
 }
 
-export async function getTxList(address: string, limit = 50): Promise<
-  Array<{ hash: string; from: string; to: string; value: string; timeStamp: string; blockNumber: string }>
-> {
+export interface ExplorerTx {
+  hash: string;
+  from: string;
+  to: string;
+  value: string;
+  timeStamp: string;
+  blockNumber: string;
+  contractAddress?: string; // non-empty on contract-creation txs
+  functionName?: string;
+  isError?: string;
+}
+
+export async function getTxList(address: string, limit = 50): Promise<ExplorerTx[]> {
   try {
     const result = await bscscan({
       module: "account",
@@ -53,6 +63,40 @@ export async function getTxList(address: string, limit = 50): Promise<
     log.warn("bscscan.getTxList failed", { address, err: String(e) });
     return [];
   }
+}
+
+// Extract contract-creation txs from a tx list — indexed API doesn't have
+// "contracts deployed by X", but txlist marks creations with a non-empty
+// contractAddress.
+export function filterDeployedContracts(txs: ExplorerTx[], chainId: number) {
+  return txs
+    .filter((t) => t.contractAddress && t.contractAddress.length > 0 && t.isError !== "1")
+    .map((t) => ({
+      chainId,
+      address: t.contractAddress!,
+      txHash: t.hash,
+      when: Number(t.timeStamp),
+      note: "deployed contract",
+    }));
+}
+
+export interface WalletSummary {
+  firstTxTimestamp: number | null;
+  txCount: number;
+  fundedBy: string | null;
+}
+
+export function summarizeWallet(txs: ExplorerTx[], owner: string): WalletSummary {
+  if (!txs.length) return { firstTxTimestamp: null, txCount: 0, fundedBy: null };
+  const sorted = [...txs].sort((a, b) => Number(a.timeStamp) - Number(b.timeStamp));
+  const firstIncoming = sorted.find(
+    (t) => t.to?.toLowerCase() === owner.toLowerCase() && t.from?.toLowerCase() !== owner.toLowerCase(),
+  );
+  return {
+    firstTxTimestamp: Number(sorted[0].timeStamp),
+    txCount: txs.length,
+    fundedBy: firstIncoming?.from ?? null,
+  };
 }
 
 export async function getCreatorAndCreationTx(address: string): Promise<{
@@ -77,23 +121,3 @@ export async function getCreatorAndCreationTx(address: string): Promise<{
   }
 }
 
-// Summarize tx history for dev-stalker.
-export function summarizeDevActivity(
-  txs: Array<{ from: string; to: string; timeStamp: string }>,
-  devAddress: string,
-) {
-  if (!txs.length) {
-    return { firstTxTimestamp: null as number | null, txCount: 0, fundedBy: null as string | null };
-  }
-  const sorted = [...txs].sort((a, b) => Number(a.timeStamp) - Number(b.timeStamp));
-  const firstTx = sorted[0];
-  // First incoming tx is usually the funding source.
-  const firstIncoming = sorted.find(
-    (t) => t.to?.toLowerCase() === devAddress.toLowerCase() && t.from?.toLowerCase() !== devAddress.toLowerCase(),
-  );
-  return {
-    firstTxTimestamp: firstTx ? Number(firstTx.timeStamp) : null,
-    txCount: txs.length,
-    fundedBy: firstIncoming?.from ?? null,
-  };
-}

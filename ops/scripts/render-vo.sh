@@ -40,16 +40,21 @@ if [ -f ops/.env ]; then
 fi
 
 SCRIPT="${1:-ops/demo/act-script.json}"
-BASE="${2:-ops/demo/out/demo-local.mp4}"
-OUT_DIR=$(dirname "$BASE")
-BASE_STEM=$(basename "${BASE%.mp4}")
+BASE="${2:-}"
+OUT_DIR="${OUT_DIR:-ops/demo/out}"
 OUT_VO="${OUT_VO:-${OUT_DIR}/voiceover.mp3}"
-OUT_MUX="${OUT_MUX:-${OUT_DIR}/${BASE_STEM}-voice.mp4}"
+if [ -n "$BASE" ]; then
+  BASE_STEM=$(basename "${BASE%.mp4}")
+  OUT_MUX="${OUT_MUX:-${OUT_DIR}/${BASE_STEM}-voice.mp4}"
+fi
 RAW=ops/demo/raw/vo
 mkdir -p "$RAW" "$OUT_DIR"
 
 [ -f "$SCRIPT" ] || { echo "act-script $SCRIPT not found — write it or pass a path"; exit 1; }
-[ -f "$BASE" ]   || { echo "base video $BASE not found — run stitch-acts.sh first"; exit 1; }
+if [ -n "$BASE" ] && [ ! -f "$BASE" ]; then
+  echo "base video $BASE not found — run stitch-acts.sh first, or omit the base arg to render VO only"
+  exit 1
+fi
 command -v ffmpeg >/dev/null  || { echo "need ffmpeg"; exit 1; }
 command -v ffprobe >/dev/null || { echo "need ffprobe"; exit 1; }
 command -v jq >/dev/null      || { echo "need jq"; exit 1; }
@@ -59,7 +64,7 @@ if [ -n "${ELEVENLABS_API_KEY:-}" ]; then
   PROVIDER="elevenlabs"
   command -v curl >/dev/null || { echo "need curl for elevenlabs mode"; exit 1; }
 fi
-echo "[vo] provider=${PROVIDER}  script=${SCRIPT}  base=${BASE}"
+echo "[vo] provider=${PROVIDER}  script=${SCRIPT}  base=${BASE:-<none — VO-only>}"
 
 ELEVEN_VOICE_ID="${ELEVENLABS_VOICE_ID:-pNInz6obpgDQGcFmaJgB}"
 ELEVEN_MODEL="${ELEVENLABS_MODEL:-eleven_turbo_v2_5}"

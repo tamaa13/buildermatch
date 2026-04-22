@@ -1,63 +1,82 @@
-export type Tier = "HIGH_RISK" | "MEDIUM_RISK" | "LOW_RISK";
+export interface Receipt {
+  type: string;
+  name: string;
+  venue: string;
+  date: string;
+  value: string;
+}
 
-export type AgentKey =
-  | "contract_auditor"
-  | "liquidity_analyst"
-  | "dev_stalker"
-  | "sentiment_watcher"
-  | "meta_matcher";
+export interface BuilderProfile {
+  id: string;
+  ens: string;
+  address: string;
+  role: string;
+  tenure: string;
+  avatar: string;
+  location: string;
+  timezone: string;
+  commitment: string;
+  lookingFor: string;
+  skills: string[];
+  domains: string[];
+  narrative: string;
+  stats: {
+    deployed: number;
+    daos: number;
+    commits: number;
+    audits: number;
+  };
+  receipts: Receipt[];
+  values?: string[];
+  trustScore?: number;
+  farcaster?: string;
+  github?: string;
+}
 
-export interface AgentResult {
+export interface CompatBars {
+  left: string;
+  right: string;
   score: number;
-  reasoning: string;
 }
 
-export interface Verdict {
-  tokenAddress: string;
-  tokenName: string;
-  tokenSymbol: string;
-  analysisTimestamp: number;
-  overallScore: number;
-  tier: Tier;
-  agents: Record<AgentKey, AgentResult>;
-  reasoningIpfsUri?: string;
-  verdictNftTokenId?: number;
-  txHash?: string;
-  chainId?: number;
+export interface Candidate extends BuilderProfile {
+  compatibility: number;
+  whyMatch: string;
+  complementarity: CompatBars[];
+  signals?: string[];
+  lowScoreReason?: string;
 }
 
-export type AgentEvent =
-  | {
-      type: "agent_thinking";
-      agent: AgentKey;
-      delta: string;
-    }
-  | {
-      type: "agent_verdict";
-      agent: AgentKey;
-      score: number;
-      reasoning: string;
-    }
-  | {
-      type: "final_verdict";
-      verdict: Verdict;
-    }
-  | {
-      type: "error";
-      message: string;
-    };
+export interface ChatMessage {
+  who: "you" | "them";
+  at: string;
+  text: string;
+}
 
-export interface AgentStreamState {
-  status: "idle" | "connecting" | "streaming" | "done" | "error";
-  byAgent: Record<
-    AgentKey,
-    {
-      thinking: string;
-      score?: number;
-      reasoning?: string;
-      done: boolean;
-    }
-  >;
-  verdict?: Verdict;
-  error?: string;
+export interface Match {
+  matchId: string;
+  chatId: string;
+  fromId: string;
+  toId: string;
+  compatScore: number;
+  icebreaker?: string;
+  createdAt: number;
+  attestationMinted?: boolean;
+  attestationTokenId?: number;
+  attestationTxHash?: string;
+}
+
+export interface SystemState {
+  product: string;
+  uptime: number;
+  chainId: number;
+  contractAddress: string;
+  mockChain: boolean;
+  mockIpfs: boolean;
+  mockAgents: boolean;
+  demoMode: boolean;
+  profileCount: { seeded: number; userBuilt: number };
+  likeCount: number;
+  chatCount: number;
+  attestationCount: number;
 }

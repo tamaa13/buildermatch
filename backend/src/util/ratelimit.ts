@@ -31,4 +31,14 @@ export class RateLimiter {
   }
 }
 
-export const analyzeLimiter = new RateLimiter(5, 5 / 60_000);
+import { config } from "../config";
+
+// Per-client-IP: 10 profile builds / minute. Coarse protection.
+export const profileBuildLimiter = new RateLimiter(10, 10 / 60_000);
+
+// Per-wallet: default 1 build / hour. DEMO_MODE relaxes to 1/sec so a demoer
+// can rebuild a profile on camera without waiting. Per-IP limit stays strict
+// in both modes (protects Anthropic credits during automated testing).
+export const profileBuildPerWalletLimiter = config.demoMode
+  ? new RateLimiter(1, 1 / 1_000) // 1 per second
+  : new RateLimiter(1, 1 / (60 * 60_000)); // 1 per hour
