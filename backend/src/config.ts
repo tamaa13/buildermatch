@@ -21,6 +21,18 @@ export const config = {
   bscscanBase: env.BSCSCAN_TESTNET_BASE ?? "https://api-testnet.bscscan.com/api",
 
   githubToken: env.GITHUB_TOKEN ?? "", // optional; lifts rate limit from 60 → 5000/h
+
+  // GitHub OAuth — required for verified handle linking.
+  //  - client id + secret: created in https://github.com/settings/developers
+  //  - state secret: HMAC key for signing the OAuth `state` param (any long
+  //    random string; if unset, OAuth endpoints refuse to start).
+  //  - callback: must match the OAuth App's registered callback URL exactly.
+  githubOauthClientId: env.GITHUB_OAUTH_CLIENT_ID ?? "",
+  githubOauthClientSecret: env.GITHUB_OAUTH_CLIENT_SECRET ?? "",
+  githubOauthSecret: env.GITHUB_OAUTH_STATE_SECRET ?? "",
+  githubOauthCallback:
+    env.GITHUB_OAUTH_CALLBACK ??
+    "https://buildermatch-three.vercel.app/api/auth/github/callback",
   snapshotGraphqlUrl: env.SNAPSHOT_GRAPHQL ?? "https://hub.snapshot.org/graphql",
 
   pinataJwt: env.PINATA_JWT ?? "",

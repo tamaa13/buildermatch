@@ -2,7 +2,7 @@ import { Hono } from "hono";
 import { z } from "zod";
 import { log } from "../../util/log";
 import { profileBuildLimiter, profileBuildPerWalletLimiter } from "../../util/ratelimit";
-import { getProfile, listProfiles, upsertProfile } from "../store";
+import { getProfile, getVerifiedGithub, listProfiles, upsertProfile } from "../store";
 import { synthesizeProfile } from "../agents/profile-synthesizer";
 import { filterDeployedContracts, getNftTransfers, getTxList, summarizeWallet } from "../../data/bscscan";
 import { getGithubStats } from "../../data/github";
@@ -54,7 +54,11 @@ profileRoutes.post("/profile/build", async (c) => {
   if (!parsed.success) {
     return c.json({ error: "invalid_body", issues: parsed.error.issues }, 400);
   }
-  const { wallet, github, hintedDisplayName } = parsed.data;
+  const { wallet, hintedDisplayName } = parsed.data;
+  // Only trust a github handle that was verified via OAuth against this
+  // wallet. Anything the client sends in the request body is ignored for
+  // profile building — otherwise anyone could claim any handle.
+  const github = getVerifiedGithub(wallet) ?? undefined;
 
   // Per-wallet limiter: rebuilding the same wallet an hour later is fine;
   // rebuilding 10× in 60s burns Anthropic credits. Check AFTER validating

@@ -10,6 +10,20 @@ const chats = new Map<string, Chat>();
 const attestations = new Map<string, Attestation>(); // keyed by match id
 const matches = new Map<string, Match[]>(); // viewerId → ranked matches (cached)
 
+// Verified GitHub handles — wallet (lowercase) → github login (as returned by
+// GitHub /user API during OAuth). Written only after a successful OAuth
+// handshake; profile/build consults it to require verified claims and rejects
+// mismatched hand-typed handles.
+const verifiedGithub = new Map<string, string>();
+
+export function setVerifiedGithub(wallet: string, login: string) {
+  verifiedGithub.set(wallet.toLowerCase(), login);
+}
+
+export function getVerifiedGithub(wallet: string): string | undefined {
+  return verifiedGithub.get(wallet.toLowerCase());
+}
+
 export function upsertProfile(p: Profile): Profile {
   profiles.set(p.id, p);
   // Invalidate match cache for everyone — new profile changes rankings.

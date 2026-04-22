@@ -38,6 +38,15 @@ services:
       # URL drives actual behavior.
       - key: BSCSCAN_TESTNET_BASE
         value: https://base-sepolia.blockscout.com/api
+      - key: GITHUB_OAUTH_CALLBACK
+        value: https://buildermatch-three.vercel.app/api/auth/github/callback
+      # Secrets — fill in Render dashboard after provisioning.
+      - key: GITHUB_OAUTH_CLIENT_ID
+        sync: false
+      - key: GITHUB_OAUTH_CLIENT_SECRET
+        sync: false
+      - key: GITHUB_OAUTH_STATE_SECRET
+        generateValue: true
       # Set the secrets below manually in the Render dashboard — Render will
       # prompt for them when the service is first provisioned.
       - key: ORCHESTRATOR_PRIVATE_KEY

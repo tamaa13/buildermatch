@@ -22,9 +22,45 @@ export default function Landing() {
   const { disconnect } = useDisconnect();
 
   const [stage, setStage] = useState<ConnectStage>("idle");
-  const [github, setGithub] = useState("");
+  const [verifiedGithub, setVerifiedGithub] = useState<string | null>(null);
   const [syncError, setSyncError] = useState<string | null>(null);
   const [autoSyncAttempted, setAutoSyncAttempted] = useState(false);
+
+  // After returning from GitHub OAuth callback the URL has `?github=<login>`.
+  // Capture it, pin to state, then strip the query so a refresh doesn't
+  // re-trigger.
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const u = new URL(window.location.href);
+    const g = u.searchParams.get("github");
+    if (g) {
+      setVerifiedGithub(g);
+      u.searchParams.delete("github");
+      window.history.replaceState({}, "", u.toString());
+    }
+  }, []);
+
+  // When the wallet is connected, ask the backend which (if any) GitHub
+  // login it has verified for this wallet — covers refresh / re-mount.
+  useEffect(() => {
+    if (!isConnected || !address) return;
+    let cancelled = false;
+    (async () => {
+      try {
+        const r = await fetch(
+          `/api/auth/github/status?wallet=${address.toLowerCase()}`,
+        );
+        if (!r.ok) return;
+        const data = (await r.json()) as { verifiedGithub: string | null };
+        if (!cancelled && data.verifiedGithub) setVerifiedGithub(data.verifiedGithub);
+      } catch {
+        /* ignore — status is best-effort */
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [isConnected, address]);
 
   const [stats, setStats] = useState<HomeStats>({
     profiles: 15,
@@ -109,6 +145,14 @@ export default function Landing() {
     }
   }
 
+  function connectGithub() {
+    if (!address) return;
+    const redirect = typeof window !== "undefined" ? window.location.origin : "";
+    // Full-page redirect so the OAuth callback can round-trip cleanly. The
+    // backend `auth.ts` will hand us back here with ?github=<login>.
+    window.location.href = `/api/auth/github/start?wallet=${address.toLowerCase()}&redirect=${encodeURIComponent(redirect)}`;
+  }
+
   async function syncProfile() {
     if (!address) return;
     setStage("syncing");
@@ -116,7 +160,10 @@ export default function Landing() {
     try {
       await api.buildProfile({
         wallet: address,
-        github: github.trim() || undefined,
+        // Backend ignores this field — it only trusts the GitHub login the
+        // wallet linked via OAuth. Keeping the property on the request for
+        // now so older backends don't reject the body.
+        github: verifiedGithub ?? undefined,
       });
       setStage("synced");
       router.push(`/profile/${address.toLowerCase()}`);
@@ -287,23 +334,57 @@ export default function Landing() {
                     Disconnect
                   </button>
                 </div>
-                <input
-                  type="text"
-                  placeholder="github handle (optional)"
-                  value={github}
-                  onChange={(e) => setGithub(e.target.value)}
-                  disabled={stage === "syncing"}
-                  style={{
-                    width: "100%",
-                    padding: "12px 14px",
-                    border: "1px solid var(--rule-strong)",
-                    background: "var(--paper)",
-                    fontFamily: "var(--mono)",
-                    fontSize: 12,
-                    marginBottom: 12,
-                    outline: "none",
-                  }}
-                />
+                {verifiedGithub ? (
+                  <div
+                    style={{
+                      display: "flex",
+                      justifyContent: "space-between",
+                      alignItems: "center",
+                      padding: "12px 14px",
+                      border: "1px solid var(--rule-strong)",
+                      background: "var(--paper)",
+                      marginBottom: 12,
+                    }}
+                  >
+                    <span
+                      className="mono"
+                      style={{ fontSize: 11, color: "var(--ink-2)" }}
+                    >
+                      GitHub · @{verifiedGithub}
+                    </span>
+                    <span
+                      className="mono"
+                      style={{
+                        fontSize: 10,
+                        color: "var(--moss)",
+                        letterSpacing: "0.1em",
+                        textTransform: "uppercase",
+                      }}
+                    >
+                      ✓ Verified
+                    </span>
+                  </div>
+                ) : (
+                  <button
+                    onClick={connectGithub}
+                    disabled={stage === "syncing"}
+                    className="btn btn-ghost"
+                    style={{
+                      width: "100%",
+                      justifyContent: "space-between",
+                      padding: "12px 14px",
+                      marginBottom: 12,
+                    }}
+                  >
+                    <span
+                      style={{ display: "flex", alignItems: "center", gap: 10 }}
+                    >
+                      <Icon name="link" size={14} />
+                      Connect GitHub
+                    </span>
+                    <Icon name="arrow" size={12} />
+                  </button>
+                )}
               </>
             )}
 

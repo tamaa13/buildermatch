@@ -8,6 +8,7 @@ import { profileRoutes } from "./matcher/routes/profile";
 import { matchRoutes } from "./matcher/routes/match";
 import { chatRoutes } from "./matcher/routes/chat";
 import { attestationRoutes } from "./matcher/routes/attestation";
+import { authRoutes } from "./matcher/routes/auth";
 
 type Variables = { reqId: string };
 const app = new Hono<{ Variables: Variables }>();
@@ -87,6 +88,10 @@ app.route("/api", chatRoutes);
 // --- Attestation ------------------------------------------------------------
 
 app.route("/api", attestationRoutes);
+
+// --- Auth (GitHub OAuth) ----------------------------------------------------
+
+app.route("/api", authRoutes);
 
 // --- Root -------------------------------------------------------------------
 
