@@ -1,0 +1,82 @@
+{
+  "$schema-note": "Declarative OBS preset for the BuilderMatch demo. NOT an OBS-native scene-collection import file (those carry per-source UUIDs and host-specific paths). Apply via ops/demo/obs-setup.md; future automation can parse this to drive obs-cli or the OBS WebSocket API.",
+  "canvas": {
+    "base_resolution": "1920x1080",
+    "output_resolution": "1920x1080",
+    "fps": 60,
+    "pixel_format": "yuv420p",
+    "color_space": "sRGB",
+    "downscale_filter": "lanczos"
+  },
+  "recording": {
+    "format": "mp4",
+    "encoder": "obs_x264",
+    "rate_control": "CRF",
+    "crf": 18,
+    "preset": "veryfast",
+    "profile": "high",
+    "keyint_sec": 2,
+    "bitrate_mbps_target": 10,
+    "audio_bitrate_kbps": 192,
+    "audio_channels": 2,
+    "audio_sample_rate_hz": 48000,
+    "output_path": "ops/demo/raw"
+  },
+  "streaming": {
+    "note": "unused — this preset is recording-only. Leave Stream panel default; do not bind keys to stream start."
+  },
+  "scenes": [
+    {
+      "name": "Act 3 — Profile Build",
+      "description": "Wallet connect → AI-generated builder profile materialises. ~20s take.",
+      "sources": [
+        {
+          "type": "display_capture",
+          "name": "Display",
+          "display": 0,
+          "crop_to_browser_window": true,
+          "hide_cursor": false
+        }
+      ]
+    },
+    {
+      "name": "Act 4 — Swipe Feed",
+      "description": "BuilderMatch swipe UI with compat scores. ~25s take.",
+      "sources": [
+        {
+          "type": "display_capture",
+          "name": "Display",
+          "display": 0,
+          "crop_to_browser_window": true,
+          "hide_cursor": false
+        }
+      ]
+    },
+    {
+      "name": "Act 5 — Match & Mint",
+      "description": "Mutual match → chat → 30-day collab NFT mint. ~25s take.",
+      "sources": [
+        {
+          "type": "display_capture",
+          "name": "Display",
+          "display": 0,
+          "crop_to_browser_window": true,
+          "hide_cursor": false
+        }
+      ]
+    }
+  ],
+  "hotkeys": {
+    "start_recording": "⌘⇧R",
+    "stop_recording": "⌘⇧S",
+    "switch_scene_1": "⌥1",
+    "switch_scene_2": "⌥2",
+    "switch_scene_3": "⌥3"
+  },
+  "filename_template": "act-%CCYY%MM%DD-%hh%mm%ss.mp4",
+  "expected_output_files": [
+    "ops/demo/raw/act-3-live-profile.mp4",
+    "ops/demo/raw/act-4-live-swipe.mp4",
+    "ops/demo/raw/act-5-live-match.mp4"
+  ]
+}
