@@ -3,36 +3,36 @@
     "act": 1,
     "name": "hook",
     "duration": 15,
-    "text": "Nyari co-founder di Web3 itu kayak berburu di rawa. DM spam, LinkedIn CV mengkilap, tapi gak ada bukti. Semua claim, nol receipt."
+    "text": "Finding a co-founder in Web3 is like hunting in a swamp. DM spam. Polished LinkedIn CVs. All claims — zero receipts."
   },
   {
     "act": 2,
     "name": "insight",
     "duration": 15,
-    "text": "Cuma ada satu hal yang gak bisa di-fake. Jejak onchain lu. Kontrak yang lu deploy, vote yang lu cast, commit yang lu merge. Itu bukan klaim. Itu bukti."
+    "text": "But there's one thing you can't fake. Your onchain trail. Every contract you deployed. Every vote you cast. Every commit you merged. Not claims. Evidence."
   },
   {
     "act": 3,
     "name": "demo-profile",
     "duration": 22,
-    "text": "Connect wallet. Lima detik. AI baca tiga tahun aktivitas lu dan susun CV otomatis. Skills dari commit history, domain dari governance votes, narrative dari pattern real. Bukan portfolio yang lu tulis sendiri. Ini yang onchain beneran bilang tentang lu."
+    "text": "Connect a wallet. Five seconds. AI reads three years of your activity and composes your CV. Skills from commit history. Domains from governance votes. A narrative from the real pattern. Not a portfolio you wrote yourself. What the chain actually says about you."
   },
   {
     "act": 4,
     "name": "demo-swipe",
     "duration": 25,
-    "text": "Browse builder yang juga verified. AI ga cuma matching tag. Dia baca skill complement, domain overlap, values alignment dari governance. Aranea: kriptografer ZK. Skill complement seratus persen. Rationale specific. Bukan chemistry feeling. Math."
+    "text": "Browse verified builders. AI doesn't just match tags. It reads skill complement, domain overlap, values alignment — straight from their governance. Aranea: ZK cryptographer. Skill complement one hundred. Specific rationale, not generic feel. This is math, not chemistry."
   },
   {
     "act": 5,
     "name": "demo-match",
     "duration": 25,
-    "text": "Mutual match, chat unlock. AI draft icebreaker berdasarkan profile keduanya. Tiga puluh hari kolaborasi, mint Collaboration NFT ke Base Sepolia. Onchain, soulbound, portable selamanya. Reputasi yang makin lama makin rich."
+    "text": "Mutual match. Chat unlocks. AI drafts an icebreaker from both profiles. Thirty days of collaboration later, mint a Collaboration NFT on Base Sepolia. Onchain. Soulbound. Portable forever. Reputation that compounds with every collab."
   },
   {
     "act": 6,
     "name": "vision",
     "duration": 18,
-    "text": "Bukan job board. Bukan marketplace. Ini infrastruktur identitas buat lima ratus ribu builder Web3 di dunia. BuilderMatch. Work with proof."
+    "text": "Not a job board. Not a marketplace. Identity infrastructure for five hundred thousand Web3 builders worldwide. BuilderMatch. Work with proof."
   }
 ]

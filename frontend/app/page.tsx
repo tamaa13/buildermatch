@@ -492,12 +492,12 @@ export default function Landing() {
         >
           Source-available ·{" "}
           <a
-            href="https://github.com/tamaa13/memegard"
+            href="https://github.com/tamaa13/buildermatch"
             target="_blank"
             rel="noreferrer"
             className="link-underline"
           >
-            github.com/tamaa13/memegard
+            github.com/tamaa13/buildermatch
           </a>
         </span>
       </footer>
