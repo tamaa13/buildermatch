@@ -1,0 +1,38 @@
+[
+  {
+    "act": 1,
+    "name": "hook",
+    "duration": 15,
+    "text": "Nyari co-founder di Web3 itu kayak berburu di rawa. DM spam, LinkedIn CV mengkilap, tapi gak ada bukti."
+  },
+  {
+    "act": 2,
+    "name": "insight",
+    "duration": 15,
+    "text": "Cuma ada satu hal yang gak bisa di-fake: jejak onchain. Kalau lu shipping, wallet lu tau."
+  },
+  {
+    "act": 3,
+    "name": "demo-profile",
+    "duration": 20,
+    "text": "BuilderMatch connect wallet — lima detik, AI bikin profile dari on-chain activity. Skill verified. Contributions verified. Gak bisa boong."
+  },
+  {
+    "act": 4,
+    "name": "demo-swipe",
+    "duration": 25,
+    "text": "Swipe feed sesama builder. AI score compatibility: skill complement, value align, timezone fit. Bukan chemistry feeling — math."
+  },
+  {
+    "act": 5,
+    "name": "demo-match",
+    "duration": 25,
+    "text": "Mutual match, buka chat, kolaborasi tiga puluh hari — selesai, mint NFT collaboration. Reputasi lu jadi portable. Next project, matches tau lu real."
+  },
+  {
+    "act": 6,
+    "name": "vision",
+    "duration": 20,
+    "text": "Lima ratus ribu builder di Web3. Semua nyari partner. BuilderMatch — work with proof."
+  }
+]

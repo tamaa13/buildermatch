@@ -129,6 +129,24 @@ async function tick(cursor: Cursor): Promise<Cursor> {
 }
 
 async function main() {
+  // BuilderMatch pivot (2026-04-22): backend removed /api/verdicts without
+  // aliasing — polling it would produce silent-404 loops. Gate the publisher
+  // behind PUBLISHER_ENABLED so starting it by accident fails loudly instead
+  // of quietly doing the wrong thing. Flip to "1" / "true" when the new
+  // /api/attestations (or whatever replaces it) lands and the publisher is
+  // rewired to it.
+  const enabled = process.env.PUBLISHER_ENABLED;
+  if (!enabled || enabled === "0" || enabled.toLowerCase() === "false") {
+    console.error(
+      "[ops] publisher is paused (PUBLISHER_ENABLED unset).\n" +
+        "      Verdicts API was removed in the BuilderMatch pivot; this " +
+        "poller would 404-loop.\n" +
+        "      Set PUBLISHER_ENABLED=1 once the attestations endpoint is " +
+        "wired to re-enable."
+    );
+    process.exit(0);
+  }
+
   console.log(`[ops] publisher starting (dryRun=${config.dryRun}, backend=${config.backendUrl})`);
   await probeHealth();
   let cursor = await readCursor();
