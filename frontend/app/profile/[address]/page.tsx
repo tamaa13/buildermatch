@@ -32,7 +32,7 @@ export default function ProfilePage({
   const [me, setMe] = useState<BuilderProfile | null>(null);
   const [copied, setCopied] = useState(false);
   const [err, setErr] = useState<string | null>(null);
-  const [filter, setFilter] = useState<"All" | "Deployed" | "Voted" | "Authored" | "Audited">("All");
+  const [filter, setFilter] = useState<"All" | "Deployed" | "Voted" | "Minted">("All");
 
   useEffect(() => {
     if (!resolvedId) return;
@@ -447,7 +447,7 @@ export default function ProfilePage({
                 }}
               >
                 <span className="label">Filter</span>
-                {(["All", "Deployed", "Voted", "Authored", "Audited"] as const).map(
+                {(["All", "Deployed", "Voted", "Minted"] as const).map(
                   (f) => {
                     const active = filter === f;
                     return (
@@ -560,10 +560,19 @@ export default function ProfilePage({
 
 function filteredReceipts(
   receipts: BuilderProfile["receipts"],
-  filter: "All" | "Deployed" | "Voted" | "Authored" | "Audited",
+  filter: "All" | "Deployed" | "Voted" | "Minted",
 ) {
   if (filter === "All") return receipts;
-  const needle = filter.toLowerCase();
+  // Receipt.type comes from OnchainReceipt.kind with underscores replaced by
+  // spaces — e.g. "deployed_contract" → "deployed contract", "dao_vote" →
+  // "dao vote", "token_mint" → "token mint". Map the UI label to the kind
+  // substring that actually appears in the data.
+  const needleByFilter: Record<"Deployed" | "Voted" | "Minted", string> = {
+    Deployed: "deployed",
+    Voted: "vote",
+    Minted: "mint",
+  };
+  const needle = needleByFilter[filter];
   return receipts.filter((r) => r.type.toLowerCase().includes(needle));
 }
 

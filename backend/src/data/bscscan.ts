@@ -99,6 +99,52 @@ export function summarizeWallet(txs: ExplorerTx[], owner: string): WalletSummary
   };
 }
 
+export interface NftTransfer {
+  chainId: number;
+  contract: string;
+  tokenId: string;
+  from: string;
+  to: string;
+  when: number;
+  txHash: string;
+}
+
+// Fetch ERC-721 transfers where `address` is either sender or receiver.
+// Blockscout + Etherscan-compat APIs expose this as `module=account,
+// action=tokennfttx`. Used to surface collaboration NFTs (and any other
+// ERC-721s) as receipts on a builder's profile.
+export async function getNftTransfers(
+  address: string,
+  chainId: number,
+  limit = 50,
+): Promise<NftTransfer[]> {
+  try {
+    const result = await bscscan({
+      module: "account",
+      action: "tokennfttx",
+      address,
+      startblock: "0",
+      endblock: "99999999",
+      page: "1",
+      offset: String(limit),
+      sort: "desc",
+    });
+    if (!Array.isArray(result)) return [];
+    return result.map((t: Record<string, string>) => ({
+      chainId,
+      contract: t.contractAddress ?? "",
+      tokenId: t.tokenID ?? "",
+      from: t.from ?? "",
+      to: t.to ?? "",
+      when: Number(t.timeStamp ?? 0),
+      txHash: t.hash ?? "",
+    }));
+  } catch (e) {
+    log.warn("bscscan.getNftTransfers failed", { address, err: String(e) });
+    return [];
+  }
+}
+
 export async function getCreatorAndCreationTx(address: string): Promise<{
   contractCreator: `0x${string}` | null;
   txHash: string | null;

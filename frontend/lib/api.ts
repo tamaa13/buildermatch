@@ -57,8 +57,8 @@ interface BackendProfile {
     chainId?: number;
     address?: string;
     note?: string;
-    hash?: string;
-    at?: number;
+    txHash?: string;
+    when?: number;
   }>;
   githubStats?: {
     username?: string;
@@ -184,13 +184,13 @@ function avatarMonogram(displayName: string): string {
 }
 
 function mapReceipts(p: BackendProfile): Receipt[] {
-  return (p.onchainReceipts ?? []).slice(0, 12).map((r) => ({
+  return (p.onchainReceipts ?? []).slice(0, 20).map((r) => ({
     type: r.kind.replace(/_/g, " "),
     name: r.note ?? r.kind,
     venue: r.chainId ? `chain ${r.chainId}` : "onchain",
     date:
-      r.at !== undefined
-        ? new Date(r.at * 1000).toISOString().slice(0, 10).replace(/-/g, ".")
+      r.when !== undefined && r.when > 0
+        ? new Date(r.when * 1000).toISOString().slice(0, 10).replace(/-/g, ".")
         : "—",
     value: r.address
       ? `${r.address.slice(0, 6)}…${r.address.slice(-4)}`

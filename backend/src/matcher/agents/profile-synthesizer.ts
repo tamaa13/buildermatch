@@ -10,8 +10,9 @@ export interface ProfileSynthesisInput {
   github?: string;
   explorerTxCount?: number;
   explorerFirstSeenTs?: number | null;
-  deployedContracts?: Array<{ chainId: number; address: string; note?: string }>;
+  deployedContracts?: Array<{ chainId: number; address: string; note?: string; when?: number; txHash?: string }>;
   daoVotes?: Array<{ chainId: number; note: string; when?: number }>;
+  nftsReceived?: Array<{ chainId: number; contract: string; tokenId: string; from: string; when: number; txHash: string }>;
   githubStats?: GithubStats;
   hintedDisplayName?: string;
 }
@@ -23,10 +24,27 @@ export async function synthesizeProfile(input: ProfileSynthesisInput): Promise<P
   const id = input.wallet.toLowerCase();
   const receipts: OnchainReceipt[] = [];
   for (const c of input.deployedContracts ?? []) {
-    receipts.push({ kind: "deployed_contract", chainId: c.chainId, address: c.address, note: c.note ?? "deployed contract" });
+    receipts.push({
+      kind: "deployed_contract",
+      chainId: c.chainId,
+      address: c.address,
+      txHash: c.txHash,
+      when: c.when,
+      note: c.note ?? "deployed contract",
+    });
   }
   for (const v of input.daoVotes ?? []) {
     receipts.push({ kind: "dao_vote", chainId: v.chainId, note: v.note, when: v.when });
+  }
+  for (const n of input.nftsReceived ?? []) {
+    receipts.push({
+      kind: "token_mint",
+      chainId: n.chainId,
+      address: n.contract,
+      txHash: n.txHash,
+      when: n.when,
+      note: `Received NFT #${n.tokenId}${n.from ? ` from ${n.from.slice(0, 6)}…${n.from.slice(-4)}` : ""}`,
+    });
   }
 
   // Seed heuristic fields — the LLM pass can refine these below.

@@ -4,7 +4,7 @@ import { log } from "../../util/log";
 import { profileBuildLimiter, profileBuildPerWalletLimiter } from "../../util/ratelimit";
 import { getProfile, listProfiles, upsertProfile } from "../store";
 import { synthesizeProfile } from "../agents/profile-synthesizer";
-import { filterDeployedContracts, getTxList, summarizeWallet } from "../../data/bscscan";
+import { filterDeployedContracts, getNftTransfers, getTxList, summarizeWallet } from "../../data/bscscan";
 import { getGithubStats } from "../../data/github";
 import { getRecentVotes } from "../../data/snapshot";
 import { config } from "../../config";
@@ -80,10 +80,11 @@ profileRoutes.post("/profile/build", async (c) => {
 
   // Fire all enrichment calls in parallel. Each returns safe defaults on
   // failure; no single fetcher can take down the synthesis.
-  const [txs, githubStats, snapshotVotes] = await Promise.all([
+  const [txs, githubStats, snapshotVotes, nftTransfers] = await Promise.all([
     getTxList(wallet, 50),
     github ? getGithubStats(github) : Promise.resolve(null),
     getRecentVotes(wallet, 20),
+    getNftTransfers(wallet, config.chainId, 25),
   ]);
 
   const walletSummary = summarizeWallet(txs, wallet);
@@ -93,11 +94,17 @@ profileRoutes.post("/profile/build", async (c) => {
     note: `Voted "${v.choice}" on "${v.proposalTitle}" in ${v.space}`,
     when: v.created,
   }));
+  // Only count NFTs we received (attestations, airdrops, mints to us) —
+  // outbound transfers are not receipts of the wallet holder's record.
+  const nftsReceived = nftTransfers.filter(
+    (t) => t.to.toLowerCase() === wallet.toLowerCase(),
+  );
 
   const zeroActivity =
     walletSummary.txCount === 0 &&
     deployedContracts.length === 0 &&
     daoVotes.length === 0 &&
+    nftsReceived.length === 0 &&
     !githubStats;
 
   let profile = await synthesizeProfile({
@@ -107,6 +114,7 @@ profileRoutes.post("/profile/build", async (c) => {
     explorerFirstSeenTs: walletSummary.firstTxTimestamp,
     deployedContracts,
     daoVotes,
+    nftsReceived,
     githubStats: githubStats ?? undefined,
     hintedDisplayName,
   });
